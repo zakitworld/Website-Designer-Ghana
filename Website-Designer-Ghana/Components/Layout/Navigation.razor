@@ -1,0 +1,109 @@
+@using Microsoft.AspNetCore.Components.Authorization
+@inject NavigationManager NavigationManager
+
+<!-- Bootstrap Navbar -->
+<nav class="navbar navbar-expand-lg fixed-top navbar-light bg-white shadow-sm">
+    <div class="container">
+        <a class="navbar-brand d-flex align-items-center gap-2" href="#home">
+            <img src="images/ma logo with circle4.png" alt="WDG" height="40" width="auto">
+        </a>
+
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+            aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto align-items-center">
+                <li class="nav-item">
+                    <a class="nav-link fw-medium active" href="">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link fw-medium" href="#about">About</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link fw-medium" href="#services">Services</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link fw-bold text-danger" href="#courses">Courses</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link fw-medium" href="#portfolio">Portfolio</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link fw-medium" href="#blog">Blog</a>
+                </li>
+                <li class="nav-item ms-lg-3">
+                    <a class="btn btn-primary px-4 fw-medium text-white" href="#contact">Contact Us</a>
+                </li>
+
+                <div class="d-lg-none my-3 border-top border-secondary pt-3">
+                    <AuthorizeView>
+                        <Authorized>
+                            <a href="Account/Manage" class="d-block mb-2 text-decoration-none text-secondary">My
+                                Account</a>
+                            <form action="Account/Logout" method="post">
+                                <AntiforgeryToken />
+                                <input type="hidden" name="ReturnUrl" value="" />
+                                <button type="submit"
+                                    class="btn btn-link p-0 text-secondary text-decoration-none">Logout</button>
+                            </form>
+                        </Authorized>
+                        <NotAuthorized>
+                            <a href="Account/Login" class="d-block text-decoration-none text-secondary">Client Login</a>
+                        </NotAuthorized>
+                    </AuthorizeView>
+                </div>
+            </ul>
+
+            <div class="d-none d-lg-flex ms-3 ps-3 border-start border-secondary align-items-center">
+                <AuthorizeView>
+                    <Authorized>
+                        <a href="Account/Manage" class="text-decoration-none text-secondary small me-3">My Account</a>
+                        <form action="Account/Logout" method="post" style="display:inline;">
+                            <AntiforgeryToken />
+                            <input type="hidden" name="ReturnUrl" value="" />
+                            <button type="submit"
+                                class="btn btn-link p-0 text-secondary small text-decoration-none">Logout</button>
+                        </form>
+                    </Authorized>
+                    <NotAuthorized>
+                        <a href="Account/Login" class="text-decoration-none text-secondary small">Client Login</a>
+                    </NotAuthorized>
+                </AuthorizeView>
+            </div>
+        </div>
+    </div>
+</nav>
+
+<style>
+    /* Styling overrides or enhancements on top of Bootstrap */
+    .navbar-brand {
+        font-family: var(--font-heading, sans-serif);
+        color: var(--bs-body-color);
+    }
+
+    .gradient-text {
+        background: linear-gradient(to right, #2563eb, #9333ea);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+
+    .nav-link {
+        transition: color 0.3s ease;
+        color: #334155 !important;
+        /* Slate-700 */
+        font-weight: 500;
+    }
+
+    .nav-link:hover,
+    .nav-link.active {
+        color: var(--color-primary) !important;
+    }
+
+    /* Ensure padding for fixed navbar */
+    body {
+        padding-top: 0;
+    }
+</style>

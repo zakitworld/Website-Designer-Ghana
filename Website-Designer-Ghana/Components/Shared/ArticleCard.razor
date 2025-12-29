@@ -1,0 +1,61 @@
+<div class="card h-100 bg-white bg-opacity-05 border-0 hover-lift">
+    <div class="card-body p-4 d-flex flex-column">
+        <div class="text-primary fw-semibold small mb-2">@Date</div>
+        <h3 class="h5 card-title text-white mb-3">
+            <a href="@Link" class="text-white text-decoration-none hover-text-primary transition-colors">@Title</a>
+        </h3>
+        <p class="card-text text-secondary mb-4 flex-grow-1">@Excerpt</p>
+        <a href="@Link"
+            class="text-white text-decoration-none fw-medium d-inline-flex align-items-center group-hover-arrow">
+            Read Article <i class="bi bi-arrow-right ms-2 transition-transform"></i>
+        </a>
+    </div>
+    <div class="card-footer border-0 p-0 overflow-hidden">
+        <div class="h-1 bg-gradient-primary w-0 transition-width"></div>
+    </div>
+</div>
+
+@code {
+    [Parameter] public string Date { get; set; } = "";
+    [Parameter] public string Title { get; set; } = "";
+    [Parameter] public string Excerpt { get; set; } = "";
+    [Parameter] public string Link { get; set; } = "#";
+}
+
+<style>
+    .hover-lift {
+        transition: transform 0.3s ease;
+    }
+
+    .hover-lift:hover {
+        transform: translateY(-5px);
+    }
+
+    .hover-lift:hover .w-0 {
+        width: 100%;
+    }
+
+    .w-0 {
+        width: 0;
+    }
+
+    .h-1 {
+        height: 4px;
+    }
+
+    .transition-width {
+        transition: width 0.3s ease;
+    }
+
+    .hover-text-primary:hover {
+        color: var(--bs-primary) !important;
+    }
+
+    .group-hover-arrow:hover .bi-arrow-right {
+        transform: translateX(5px);
+    }
+
+    .bg-gradient-primary {
+        background: linear-gradient(to right, #2563eb, #9333ea);
+    }
+</style>

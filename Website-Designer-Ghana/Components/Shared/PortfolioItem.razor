@@ -1,0 +1,46 @@
+<div class="card border-0 overflow-hidden h-100 shadow-sm group-hover-zoom">
+    <div class="position-relative overflow-hidden ratio ratio-4x3">
+        <img src="@Image" alt="@Title" class="card-img-top object-fit-cover transition-transform" />
+        <div class="position-absolute top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center bg-dark bg-opacity-75 opacity-0 transition-opacity hover-opacity-100 p-4">
+            <div class="text-center transform-translate-y-20 transition-transform">
+                <span class="d-block text-primary fw-bold text-uppercase small mb-2">@Category</span>
+                <h3 class="h4 text-white mb-3">@Title</h3>
+                <a href="@Link" class="btn btn-primary btn-sm rounded-pill px-4">View Project</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+    [Parameter] public string Image { get; set; } = "";
+    [Parameter] public string Title { get; set; } = "";
+    [Parameter] public string Category { get; set; } = "";
+    [Parameter] public string Link { get; set; } = "#";
+}
+
+<style>
+    .transition-transform {
+        transition: transform 0.5s ease;
+    }
+
+    .group-hover-zoom:hover .card-img-top {
+        transform: scale(1.1);
+    }
+
+    .transition-opacity {
+        transition: opacity 0.3s ease;
+    }
+
+    .hover-opacity-100:hover {
+        opacity: 1 !important;
+    }
+
+    .transform-translate-y-20 {
+        transform: translateY(20px);
+        transition: transform 0.3s ease;
+    }
+
+    .group-hover-zoom:hover .transform-translate-y-20 {
+        transform: translateY(0);
+    }
+</style>
