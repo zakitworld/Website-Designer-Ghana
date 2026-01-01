@@ -7,7 +7,24 @@ window.addEventListener('DOMContentLoaded', () => {
     initSmoothScroll();
     initScrollAnimations();
     initNavbarScroll();
+    initFloatingButtons();
+    removeFocusOutlines();
 });
+
+// ==========================================
+// REMOVE FOCUS OUTLINES
+// ==========================================
+function removeFocusOutlines() {
+    // Remove focus from any auto-focused elements on page load
+    if (document.activeElement && document.activeElement !== document.body) {
+        document.activeElement.blur();
+    }
+
+    // Prevent sections from being focusable
+    document.querySelectorAll('section').forEach(section => {
+        section.removeAttribute('tabindex');
+    });
+}
 
 // ==========================================
 // SMOOTH SCROLLING
@@ -102,6 +119,31 @@ window.refreshScrollAnimations = function () {
     setTimeout(() => {
         initScrollAnimations();
     }, 100);
+}
+
+// ==========================================
+// FLOATING ACTION BUTTONS
+// ==========================================
+function initFloatingButtons() {
+    const scrollBtn = document.getElementById('scrollToTopBtn');
+    const whatsappBtn = document.querySelector('.btn-whatsapp');
+
+    if (scrollBtn || whatsappBtn) {
+        const toggleButtons = () => {
+            const scrolled = window.scrollY > 300;
+
+            if (scrollBtn) {
+                scrollBtn.style.display = scrolled ? 'flex' : 'none';
+            }
+
+            if (whatsappBtn) {
+                whatsappBtn.style.display = scrolled ? 'flex' : 'none';
+            }
+        };
+
+        window.addEventListener('scroll', toggleButtons);
+        toggleButtons(); // Initial check
+    }
 }
 
 // ==========================================

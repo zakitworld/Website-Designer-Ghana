@@ -35,6 +35,11 @@
     --bs-link-color: var(--color-primary);
     --bs-link-hover-color: #60a5fa;
     --bs-border-color: rgba(255, 255, 255, 0.1);
+
+    /* Footer Accents */
+    --color-footer-accent: #ff3b30;
+    /* Bright Red from reference */
+    --color-whatsapp: #25d366;
 }
 
 /* ==========================================
@@ -50,6 +55,17 @@ body {
     background-attachment: fixed;
     color: var(--bs-body-color);
     overflow-x: hidden;
+}
+
+/* Remove unwanted focus outlines */
+section:focus,
+div:focus:not(:focus-visible) {
+    outline: none !important;
+}
+
+/* Keep focus visible only for keyboard navigation */
+*:focus:not(:focus-visible) {
+    outline: none !important;
 }
 
 h1,
@@ -268,4 +284,107 @@ h6,
 /* Blazor Error UI overrides */
 #blazor-error-ui {
     /* Styles handled by bootstrap classes in MainLayout */
+}
+
+/* Footer Refinements */
+.footer-heading::after {
+    background: var(--color-footer-accent);
+}
+
+.footer-contact .icon {
+    color: var(--color-footer-accent);
+}
+
+.footer-contact li {
+    margin-bottom: 1rem;
+}
+
+/* Floating Action Buttons */
+.floating-buttons-left {
+    position: fixed;
+    bottom: 30px;
+    left: 30px;
+    z-index: 1000;
+}
+
+.floating-buttons-right {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    z-index: 1000;
+}
+
+.btn-floating {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    display: none; /* Hidden by default, shown on scroll */
+    align-items: center;
+    justify-content: center;
+    color: white;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+    transition: all 0.3s ease;
+    border: none;
+    cursor: pointer;
+    text-decoration: none;
+    font-size: 1.5rem;
+    animation: fadeInUp 0.3s ease;
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.btn-whatsapp {
+    background-color: var(--color-whatsapp);
+}
+
+.btn-whatsapp:hover {
+    background-color: #20ba5a;
+}
+
+.btn-scroll-top {
+    background-color: var(--color-footer-accent);
+}
+
+.btn-scroll-top:hover {
+    background-color: #ff1f10;
+}
+
+.btn-floating:hover {
+    transform: translateY(-8px) scale(1.05);
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.5);
+    color: white;
+}
+
+/* Mobile optimization */
+@media (max-width: 768px) {
+    .floating-buttons-left {
+        bottom: 20px;
+        left: 20px;
+    }
+
+    .floating-buttons-right {
+        bottom: 90px; /* Stack above WhatsApp button */
+        right: 20px;
+    }
+
+    .btn-floating {
+        width: 55px;
+        height: 55px;
+    }
+}
+
+@media (min-width: 901px) {
+    .footer-grid {
+        grid-template-columns: 2fr 0.8fr 1.2fr 1.5fr;
+        /* 4 Columns Adjusted */
+    }
 }
