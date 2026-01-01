@@ -1,21 +1,19 @@
-<div class="card h-100 bg-white bg-opacity-05 border-0 hover-lift shadow-sm">
-    <div class="card-body p-4">
-        <div
-            class="d-inline-flex align-items-center justify-content-center p-3 rounded-3 bg-primary bg-opacity-25 text-primary mb-4">
-            @((MarkupString)IconSvg)
-        </div>
-        <h3 class="h4 text-white mb-3">@Title</h3>
-        <p class="text-secondary mb-3">@Description</p>
+<div class="service-card">
+    <!-- Icon -->
+    <div class="service-icon-wrapper" style="background: @IconColor;">
+        @((MarkupString)IconSvg)
     </div>
-    <div class="card-footer bg-transparent border-0 p-4 pt-0">
-        <a href="#contact" class="text-primary text-decoration-none fw-semibold">
-            Learn More <i class="bi bi-arrow-right ms-1"></i>
-        </a>
-    </div>
+
+    <!-- Title -->
+    <h3 class="service-title">@Title</h3>
+
+    <!-- Description -->
+    <p class="service-description">@Description</p>
 </div>
 
 @code {
     [Parameter] public string IconSvg { get; set; } = "";
+    [Parameter] public string IconColor { get; set; } = "#3b82f6";
     [Parameter] public string Title { get; set; } = "";
     [Parameter] public string Description { get; set; } = "";
 }

@@ -1,61 +1,65 @@
-<div class="card h-100 bg-white bg-opacity-05 border-0 hover-lift">
-    <div class="card-body p-4 d-flex flex-column">
-        <div class="text-primary fw-semibold small mb-2">@Date</div>
-        <h3 class="h5 card-title text-white mb-3">
-            <a href="@Link" class="text-white text-decoration-none hover-text-primary transition-colors">@Title</a>
-        </h3>
-        <p class="card-text text-secondary mb-4 flex-grow-1">@Excerpt</p>
-        <a href="@Link"
-            class="text-white text-decoration-none fw-medium d-inline-flex align-items-center group-hover-arrow">
-            Read Article <i class="bi bi-arrow-right ms-2 transition-transform"></i>
-        </a>
+<div class="article-card">
+    <!-- Featured Image -->
+    <div class="article-image-wrapper">
+        <img src="@Image" alt="@Title" class="article-image" />
     </div>
-    <div class="card-footer border-0 p-0 overflow-hidden">
-        <div class="h-1 bg-gradient-primary w-0 transition-width"></div>
+
+    <!-- Article Content -->
+    <div class="article-content">
+        <!-- Metadata -->
+        <div class="article-meta">
+            <div class="meta-item">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                    <circle cx="12" cy="7" r="4"></circle>
+                </svg>
+                <span>@Author</span>
+            </div>
+            <div class="meta-item">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+                    <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+                </svg>
+                <span>@Category</span>
+            </div>
+        </div>
+
+        <!-- Date -->
+        <div class="article-date">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                <line x1="16" y1="2" x2="16" y2="6"></line>
+                <line x1="8" y1="2" x2="8" y2="6"></line>
+                <line x1="3" y1="10" x2="21" y2="10"></line>
+            </svg>
+            <span>@Date</span>
+        </div>
+
+        <!-- Title -->
+        <h3 class="article-title">
+            <a href="@Link">@Title</a>
+        </h3>
+
+        <!-- Excerpt -->
+        <p class="article-excerpt">@Excerpt</p>
+
+        <!-- Read More -->
+        <a href="@Link" class="article-read-more">
+            Read More
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="5" y1="12" x2="19" y2="12"></line>
+                <polyline points="12 5 19 12 12 19"></polyline>
+            </svg>
+        </a>
     </div>
 </div>
 
 @code {
+    [Parameter] public string Image { get; set; } = "";
+    [Parameter] public string Author { get; set; } = "Website Designer Ghana";
+    [Parameter] public string Category { get; set; } = "web design";
     [Parameter] public string Date { get; set; } = "";
     [Parameter] public string Title { get; set; } = "";
     [Parameter] public string Excerpt { get; set; } = "";
     [Parameter] public string Link { get; set; } = "#";
 }
-
-<style>
-    .hover-lift {
-        transition: transform 0.3s ease;
-    }
-
-    .hover-lift:hover {
-        transform: translateY(-5px);
-    }
-
-    .hover-lift:hover .w-0 {
-        width: 100%;
-    }
-
-    .w-0 {
-        width: 0;
-    }
-
-    .h-1 {
-        height: 4px;
-    }
-
-    .transition-width {
-        transition: width 0.3s ease;
-    }
-
-    .hover-text-primary:hover {
-        color: var(--bs-primary) !important;
-    }
-
-    .group-hover-arrow:hover .bi-arrow-right {
-        transform: translateX(5px);
-    }
-
-    .bg-gradient-primary {
-        background: linear-gradient(to right, #2563eb, #9333ea);
-    }
-</style>
