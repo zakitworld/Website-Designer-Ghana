@@ -57,25 +57,26 @@
 
 .input-icon {
     position: absolute;
-    left: 15px;
+    left: 12px;
     top: 50%;
     transform: translateY(-50%);
     color: #9ca3af;
-    width: 20px;
-    height: 20px;
+    width: 18px;
+    height: 18px;
+    flex-shrink: 0;
 }
 
-.form-control {
+::deep .form-control {
     width: 100%;
-    padding: 14px 14px 14px 45px;
+    padding: 14px 14px 14px 42px;
     border: 2px solid #e5e7eb;
     border-radius: 12px;
-    font-size: 1rem;
+    font-size: 0.95rem;
     transition: all 0.3s ease;
     background: #f9fafb;
 }
 
-.form-control:focus {
+::deep .form-control:focus {
     outline: none;
     border-color: #1e293b;
     background: white;
