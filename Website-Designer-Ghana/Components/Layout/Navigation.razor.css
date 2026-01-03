@@ -12,15 +12,43 @@
 }
 
 .nav-link {
-    transition: color 0.3s ease;
+    transition: all 0.3s ease;
     color: #334155 !important;
     /* Slate-700 */
     font-weight: 500;
+    position: relative;
 }
 
-.nav-link:hover,
+.nav-link:hover {
+    color: #dc3545 !important;
+}
+
 .nav-link.active {
-    color: var(--color-primary) !important;
+    color: #dc3545 !important;
+    font-weight: 600;
+}
+
+.nav-link.active::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 30px;
+    height: 3px;
+    background-color: #dc3545;
+    border-radius: 2px;
+}
+
+/* Contact button active state */
+.btn.btn-danger {
+    background-color: #dc3545;
+    border-color: #dc3545;
+}
+
+.btn.btn-primary {
+    background-color: #0d6efd;
+    border-color: #0d6efd;
 }
 
 /* Ensure padding for fixed navbar */

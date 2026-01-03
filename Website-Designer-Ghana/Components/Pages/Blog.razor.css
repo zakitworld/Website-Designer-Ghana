@@ -1,0 +1,78 @@
+/* Blog Hero Section */
+.blog-hero-section {
+    background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+    position: relative;
+}
+
+.blog-hero-section::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background:
+        radial-gradient(circle at 20% 50%, rgba(59, 130, 246, 0.1) 0%, transparent 50%),
+        radial-gradient(circle at 80% 80%, rgba(239, 68, 68, 0.1) 0%, transparent 50%);
+    pointer-events: none;
+}
+
+/* Fade in animation */
+.fade-in {
+    animation: fadeInUp 0.8s ease-out;
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Sidebar Cards */
+.card {
+    transition: all 0.3s ease;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+}
+
+/* Recent Posts */
+.recent-post-item a:hover h6 {
+    color: #dc3545 !important;
+}
+
+/* Categories */
+.list-unstyled a:hover {
+    background-color: #f8f9fa;
+    padding-left: 8px;
+    transition: all 0.3s ease;
+}
+
+/* Pagination */
+.pagination .page-item.active .page-link {
+    background-color: #dc3545;
+    border-color: #dc3545;
+}
+
+.pagination .page-link {
+    color: #dc3545;
+}
+
+.pagination .page-link:hover {
+    color: #fff;
+    background-color: #dc3545;
+    border-color: #dc3545;
+}
+
+/* Tags */
+.badge:hover {
+    background-color: #dc3545 !important;
+    color: white !important;
+    border-color: #dc3545 !important;
+}

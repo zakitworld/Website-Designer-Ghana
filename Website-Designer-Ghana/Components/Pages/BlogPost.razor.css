@@ -1,0 +1,113 @@
+/* Blog Post Content Styling */
+.blog-post-content {
+    font-size: 1.1rem;
+    line-height: 1.8;
+    color: #333;
+}
+
+.blog-post-content h3 {
+    margin-top: 2rem;
+    margin-bottom: 1rem;
+    color: #1e293b;
+}
+
+.blog-post-content h4 {
+    margin-top: 1.5rem;
+    margin-bottom: 0.75rem;
+    color: #334155;
+}
+
+.blog-post-content p {
+    margin-bottom: 1.5rem;
+}
+
+.blog-post-content ul,
+.blog-post-content ol {
+    margin-bottom: 1.5rem;
+    padding-left: 2rem;
+}
+
+.blog-post-content li {
+    margin-bottom: 0.5rem;
+}
+
+.blog-post-content strong {
+    color: #1e293b;
+    font-weight: 600;
+}
+
+.blog-post-content .alert {
+    padding: 1.25rem;
+    border-radius: 8px;
+    margin-bottom: 1.5rem;
+}
+
+/* Share Buttons */
+.btn i {
+    font-size: 1.1rem;
+}
+
+.btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* Comments Section */
+.comment-item {
+    transition: all 0.3s ease;
+}
+
+.comment-item:hover {
+    background-color: #f8f9fa;
+    padding: 1rem;
+    margin-left: -1rem;
+    margin-right: -1rem;
+    border-radius: 8px;
+}
+
+/* Reply Form */
+.form-control:focus {
+    border-color: #dc3545;
+    box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.1);
+}
+
+/* Sidebar */
+.card {
+    transition: all 0.3s ease;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+}
+
+.recent-post-item a:hover h6 {
+    color: #dc3545 !important;
+}
+
+/* Tags */
+.badge:hover {
+    background-color: #dc3545 !important;
+    color: white !important;
+    border-color: #dc3545 !important;
+}
+
+/* Author Bio */
+.bg-light {
+    transition: all 0.3s ease;
+}
+
+.bg-light:hover {
+    background-color: #e9ecef !important;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .blog-post-content {
+        font-size: 1rem;
+    }
+
+    .btn {
+        font-size: 0.875rem;
+        padding: 0.5rem 1rem !important;
+    }
+}
