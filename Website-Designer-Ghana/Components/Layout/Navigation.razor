@@ -16,25 +16,28 @@
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav ms-auto align-items-center">
                 <li class="nav-item">
-                    <a class="nav-link fw-medium active" href="">Home</a>
+                    <a class="nav-link fw-medium @GetActiveClass("/")" href="/">Home</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link fw-medium" href="#about">About</a>
+                    <a class="nav-link fw-medium" href="/#about">About</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link fw-medium" href="#services">Services</a>
+                    <a class="nav-link fw-medium" href="/#services">Services</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link fw-bold text-danger" href="courses">Courses</a>
+                    <a class="nav-link fw-medium @GetActiveClass("/courses")" href="/courses">Courses</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link fw-medium" href="#portfolio">Portfolio</a>
+                    <a class="nav-link fw-medium @GetActiveClass("/pricing")" href="/pricing">Pricing</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link fw-medium" href="#blog">Blog</a>
+                    <a class="nav-link fw-medium" href="/#portfolio">Portfolio</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link fw-medium @GetActiveClass("/blog")" href="/blog">Blog</a>
                 </li>
                 <li class="nav-item ms-lg-3">
-                    <a class="btn btn-primary px-4 fw-medium text-white" href="#contact">Contact Us</a>
+                    <a class="btn @GetContactButtonClass() px-4 fw-medium text-white" href="/contact">Contact Us</a>
                 </li>
 
                 <div class="d-lg-none my-3 border-top border-secondary pt-3">
@@ -75,3 +78,39 @@
         </div>
     </div>
 </nav>
+
+@code {
+    private string GetActiveClass(string path)
+    {
+        var currentPath = NavigationManager.ToBaseRelativePath(NavigationManager.Uri);
+
+        // Remove query string and hash if present
+        currentPath = currentPath.Split('?')[0].Split('#')[0];
+
+        // Normalize paths
+        if (string.IsNullOrEmpty(currentPath))
+            currentPath = "/";
+        else if (!currentPath.StartsWith("/"))
+            currentPath = "/" + currentPath;
+
+        // Check if paths match
+        bool isActive = currentPath.Equals(path, StringComparison.OrdinalIgnoreCase);
+
+        return isActive ? "active text-danger" : "";
+    }
+
+    private string GetContactButtonClass()
+    {
+        var currentPath = NavigationManager.ToBaseRelativePath(NavigationManager.Uri);
+        currentPath = currentPath.Split('?')[0].Split('#')[0];
+
+        if (string.IsNullOrEmpty(currentPath))
+            currentPath = "/";
+        else if (!currentPath.StartsWith("/"))
+            currentPath = "/" + currentPath;
+
+        bool isActive = currentPath.Equals("/contact", StringComparison.OrdinalIgnoreCase);
+
+        return isActive ? "btn-danger" : "btn-primary";
+    }
+}
