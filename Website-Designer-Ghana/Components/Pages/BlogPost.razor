@@ -1,6 +1,6 @@
 @page "/blog/{slug}"
 
-<PageTitle>@PostTitle - Website Designer Ghana Blog</PageTitle>
+<PageTitle>@PostTitle - Website Designer in Ghana Blog</PageTitle>
 
 <!-- BLOG POST SECTION -->
 <section class="py-5 bg-black" style="padding-top: 120px !important;">
@@ -15,10 +15,10 @@
 
                 <!-- Post Meta -->
                 <div class="d-flex flex-wrap gap-3 mb-4 text-secondary">
-                    <span><i class="bi bi-person text-danger me-2"></i>@Author</span>
-                    <span><i class="bi bi-calendar text-danger me-2"></i>@PublishDate</span>
-                    <span><i class="bi bi-folder text-danger me-2"></i>@Category</span>
-                    <span><i class="bi bi-clock text-danger me-2"></i>@ReadTime min read</span>
+                    <span><i class="bi bi-person text-secondary me-2"></i>@Author</span>
+                    <span><i class="bi bi-calendar text-secondary me-2"></i>@PublishDate</span>
+                    <span><i class="bi bi-folder text-secondary me-2"></i>@Category</span>
+                    <span><i class="bi bi-clock text-secondary me-2"></i>@ReadTime min read</span>
                 </div>
 
                 <!-- Post Title -->
@@ -35,7 +35,7 @@
                     <div class="d-flex flex-wrap gap-2">
                         @foreach (var tag in Tags)
                         {
-                            <a href="#" class="badge bg-white bg-opacity-05 text-secondary border border-white border-opacity-10 px-3 py-2 text-decoration-none hover-bg-danger hover-text-white transition-03">@tag</a>
+                            <a href="#" class="badge bg-white bg-opacity-05 text-secondary border border-white border-opacity-10 px-3 py-2 text-decoration-none hover-bg-secondary hover-text-white transition-03">@tag</a>
                         }
                     </div>
                 </div>
@@ -67,13 +67,13 @@
                 <div class="mt-5 p-4 glass-card rounded">
                     <div class="d-flex gap-4 flex-column flex-md-row align-items-center align-items-md-start">
                         <div class="flex-shrink-0">
-                            <div class="bg-danger rounded-circle text-white d-flex align-items-center justify-content-center fw-bold shadow-lg"
+                            <div class="bg-secondary rounded-circle text-white d-flex align-items-center justify-content-center fw-bold shadow-lg"
                                  style="width: 100px; height: 100px; font-size: 2.5rem;">
-                                WDG
+                                WDIG
                             </div>
                         </div>
                         <div>
-                            <h5 class="fw-bold mb-2 text-white text-center text-md-start">About Website Designer Ghana</h5>
+                            <h5 class="fw-bold mb-2 text-white text-center text-md-start">About Website Designer in Ghana</h5>
                             <p class="text-secondary mb-0 text-center text-md-start">
                                 We are Ghana's leading web design and development company, specializing in creating stunning,
                                 high-performance websites for businesses across Accra and beyond. With years of experience and a
@@ -153,7 +153,7 @@
                                 <textarea class="form-control form-control-lg bg-white bg-opacity-05 border-white border-opacity-10 text-white" id="commentMessage" rows="5" required></textarea>
                             </div>
                             <div class="col-12 text-end">
-                                <button type="submit" class="btn btn-danger btn-lg px-5 fw-bold">Post Comment</button>
+                                <button type="submit" class="btn btn-secondary btn-lg px-5 fw-bold">Post Comment</button>
                             </div>
                         </div>
                     </form>
@@ -168,7 +168,7 @@
                         <h5 class="fw-bold mb-3 text-white">Search</h5>
                         <div class="input-group">
                             <input type="text" class="form-control bg-white bg-opacity-05 border-white border-opacity-10 text-white" placeholder="Search articles...">
-                            <button class="btn btn-danger" type="button">
+                            <button class="btn btn-secondary" type="button">
                                 <i class="bi bi-search"></i>
                             </button>
                         </div>
@@ -182,32 +182,32 @@
                         <ul class="list-unstyled mb-0">
                             <li class="mb-2">
                                 <a href="#" class="text-decoration-none text-secondary d-flex justify-content-between align-items-center hover-text-white">
-                                    <span><i class="bi bi-folder text-danger me-2"></i>Web Design</span>
-                                    <span class="badge bg-danger">3</span>
+                                    <span><i class="bi bi-folder text-secondary me-2"></i>Web Design</span>
+                                    <span class="badge bg-secondary">3</span>
                                 </a>
                             </li>
                             <li class="mb-2">
                                 <a href="#" class="text-decoration-none text-secondary d-flex justify-content-between align-items-center hover-text-white">
-                                    <span><i class="bi bi-folder text-danger me-2"></i>E-commerce</span>
-                                    <span class="badge bg-danger">2</span>
+                                    <span><i class="bi bi-folder text-secondary me-2"></i>E-commerce</span>
+                                    <span class="badge bg-secondary">2</span>
                                 </a>
                             </li>
                             <li class="mb-2">
                                 <a href="#" class="text-decoration-none text-secondary d-flex justify-content-between align-items-center hover-text-white">
-                                    <span><i class="bi bi-folder text-danger me-2"></i>Business Growth</span>
-                                    <span class="badge bg-danger">4</span>
+                                    <span><i class="bi bi-folder text-secondary me-2"></i>Business Growth</span>
+                                    <span class="badge bg-secondary">4</span>
                                 </a>
                             </li>
                             <li class="mb-2">
                                 <a href="#" class="text-decoration-none text-secondary d-flex justify-content-between align-items-center hover-text-white">
-                                    <span><i class="bi bi-folder text-danger me-2"></i>SEO Tips</span>
-                                    <span class="badge bg-danger">5</span>
+                                    <span><i class="bi bi-folder text-secondary me-2"></i>SEO Tips</span>
+                                    <span class="badge bg-secondary">5</span>
                                 </a>
                             </li>
                             <li>
                                 <a href="#" class="text-decoration-none text-secondary d-flex justify-content-between align-items-center hover-text-white">
-                                    <span><i class="bi bi-folder text-danger me-2"></i>Digital Marketing</span>
-                                    <span class="badge bg-danger">3</span>
+                                    <span><i class="bi bi-folder text-secondary me-2"></i>Digital Marketing</span>
+                                    <span class="badge bg-secondary">3</span>
                                 </a>
                             </li>
                         </ul>
@@ -220,19 +220,19 @@
                         <h5 class="fw-bold mb-3 text-white">Recent Posts</h5>
                         <div class="recent-post-item mb-3 pb-3 border-bottom border-white border-opacity-10">
                             <a href="/blog/domain-hosting-prices-ghana-2026" class="text-decoration-none">
-                                <h6 class="fw-semibold text-white mb-1 hover-text-danger transition-03">Domain and Hosting Prices in Ghana</h6>
+                                <h6 class="fw-semibold text-white mb-1 hover-text-secondary transition-03">Domain and Hosting Prices in Ghana</h6>
                                 <small class="text-secondary text-opacity-75">December 28, 2025</small>
                             </a>
                         </div>
                         <div class="recent-post-item mb-3 pb-3 border-bottom border-white border-opacity-10">
                             <a href="/blog/top-ecommerce-payment-gateways-ghana" class="text-decoration-none">
-                                <h6 class="fw-semibold text-white mb-1 hover-text-danger transition-03">Top 5 E-commerce Payment Gateways</h6>
+                                <h6 class="fw-semibold text-white mb-1 hover-text-secondary transition-03">Top 5 E-commerce Payment Gateways</h6>
                                 <small class="text-secondary text-opacity-75">December 15, 2025</small>
                             </a>
                         </div>
                         <div class="recent-post-item">
                             <a href="/blog/why-your-business-needs-website" class="text-decoration-none">
-                                <h6 class="fw-semibold text-white mb-1 hover-text-danger transition-03">Why Your Business Needs a Website</h6>
+                                <h6 class="fw-semibold text-white mb-1 hover-text-secondary transition-03">Why Your Business Needs a Website</h6>
                                 <small class="text-secondary text-opacity-75">November 30, 2025</small>
                             </a>
                         </div>
@@ -244,12 +244,12 @@
                     <div class="card-body p-4">
                         <h5 class="fw-bold mb-3 text-white">Popular Tags</h5>
                         <div class="d-flex flex-wrap gap-2">
-                            <a href="#" class="badge bg-white bg-opacity-05 text-secondary border border-white border-opacity-10 px-3 py-2 text-decoration-none hover-bg-danger hover-text-white transition-03">WordPress</a>
-                            <a href="#" class="badge bg-white bg-opacity-05 text-secondary border border-white border-opacity-10 px-3 py-2 text-decoration-none hover-bg-danger hover-text-white transition-03">Hosting</a>
-                            <a href="#" class="badge bg-white bg-opacity-05 text-secondary border border-white border-opacity-10 px-3 py-2 text-decoration-none hover-bg-danger hover-text-white transition-03">SEO</a>
-                            <a href="#" class="badge bg-white bg-opacity-05 text-secondary border border-white border-opacity-10 px-3 py-2 text-decoration-none hover-bg-danger hover-text-white transition-03">E-commerce</a>
-                            <a href="#" class="badge bg-white bg-opacity-05 text-secondary border border-white border-opacity-10 px-3 py-2 text-decoration-none hover-bg-danger hover-text-white transition-03">Ghana</a>
-                            <a href="#" class="badge bg-white bg-opacity-05 text-secondary border border-white border-opacity-10 px-3 py-2 text-decoration-none hover-bg-danger hover-text-white transition-03">Web Design</a>
+                            <a href="#" class="badge bg-white bg-opacity-05 text-secondary border border-white border-opacity-10 px-3 py-2 text-decoration-none hover-bg-secondary hover-text-white transition-03">WordPress</a>
+                            <a href="#" class="badge bg-white bg-opacity-05 text-secondary border border-white border-opacity-10 px-3 py-2 text-decoration-none hover-bg-secondary hover-text-white transition-03">Hosting</a>
+                            <a href="#" class="badge bg-white bg-opacity-05 text-secondary border border-white border-opacity-10 px-3 py-2 text-decoration-none hover-bg-secondary hover-text-white transition-03">SEO</a>
+                            <a href="#" class="badge bg-white bg-opacity-05 text-secondary border border-white border-opacity-10 px-3 py-2 text-decoration-none hover-bg-secondary hover-text-white transition-03">E-commerce</a>
+                            <a href="#" class="badge bg-white bg-opacity-05 text-secondary border border-white border-opacity-10 px-3 py-2 text-decoration-none hover-bg-secondary hover-text-white transition-03">Ghana</a>
+                            <a href="#" class="badge bg-white bg-opacity-05 text-secondary border border-white border-opacity-10 px-3 py-2 text-decoration-none hover-bg-secondary hover-text-white transition-03">Web Design</a>
                         </div>
                     </div>
                 </div>
@@ -266,7 +266,7 @@
 
     private string PostTitle = "";
     private string FeaturedImage = "";
-    private string Author = "Website Designer Ghana";
+    private string Author = "Website Designer in Ghana";
     private string PublishDate = "";
     private string Category = "";
     private int ReadTime = 5;
@@ -358,7 +358,7 @@
                         <li>Security features (SSL certificates, backups)</li>
                     </ul>
 
-                    <p class='mt-4'><strong>Need help choosing the right hosting for your business?</strong> Contact Website Designer Ghana for personalized recommendations and setup assistance.</p>
+                    <p class='mt-4'><strong>Need help choosing the right hosting for your business?</strong> Contact Website Designer in Ghana for personalized recommendations and setup assistance.</p>
                 ";
                 break;
 
@@ -422,7 +422,7 @@
                     <p>Display your offerings with high-quality images, detailed descriptions, and customer testimonials to attract and convert visitors.</p>
 
                     <div class='alert alert-success mt-4'>
-                        <strong>Ready to take your business online?</strong> Contact Website Designer Ghana today for a free consultation and quote.
+                        <strong>Ready to take your business online?</strong> Contact Website Designer in Ghana today for a free consultation and quote.
                     </div>
                 ";
                 break;

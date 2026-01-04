@@ -1,5 +1,5 @@
 /* ==========================================
-   WEBSITE DESIGNER GHANA - CUSTOM THEME
+   WEBSITE DESIGNER IN GHANA - CUSTOM THEME
    ========================================== */
 
 /* Import Fonts */
@@ -10,13 +10,16 @@
     --color-bg-primary: #0a0e27;
     --color-bg-secondary: #111633;
 
-    /* Brand Colors (matching Bootstrap variables where possible or custom) */
-    --color-primary: #3b82f6;
-    --color-secondary: #8b5cf6;
-    --color-accent: #ec4899;
+    /* Brand Colors (matching logo) */
+    --color-primary: #0B3D91;
+    /* Navy Blue */
+    --color-secondary: #FF8C00;
+    /* Vibrant Orange */
+    --color-accent: #FCD116;
+    /* Ghana Yellow */
 
     /* Gradients */
-    --gradient-primary: linear-gradient(135deg, var(--color-primary) 0%, var(--color-secondary) 100%);
+    --gradient-primary: linear-gradient(135deg, var(--color-primary) 0%, #1a56c0 100%);
     --gradient-secondary: linear-gradient(135deg, var(--color-secondary) 0%, var(--color-accent) 100%);
 
     /* Typography */
@@ -32,13 +35,14 @@
     --bs-body-color: #cbd5e1;
     --bs-primary: var(--color-primary);
     --bs-secondary: var(--color-text-secondary);
-    --bs-link-color: var(--color-primary);
-    --bs-link-hover-color: #60a5fa;
+    --bs-link-color: var(--color-secondary);
+    /* Link color changed to orange for visibility */
+    --bs-link-hover-color: var(--color-accent);
     --bs-border-color: rgba(255, 255, 255, 0.1);
 
     /* Footer Accents */
-    --color-footer-accent: #ff3b30;
-    /* Bright Red from reference */
+    --color-footer-accent: var(--color-secondary);
+    /* Vibrant Orange from logo */
     --color-whatsapp: #25d366;
 }
 
@@ -282,9 +286,7 @@ h6,
 }
 
 /* Blazor Error UI overrides */
-#blazor-error-ui {
-    /* Styles handled by bootstrap classes in MainLayout */
-}
+
 
 /* Footer Refinements */
 .footer-heading::after {
@@ -318,7 +320,8 @@ h6,
     width: 60px;
     height: 60px;
     border-radius: 50%;
-    display: none; /* Hidden by default, shown on scroll */
+    display: none;
+    /* Hidden by default, shown on scroll */
     align-items: center;
     justify-content: center;
     color: white;
@@ -336,6 +339,7 @@ h6,
         opacity: 0;
         transform: translateY(20px);
     }
+
     to {
         opacity: 1;
         transform: translateY(0);
@@ -372,7 +376,8 @@ h6,
     }
 
     .floating-buttons-right {
-        bottom: 90px; /* Stack above WhatsApp button */
+        bottom: 90px;
+        /* Stack above WhatsApp button */
         right: 20px;
     }
 

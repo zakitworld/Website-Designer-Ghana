@@ -1,5 +1,5 @@
 // ==========================================
-// WEBSITE DESIGNER GHANA - SITE JAVASCRIPT
+// WEBSITE DESIGNER IN GHANA - SITE JAVASCRIPT
 // ==========================================
 
 // Initialize on page load

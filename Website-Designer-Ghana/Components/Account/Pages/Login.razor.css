@@ -17,7 +17,7 @@
 }
 
 .login-header {
-    background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+    background: linear-gradient(135deg, var(--color-primary) 0%, #082d6b 100%);
     padding: 40px 30px;
     text-align: center;
 }
@@ -94,7 +94,7 @@
     height: 18px;
     margin-right: 8px;
     cursor: pointer;
-    accent-color: #ef4444;
+    accent-color: var(--color-secondary);
 }
 
 .checkbox-group label {
@@ -107,7 +107,7 @@
 .btn-login {
     width: 100%;
     padding: 16px;
-    background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+    background: linear-gradient(135deg, var(--color-primary) 0%, #082d6b 100%);
     color: white;
     border: none;
     border-radius: 12px;

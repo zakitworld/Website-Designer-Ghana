@@ -11,7 +11,7 @@
 @inject NavigationManager NavigationManager
 @inject IdentityRedirectManager RedirectManager
 
-<PageTitle>Client Login - Website Designer Ghana</PageTitle>
+<PageTitle>Client Login - Website Designer in Ghana</PageTitle>
 
 <div class="login-container">
     <div class="login-card">
@@ -35,11 +35,14 @@
                 <div class="form-group">
                     <label for="Input.Email" class="form-label">Email Address</label>
                     <div class="input-with-icon">
-                        <svg class="input-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+                        <svg class="input-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2">
+                            <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z">
+                            </path>
                             <polyline points="22,6 12,13 2,6"></polyline>
                         </svg>
-                        <InputText @bind-Value="Input.Email" id="Input.Email" class="form-control" autocomplete="username" placeholder="Enter your email" />
+                        <InputText @bind-Value="Input.Email" id="Input.Email" class="form-control"
+                            autocomplete="username" placeholder="Enter your email" />
                     </div>
                     <ValidationMessage For="() => Input.Email" class="text-danger" />
                 </div>
@@ -47,11 +50,13 @@
                 <div class="form-group">
                     <label for="Input.Password" class="form-label">Password</label>
                     <div class="input-with-icon">
-                        <svg class="input-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <svg class="input-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2">
                             <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
                             <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
                         </svg>
-                        <InputText type="password" @bind-Value="Input.Password" id="Input.Password" class="form-control" autocomplete="current-password" placeholder="Enter your password" />
+                        <InputText type="password" @bind-Value="Input.Password" id="Input.Password" class="form-control"
+                            autocomplete="current-password" placeholder="Enter your password" />
                     </div>
                     <ValidationMessage For="() => Input.Password" class="text-danger" />
                     <div class="forgot-password">
@@ -65,7 +70,8 @@
                 </div>
 
                 <button type="submit" class="btn-login">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2">
                         <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"></path>
                         <polyline points="10 17 15 12 10 7"></polyline>
                         <line x1="15" y1="12" x2="3" y2="12"></line>
@@ -74,7 +80,9 @@
                 </button>
 
                 <div class="login-footer">
-                    <p>Don't have an account? <a href="@(NavigationManager.GetUriWithQueryParameters("Account/Register", new Dictionary<string, object?> { ["ReturnUrl"] = ReturnUrl }))">Register</a></p>
+                    <p>Don't have an account? <a
+                            href="@(NavigationManager.GetUriWithQueryParameters("Account/Register", new Dictionary<string, object?> { ["ReturnUrl"] = ReturnUrl }))">Register</a>
+                    </p>
                 </div>
             </EditForm>
         </div>
@@ -131,7 +139,8 @@
 
             // This doesn't count login failures towards account lockout
             // To enable password failures to trigger account lockout, set lockoutOnFailure: true
-            result = await SignInManager.PasswordSignInAsync(Input.Email, Input.Password, Input.RememberMe, lockoutOnFailure: false);
+            result = await SignInManager.PasswordSignInAsync(Input.Email, Input.Password, Input.RememberMe, lockoutOnFailure:
+            false);
         }
 
         if (result.Succeeded)
@@ -142,8 +151,8 @@
         else if (result.RequiresTwoFactor)
         {
             RedirectManager.RedirectTo(
-                "Account/LoginWith2fa",
-                new() { ["returnUrl"] = ReturnUrl, ["rememberMe"] = Input.RememberMe });
+            "Account/LoginWith2fa",
+            new() { ["returnUrl"] = ReturnUrl, ["rememberMe"] = Input.RememberMe });
         }
         else if (result.IsLockedOut)
         {

@@ -15,7 +15,7 @@
 @inject NavigationManager NavigationManager
 @inject IdentityRedirectManager RedirectManager
 
-<PageTitle>Register - Website Designer Ghana</PageTitle>
+<PageTitle>Register - Website Designer in Ghana</PageTitle>
 
 <div class="register-container">
     <div class="register-card">
@@ -27,9 +27,9 @@
         <div class="register-body">
             @if (!string.IsNullOrEmpty(Message))
             {
-                <div class="error-message">
+                    <div class="error-message">
                     @Message
-                </div>
+                    </div>
             }
 
             <EditForm Model="Input" method="post" OnValidSubmit="RegisterUser" FormName="register">
