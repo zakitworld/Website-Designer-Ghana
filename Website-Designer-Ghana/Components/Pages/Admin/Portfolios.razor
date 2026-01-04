@@ -1,0 +1,119 @@
+@page "/admin/portfolios"
+@using Microsoft.AspNetCore.Authorization
+@using Website_Designer_Ghana.Services.Interfaces
+@using Website_Designer_Ghana.Data.Models
+@attribute [Authorize(Roles = "Admin")]
+@layout AdminLayout
+
+<PageTitle>Portfolio Management - Admin</PageTitle>
+
+<div class="portfolios-admin">
+    <div class="row mb-4">
+        <div class="col">
+            <h2 class="mb-0">Portfolio Items</h2>
+            <p class="text-muted">Showcase your best work</p>
+        </div>
+        <div class="col-auto">
+            <button type="button" class="btn btn-secondary">
+                <i class="bi bi-plus-circle me-2"></i>
+                Create Portfolio Item
+            </button>
+        </div>
+    </div>
+
+    <div class="card border-0 shadow-sm">
+        <div class="card-body">
+            @if (portfolios == null)
+            {
+                <div class="text-center py-5">
+                    <div class="spinner-border text-secondary" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                </div>
+            }
+            else if (!portfolios.Any())
+            {
+                <div class="text-center py-5">
+                    <i class="bi bi-inbox fs-1 text-muted"></i>
+                    <p class="text-muted mt-3">No portfolio items yet. Create your first portfolio item!</p>
+                </div>
+            }
+            else
+            {
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>Title</th>
+                                <th>Client</th>
+                                <th>Category</th>
+                                <th>Status</th>
+                                <th>Created</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var portfolio in portfolios)
+                            {
+                                <tr>
+                                    <td>@portfolio.Title</td>
+                                    <td>@(portfolio.ClientName ?? "N/A")</td>
+                                    <td>
+                                        <span class="badge bg-secondary">
+                                            @(portfolio.Category?.Name ?? "Uncategorized")
+                                        </span>
+                                    </td>
+                                    <td>
+                                        @if (portfolio.IsPublished)
+                                        {
+                                            <span class="badge bg-success">Published</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge bg-warning text-dark">Draft</span>
+                                        }
+                                    </td>
+                                    <td>@portfolio.CreatedAt.ToString("MMM dd, yyyy")</td>
+                                    <td>
+                                        <div class="btn-group btn-group-sm">
+                                            <button type="button" class="btn btn-outline-primary">
+                                                <i class="bi bi-pencil"></i>
+                                            </button>
+                                            <button type="button" class="btn btn-outline-danger">
+                                                <i class="bi bi-trash"></i>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+@code {
+    [Inject] private IPortfolioService PortfolioService { get; set; } = default!;
+
+    private IEnumerable<Portfolio>? portfolios;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadDataAsync();
+    }
+
+    private async Task LoadDataAsync()
+    {
+        try
+        {
+            portfolios = await PortfolioService.GetAllPortfoliosAsync(publishedOnly: false);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error loading portfolios: {ex.Message}");
+            portfolios = new List<Portfolio>();
+        }
+    }
+}

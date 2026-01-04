@@ -1,0 +1,139 @@
+@inherits LayoutComponentBase
+@using Microsoft.AspNetCore.Components.Authorization
+
+<div class="admin-wrapper">
+    <!-- Admin Sidebar -->
+    <aside class="admin-sidebar bg-dark text-white">
+        <div class="sidebar-header p-4 border-bottom border-secondary">
+            <h4 class="mb-0">
+                <i class="bi bi-gear-fill text-secondary me-2"></i>
+                Admin Panel
+            </h4>
+        </div>
+        <nav class="sidebar-nav p-3">
+            <ul class="nav flex-column">
+                <li class="nav-item mb-2">
+                    <a href="/admin" class="nav-link text-white">
+                        <i class="bi bi-speedometer2 me-2"></i>
+                        Dashboard
+                    </a>
+                </li>
+                <li class="nav-item mb-2">
+                    <a href="/admin/blog-posts" class="nav-link text-white">
+                        <i class="bi bi-file-text me-2"></i>
+                        Blog Posts
+                    </a>
+                </li>
+                <li class="nav-item mb-2">
+                    <a href="/admin/blog-categories" class="nav-link text-white">
+                        <i class="bi bi-folder me-2"></i>
+                        Blog Categories
+                    </a>
+                </li>
+                <li class="nav-item mb-2">
+                    <a href="/admin/portfolios" class="nav-link text-white">
+                        <i class="bi bi-briefcase me-2"></i>
+                        Portfolio
+                    </a>
+                </li>
+                <li class="nav-item mb-2">
+                    <a href="/admin/courses" class="nav-link text-white">
+                        <i class="bi bi-book me-2"></i>
+                        Courses
+                    </a>
+                </li>
+                <li class="nav-item mb-2">
+                    <a href="/admin/contact-submissions" class="nav-link text-white">
+                        <i class="bi bi-envelope me-2"></i>
+                        Contact Submissions
+                    </a>
+                </li>
+                <li class="nav-item mt-4 pt-3 border-top border-secondary">
+                    <a href="/" class="nav-link text-white">
+                        <i class="bi bi-arrow-left me-2"></i>
+                        Back to Website
+                    </a>
+                </li>
+            </ul>
+        </nav>
+    </aside>
+
+    <!-- Admin Content -->
+    <div class="admin-content">
+        <!-- Admin Header -->
+        <header class="admin-header bg-white border-bottom">
+            <div class="container-fluid">
+                <div class="row align-items-center py-3">
+                    <div class="col">
+                        <h5 class="mb-0">Website Designer Ghana - Content Management</h5>
+                    </div>
+                    <div class="col-auto">
+                        <AuthorizeView>
+                            <Authorized>
+                                <span class="text-muted me-3">
+                                    <i class="bi bi-person-circle me-1"></i>
+                                    @context.User.Identity?.Name
+                                </span>
+                                <form action="/Account/Logout" method="post" class="d-inline">
+                                    <button type="submit" class="btn btn-outline-secondary btn-sm">
+                                        <i class="bi bi-box-arrow-right me-1"></i>
+                                        Logout
+                                    </button>
+                                </form>
+                            </Authorized>
+                        </AuthorizeView>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="admin-main p-4">
+            @Body
+        </main>
+    </div>
+</div>
+
+<style>
+    .admin-wrapper {
+        display: flex;
+        min-height: 100vh;
+    }
+
+    .admin-sidebar {
+        width: 260px;
+        position: fixed;
+        top: 0;
+        left: 0;
+        height: 100vh;
+        overflow-y: auto;
+        z-index: 1000;
+    }
+
+    .admin-content {
+        flex: 1;
+        margin-left: 260px;
+        background: #f8f9fa;
+    }
+
+    .admin-header {
+        position: sticky;
+        top: 0;
+        z-index: 999;
+    }
+
+    .admin-sidebar .nav-link {
+        border-radius: 0.5rem;
+        transition: all 0.3s ease;
+    }
+
+    .admin-sidebar .nav-link:hover,
+    .admin-sidebar .nav-link.active {
+        background: rgba(250, 204, 21, 0.1);
+        color: #facc15 !important;
+    }
+
+    .admin-main {
+        max-width: 1400px;
+    }
+</style>

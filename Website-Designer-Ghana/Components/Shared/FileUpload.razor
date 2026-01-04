@@ -1,0 +1,112 @@
+@using Microsoft.AspNetCore.Components.Forms
+@using Website_Designer_Ghana.Services.Interfaces
+
+<div class="file-upload-component">
+    <div class="mb-3">
+        <label class="form-label">@Label</label>
+        <InputFile OnChange="@HandleFileSelected" class="form-control" accept="@Accept" />
+        @if (!string.IsNullOrEmpty(ValidationMessage))
+        {
+            <div class="text-danger small mt-1">@ValidationMessage</div>
+        }
+    </div>
+
+    @if (isUploading)
+    {
+        <div class="alert alert-info d-flex align-items-center">
+            <div class="spinner-border spinner-border-sm me-2" role="status">
+                <span class="visually-hidden">Uploading...</span>
+            </div>
+            <span>Uploading file...</span>
+        </div>
+    }
+
+    @if (!string.IsNullOrEmpty(UploadedFilePath))
+    {
+        <div class="alert alert-success">
+            <i class="bi bi-check-circle me-2"></i>
+            File uploaded successfully!
+            @if (ShowPreview && IsImage(UploadedFilePath))
+            {
+                <div class="mt-2">
+                    <img src="@UploadedFilePath" alt="Preview" class="img-thumbnail" style="max-width: 200px; max-height: 200px;" />
+                </div>
+            }
+            <div class="mt-2">
+                <small class="text-muted">@UploadedFilePath</small>
+            </div>
+        </div>
+    }
+</div>
+
+@code {
+    [Parameter] public string Label { get; set; } = "Upload File";
+    [Parameter] public string Accept { get; set; } = "*/*";
+    [Parameter] public long MaxFileSizeInMB { get; set; } = 10;
+    [Parameter] public string Folder { get; set; } = "uploads";
+    [Parameter] public bool ImagesOnly { get; set; } = false;
+    [Parameter] public bool ShowPreview { get; set; } = true;
+    [Parameter] public EventCallback<string> OnFileUploaded { get; set; }
+
+    [Inject] private IFileUploadService FileUploadService { get; set; } = default!;
+
+    private bool isUploading = false;
+    private string? ValidationMessage;
+    private string? UploadedFilePath;
+
+    private async Task HandleFileSelected(InputFileChangeEventArgs e)
+    {
+        ValidationMessage = null;
+        UploadedFilePath = null;
+
+        var file = e.File;
+
+        // Validate file size
+        if (!FileUploadService.IsValidFileSize(file.Size, MaxFileSizeInMB))
+        {
+            ValidationMessage = $"File size exceeds the maximum allowed size of {MaxFileSizeInMB}MB.";
+            return;
+        }
+
+        // Validate image extension if images only
+        if (ImagesOnly && !FileUploadService.IsValidImageExtension(file.Name))
+        {
+            ValidationMessage = "Please select a valid image file (jpg, jpeg, png, gif, webp, svg).";
+            return;
+        }
+
+        try
+        {
+            isUploading = true;
+
+            using (var stream = file.OpenReadStream(MaxFileSizeInMB * 1024 * 1024))
+            {
+                if (ImagesOnly)
+                {
+                    UploadedFilePath = await FileUploadService.UploadImageAsync(stream, file.Name, Folder);
+                }
+                else
+                {
+                    UploadedFilePath = await FileUploadService.UploadFileAsync(stream, file.Name, Folder);
+                }
+
+                // Notify parent component
+                await OnFileUploaded.InvokeAsync(UploadedFilePath);
+            }
+        }
+        catch (Exception ex)
+        {
+            ValidationMessage = $"Error uploading file: {ex.Message}";
+        }
+        finally
+        {
+            isUploading = false;
+        }
+    }
+
+    private bool IsImage(string filePath)
+    {
+        var extension = Path.GetExtension(filePath).ToLowerInvariant();
+        return new[] { ".jpg", ".jpeg", ".png", ".gif", ".webp", ".svg" }.Contains(extension);
+    }
+}

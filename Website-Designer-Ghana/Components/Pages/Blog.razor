@@ -1,4 +1,7 @@
 @page "/blog"
+@using Website_Designer_Ghana.Services.Interfaces
+@using BlogPostModel = Website_Designer_Ghana.Data.Models.BlogPost
+@using BlogCategoryModel = Website_Designer_Ghana.Data.Models.BlogCategory
 
 <PageTitle>Blog - Website Designer in Ghana</PageTitle>
 
@@ -23,34 +26,40 @@
         <div class="row g-5">
             <!-- Main Content -->
             <div class="col-lg-8">
-                <div class="row g-4">
-                    <!-- Blog Post 1 -->
-                    <div class="col-12">
-                        <ArticleCard Image="https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=800&q=80"
-                            Author="Website Designer in Ghana" Category="Web Design" Date="December 28, 2025"
-                            Title="Domain and Hosting Prices in Ghana (2026)"
-                            Excerpt="A comprehensive guide to current web hosting and domain registration costs in Ghana for businesses. Learn about different hosting types, pricing structures, and how to choose the best option for your website."
-                            Link="/blog/domain-hosting-prices-ghana-2026" />
+                @if (blogPosts == null)
+                {
+                    <div class="text-center py-5">
+                        <div class="spinner-border text-secondary" role="status">
+                            <span class="visually-hidden">Loading...</span>
+                        </div>
+                        <p class="text-white mt-3">Loading blog posts...</p>
                     </div>
-
-                    <!-- Blog Post 2 -->
-                    <div class="col-12">
-                        <ArticleCard Image="https://images.unsplash.com/photo-1563986768494-4dee2763ff3f?w=800&q=80"
-                            Author="Website Designer in Ghana" Category="E-commerce" Date="December 15, 2025"
-                            Title="Top 5 E-commerce Payment Gateways in Ghana"
-                            Excerpt="Reviewing Paystack, Flutterwave, Stripe and other payment options for Ghanaian online stores. Discover the best payment solutions that support mobile money and international cards for your e-commerce business."
-                            Link="/blog/top-ecommerce-payment-gateways-ghana" />
+                }
+                else if (!blogPosts.Any())
+                {
+                    <div class="text-center py-5">
+                        <i class="bi bi-inbox fs-1 text-secondary"></i>
+                        <p class="text-white mt-3">No blog posts found.</p>
                     </div>
-
-                    <!-- Blog Post 3 -->
-                    <div class="col-12">
-                        <ArticleCard Image="https://images.unsplash.com/photo-1551434678-e076c223a692?w=800&q=80"
-                            Author="Website Designer in Ghana" Category="Business Growth" Date="November 30, 2025"
-                            Title="Why Your Business Needs a Website in 2026"
-                            Excerpt="In the digital age, having a professional online presence is crucial for credibility and growth. Learn how a website can help you reach more customers, build trust, and compete effectively in Ghana's digital marketplace."
-                            Link="/blog/why-your-business-needs-website" />
+                }
+                else
+                {
+                    <div class="row g-4">
+                        @foreach (var post in blogPosts)
+                        {
+                            <div class="col-12">
+                                <ArticleCard
+                                    Image="@(post.FeaturedImage ?? "https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=800&q=80")"
+                                    Author="@post.Author"
+                                    Category="@(post.Category?.Name ?? "Uncategorized")"
+                                    Date="@post.PublishedAt?.ToString("MMMM dd, yyyy")"
+                                    Title="@post.Title"
+                                    Excerpt="@post.Summary"
+                                    Link="@($"/blog/{post.Slug}")" />
+                            </div>
+                        }
                     </div>
-                </div>
+                }
 
                 <!-- Pagination -->
                 <nav aria-label="Blog pagination" class="mt-5">
@@ -96,41 +105,19 @@
                     <div class="card-body p-4">
                         <h5 class="fw-bold mb-3 text-white">Categories</h5>
                         <ul class="list-unstyled mb-0">
-                            <li class="mb-2">
-                                <a href="#"
-                                    class="text-decoration-none text-secondary d-flex justify-content-between align-items-center hover-text-white">
-                                    <span><i class="bi bi-folder text-secondary me-2"></i>Web Design</span>
-                                    <span class="badge bg-secondary">3</span>
-                                </a>
-                            </li>
-                            <li class="mb-2">
-                                <a href="#"
-                                    class="text-decoration-none text-secondary d-flex justify-content-between align-items-center hover-text-white">
-                                    <span><i class="bi bi-folder text-secondary me-2"></i>E-commerce</span>
-                                    <span class="badge bg-secondary">2</span>
-                                </a>
-                            </li>
-                            <li class="mb-2">
-                                <a href="#"
-                                    class="text-decoration-none text-secondary d-flex justify-content-between align-items-center hover-text-white">
-                                    <span><i class="bi bi-folder text-secondary me-2"></i>Business Growth</span>
-                                    <span class="badge bg-secondary">4</span>
-                                </a>
-                            </li>
-                            <li class="mb-2">
-                                <a href="#"
-                                    class="text-decoration-none text-secondary d-flex justify-content-between align-items-center hover-text-white">
-                                    <span><i class="bi bi-folder text-secondary me-2"></i>SEO Tips</span>
-                                    <span class="badge bg-secondary">5</span>
-                                </a>
-                            </li>
-                            <li>
-                                <a href="#"
-                                    class="text-decoration-none text-secondary d-flex justify-content-between align-items-center hover-text-white">
-                                    <span><i class="bi bi-folder text-secondary me-2"></i>Digital Marketing</span>
-                                    <span class="badge bg-secondary">3</span>
-                                </a>
-                            </li>
+                            @if (categories != null && categories.Any())
+                            {
+                                @foreach (var category in categories)
+                                {
+                                    <li class="mb-2">
+                                        <a href="@($"/blog?category={category.Slug}")"
+                                            class="text-decoration-none text-secondary d-flex justify-content-between align-items-center hover-text-white">
+                                            <span><i class="bi bi-folder text-secondary me-2"></i>@category.Name</span>
+                                            <span class="badge bg-secondary">@category.Posts.Count()</span>
+                                        </a>
+                                    </li>
+                                }
+                            }
                         </ul>
                     </div>
                 </div>
@@ -195,6 +182,17 @@
 </section>
 
 @code {
+    [Inject] private IBlogService BlogService { get; set; } = default!;
+    [Inject] private IJSRuntime JS { get; set; } = default!;
+
+    private IEnumerable<BlogPostModel>? blogPosts;
+    private IEnumerable<BlogCategoryModel>? categories;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadDataAsync();
+    }
+
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (firstRender)
@@ -203,5 +201,19 @@
         }
     }
 
-    [Inject] IJSRuntime JS { get; set; }
+    private async Task LoadDataAsync()
+    {
+        try
+        {
+            blogPosts = await BlogService.GetAllPostsAsync(publishedOnly: true);
+            categories = await BlogService.GetAllCategoriesAsync();
+        }
+        catch (Exception ex)
+        {
+            // Log error - in production you'd log this properly
+            Console.WriteLine($"Error loading blog data: {ex.Message}");
+            blogPosts = new List<BlogPostModel>();
+            categories = new List<BlogCategoryModel>();
+        }
+    }
 }

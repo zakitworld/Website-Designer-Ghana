@@ -74,6 +74,7 @@
     font-size: 0.95rem;
     transition: all 0.3s ease;
     background: #f9fafb;
+    color: #1f2937;
 }
 
 ::deep .form-control:focus {

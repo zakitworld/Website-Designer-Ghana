@@ -1,0 +1,229 @@
+@page "/admin"
+@using Microsoft.AspNetCore.Authorization
+@using Website_Designer_Ghana.Services.Interfaces
+@attribute [Authorize(Roles = "Admin")]
+@layout AdminLayout
+
+<PageTitle>Admin Dashboard - Website Designer Ghana</PageTitle>
+
+<div class="dashboard">
+    <div class="row mb-4">
+        <div class="col">
+            <h2 class="mb-0">Dashboard</h2>
+            <p class="text-muted">Welcome to your content management dashboard</p>
+        </div>
+    </div>
+
+    <!-- Stats Cards -->
+    <div class="row g-4 mb-4">
+        <div class="col-md-3">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="text-muted mb-2">Total Blog Posts</h6>
+                            <h3 class="mb-0">@(blogPosts?.Count() ?? 0)</h3>
+                        </div>
+                        <div class="fs-1 text-primary">
+                            <i class="bi bi-file-text"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="text-muted mb-2">Published Posts</h6>
+                            <h3 class="mb-0">@(blogPosts?.Count(p => p.IsPublished) ?? 0)</h3>
+                        </div>
+                        <div class="fs-1 text-success">
+                            <i class="bi bi-check-circle"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="text-muted mb-2">Total Portfolio Items</h6>
+                            <h3 class="mb-0">@(portfolios?.Count() ?? 0)</h3>
+                        </div>
+                        <div class="fs-1 text-info">
+                            <i class="bi bi-briefcase"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="text-muted mb-2">Contact Submissions</h6>
+                            <h3 class="mb-0">@(contactSubmissions?.Count() ?? 0)</h3>
+                        </div>
+                        <div class="fs-1 text-warning">
+                            <i class="bi bi-envelope"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recent Activity -->
+    <div class="row">
+        <div class="col-lg-8">
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-white">
+                    <h5 class="mb-0">Recent Blog Posts</h5>
+                </div>
+                <div class="card-body">
+                    @if (blogPosts == null)
+                    {
+                        <div class="text-center py-4">
+                            <div class="spinner-border text-secondary" role="status">
+                                <span class="visually-hidden">Loading...</span>
+                            </div>
+                        </div>
+                    }
+                    else if (!blogPosts.Any())
+                    {
+                        <p class="text-muted text-center py-4">No blog posts yet.</p>
+                    }
+                    else
+                    {
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Title</th>
+                                        <th>Category</th>
+                                        <th>Status</th>
+                                        <th>Views</th>
+                                        <th>Published</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var post in blogPosts.Take(5))
+                                    {
+                                        <tr>
+                                            <td>
+                                                <a href="/admin/blog-posts/edit/@post.Id" class="text-decoration-none">
+                                                    @post.Title
+                                                </a>
+                                            </td>
+                                            <td>
+                                                <span class="badge bg-secondary">
+                                                    @(post.Category?.Name ?? "Uncategorized")
+                                                </span>
+                                            </td>
+                                            <td>
+                                                @if (post.IsPublished)
+                                                {
+                                                    <span class="badge bg-success">Published</span>
+                                                }
+                                                else
+                                                {
+                                                    <span class="badge bg-warning">Draft</span>
+                                                }
+                                            </td>
+                                            <td>@post.ViewCount</td>
+                                            <td>@post.PublishedAt?.ToString("MMM dd, yyyy")</td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-4">
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-white">
+                    <h5 class="mb-0">Recent Contact Submissions</h5>
+                </div>
+                <div class="card-body">
+                    @if (contactSubmissions == null)
+                    {
+                        <div class="text-center py-4">
+                            <div class="spinner-border text-secondary" role="status">
+                                <span class="visually-hidden">Loading...</span>
+                            </div>
+                        </div>
+                    }
+                    else if (!contactSubmissions.Any())
+                    {
+                        <p class="text-muted text-center py-4">No submissions yet.</p>
+                    }
+                    else
+                    {
+                        <div class="list-group list-group-flush">
+                            @foreach (var submission in contactSubmissions.Take(5))
+                            {
+                                <div class="list-group-item px-0">
+                                    <div class="d-flex justify-content-between align-items-start">
+                                        <div>
+                                            <h6 class="mb-1">@submission.FullName</h6>
+                                            <small class="text-muted">@submission.Email</small>
+                                        </div>
+                                        <small class="text-muted">
+                                            @submission.SubmittedAt.ToString("MMM dd")
+                                        </small>
+                                    </div>
+                                    <p class="mb-0 mt-2 small text-muted">
+                                        @(submission.Message.Length > 60
+                                            ? submission.Message.Substring(0, 60) + "..."
+                                            : submission.Message)
+                                    </p>
+                                </div>
+                            }
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+    [Inject] private IBlogService BlogService { get; set; } = default!;
+    [Inject] private IPortfolioService PortfolioService { get; set; } = default!;
+    [Inject] private IContactService ContactService { get; set; } = default!;
+
+    private IEnumerable<Data.Models.BlogPost>? blogPosts;
+    private IEnumerable<Data.Models.Portfolio>? portfolios;
+    private IEnumerable<Data.Models.ContactSubmission>? contactSubmissions;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadDataAsync();
+    }
+
+    private async Task LoadDataAsync()
+    {
+        try
+        {
+            blogPosts = await BlogService.GetAllPostsAsync(publishedOnly: false);
+            portfolios = await PortfolioService.GetAllPortfoliosAsync(publishedOnly: false);
+            contactSubmissions = (await ContactService.GetRecentSubmissionsAsync(20))
+                .OrderByDescending(s => s.SubmittedAt);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error loading dashboard data: {ex.Message}");
+        }
+    }
+}

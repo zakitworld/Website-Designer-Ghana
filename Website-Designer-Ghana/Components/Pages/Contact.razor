@@ -1,4 +1,7 @@
 @page "/contact"
+@using Website_Designer_Ghana.Data.Models
+@using Website_Designer_Ghana.Services.Interfaces
+@using System.ComponentModel.DataAnnotations
 
 <PageTitle>Contact Us - Website Designer in Ghana</PageTitle>
 
@@ -78,27 +81,79 @@
         <div class="row g-5 mt-4">
             <!-- Contact Form -->
             <div class="col-lg-7">
-                <form class="contact-form glass-card p-4 p-md-5">
+                <EditForm Model="@contactForm" OnValidSubmit="@HandleSubmit" class="contact-form glass-card p-4 p-md-5">
+                    <DataAnnotationsValidator />
+
+                    @if (showSuccessMessage)
+                    {
+                        <div class="alert alert-success alert-dismissible fade show mb-4" role="alert">
+                            <i class="bi bi-check-circle-fill me-2"></i>
+                            Thank you for contacting us! We'll get back to you within 24-48 hours.
+                            <button type="button" class="btn-close" @onclick="() => showSuccessMessage = false"></button>
+                        </div>
+                    }
+
+                    @if (!string.IsNullOrEmpty(errorMessage))
+                    {
+                        <div class="alert alert-danger alert-dismissible fade show mb-4" role="alert">
+                            <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                            @errorMessage
+                            <button type="button" class="btn-close" @onclick="() => errorMessage = string.Empty"></button>
+                        </div>
+                    }
+
                     <div class="mb-4">
                         <label for="name" class="form-label fw-semibold text-secondary">Name</label>
-                        <input type="text"
+                        <InputText @bind-Value="contactForm.FullName"
                             class="form-control form-control-lg bg-white bg-opacity-05 border-white border-opacity-10 text-white"
-                            id="name" placeholder="Enter your name">
+                            id="name" placeholder="Enter your name" />
+                        <ValidationMessage For="@(() => contactForm.FullName)" class="text-danger small mt-1" />
                     </div>
+
                     <div class="mb-4">
                         <label for="email" class="form-label fw-semibold text-secondary">Email</label>
-                        <input type="email"
+                        <InputText @bind-Value="contactForm.Email" type="email"
                             class="form-control form-control-lg bg-white bg-opacity-05 border-white border-opacity-10 text-white"
-                            id="email" placeholder="Enter your email">
+                            id="email" placeholder="Enter your email" />
+                        <ValidationMessage For="@(() => contactForm.Email)" class="text-danger small mt-1" />
                     </div>
+
+                    <div class="mb-4">
+                        <label for="phone" class="form-label fw-semibold text-secondary">Phone (Optional)</label>
+                        <InputText @bind-Value="contactForm.Phone"
+                            class="form-control form-control-lg bg-white bg-opacity-05 border-white border-opacity-10 text-white"
+                            id="phone" placeholder="Enter your phone number" />
+                        <ValidationMessage For="@(() => contactForm.Phone)" class="text-danger small mt-1" />
+                    </div>
+
+                    <div class="mb-4">
+                        <label for="subject" class="form-label fw-semibold text-secondary">Subject</label>
+                        <InputText @bind-Value="contactForm.Subject"
+                            class="form-control form-control-lg bg-white bg-opacity-05 border-white border-opacity-10 text-white"
+                            id="subject" placeholder="What's this about?" />
+                        <ValidationMessage For="@(() => contactForm.Subject)" class="text-danger small mt-1" />
+                    </div>
+
                     <div class="mb-4">
                         <label for="message" class="form-label fw-semibold text-secondary">Message</label>
-                        <textarea
+                        <InputTextArea @bind-Value="contactForm.Message"
                             class="form-control form-control-lg bg-white bg-opacity-05 border-white border-opacity-10 text-white"
-                            id="message" rows="6" placeholder="Enter your message"></textarea>
+                            id="message" rows="6" placeholder="Enter your message" />
+                        <ValidationMessage For="@(() => contactForm.Message)" class="text-danger small mt-1" />
                     </div>
-                    <button type="submit" class="btn btn-secondary btn-lg px-5 py-3 fw-semibold">Send Message</button>
-                </form>
+
+                    <button type="submit" class="btn btn-secondary btn-lg px-5 py-3 fw-semibold" disabled="@isSubmitting">
+                        @if (isSubmitting)
+                        {
+                            <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                            <span>Sending...</span>
+                        }
+                        else
+                        {
+                            <span>Send Message</span>
+                        }
+                    </button>
+                </EditForm>
             </div>
 
             <!-- Contact Information -->
@@ -209,6 +264,17 @@
 </section>
 
 @code {
+    [Inject] private IContactService ContactService { get; set; } = default!;
+    [Inject] private IEmailService EmailService { get; set; } = default!;
+    [Inject] private IJSRuntime JS { get; set; } = default!;
+    [Inject] private IHttpContextAccessor HttpContextAccessor { get; set; } = default!;
+    [Inject] private ILogger<Contact> Logger { get; set; } = default!;
+
+    private ContactFormModel contactForm = new();
+    private bool isSubmitting = false;
+    private bool showSuccessMessage = false;
+    private string errorMessage = string.Empty;
+
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (firstRender)
@@ -217,5 +283,93 @@
         }
     }
 
-    [Inject] IJSRuntime JS { get; set; }
+    private async Task HandleSubmit()
+    {
+        isSubmitting = true;
+        errorMessage = string.Empty;
+        showSuccessMessage = false;
+
+        try
+        {
+            // Get client IP and User Agent
+            var httpContext = HttpContextAccessor.HttpContext;
+            var ipAddress = httpContext?.Connection.RemoteIpAddress?.ToString() ?? "Unknown";
+            var userAgent = httpContext?.Request.Headers["User-Agent"].ToString() ?? "Unknown";
+
+            // Create contact submission
+            var submission = new ContactSubmission
+            {
+                FullName = contactForm.FullName,
+                Email = contactForm.Email,
+                Phone = contactForm.Phone,
+                Subject = contactForm.Subject,
+                Message = contactForm.Message,
+                IpAddress = ipAddress,
+                UserAgent = userAgent
+            };
+
+            // Save to database
+            await ContactService.SubmitContactFormAsync(submission);
+
+            // Send emails (admin notification and customer confirmation)
+            try
+            {
+                await EmailService.SendContactFormEmailAsync(
+                    contactForm.Email,
+                    contactForm.FullName,
+                    contactForm.Subject,
+                    contactForm.Message
+                );
+
+                await EmailService.SendContactConfirmationAsync(
+                    contactForm.Email,
+                    contactForm.FullName
+                );
+            }
+            catch (Exception emailEx)
+            {
+                // Log email error but don't fail the submission
+                Logger.LogError(emailEx, "Failed to send email notifications for contact form");
+            }
+
+            // Show success message
+            showSuccessMessage = true;
+
+            // Reset form
+            contactForm = new ContactFormModel();
+        }
+        catch (Exception ex)
+        {
+            Logger.LogError(ex, "Failed to process contact form submission");
+            errorMessage = "An error occurred while submitting your message. Please try again or contact us directly.";
+        }
+        finally
+        {
+            isSubmitting = false;
+        }
+    }
+
+    public class ContactFormModel
+    {
+        [Required(ErrorMessage = "Name is required")]
+        [StringLength(100, ErrorMessage = "Name cannot exceed 100 characters")]
+        public string FullName { get; set; } = string.Empty;
+
+        [Required(ErrorMessage = "Email is required")]
+        [EmailAddress(ErrorMessage = "Please enter a valid email address")]
+        [StringLength(200, ErrorMessage = "Email cannot exceed 200 characters")]
+        public string Email { get; set; } = string.Empty;
+
+        [Phone(ErrorMessage = "Please enter a valid phone number")]
+        [StringLength(20, ErrorMessage = "Phone cannot exceed 20 characters")]
+        public string? Phone { get; set; }
+
+        [Required(ErrorMessage = "Subject is required")]
+        [StringLength(200, ErrorMessage = "Subject cannot exceed 200 characters")]
+        public string Subject { get; set; } = string.Empty;
+
+        [Required(ErrorMessage = "Message is required")]
+        [StringLength(2000, MinimumLength = 10, ErrorMessage = "Message must be between 10 and 2000 characters")]
+        public string Message { get; set; } = string.Empty;
+    }
 }

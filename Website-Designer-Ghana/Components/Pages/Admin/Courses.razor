@@ -1,0 +1,117 @@
+@page "/admin/courses"
+@using Microsoft.AspNetCore.Authorization
+@using Website_Designer_Ghana.Services.Interfaces
+@using Website_Designer_Ghana.Data.Models
+@attribute [Authorize(Roles = "Admin")]
+@layout AdminLayout
+
+<PageTitle>Course Management - Admin</PageTitle>
+
+<div class="courses-admin">
+    <div class="row mb-4">
+        <div class="col">
+            <h2 class="mb-0">Courses</h2>
+            <p class="text-muted">Manage your educational content</p>
+        </div>
+        <div class="col-auto">
+            <button type="button" class="btn btn-secondary">
+                <i class="bi bi-plus-circle me-2"></i>
+                Create Course
+            </button>
+        </div>
+    </div>
+
+    <div class="card border-0 shadow-sm">
+        <div class="card-body">
+            @if (courses == null)
+            {
+                <div class="text-center py-5">
+                    <div class="spinner-border text-secondary" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                </div>
+            }
+            else if (!courses.Any())
+            {
+                <div class="text-center py-5">
+                    <i class="bi bi-inbox fs-1 text-muted"></i>
+                    <p class="text-muted mt-3">No courses yet. Create your first course!</p>
+                </div>
+            }
+            else
+            {
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>Title</th>
+                                <th>Level</th>
+                                <th>Price</th>
+                                <th>Lessons</th>
+                                <th>Status</th>
+                                <th>Created</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var course in courses)
+                            {
+                                <tr>
+                                    <td>@course.Title</td>
+                                    <td>@course.Level</td>
+                                    <td>GH₵ @course.Price.ToString("N2")</td>
+                                    <td>@course.Lessons.Count()</td>
+                                    <td>
+                                        @if (course.IsPublished)
+                                        {
+                                            <span class="badge bg-success">Published</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge bg-warning text-dark">Draft</span>
+                                        }
+                                    </td>
+                                    <td>@course.CreatedAt.ToString("MMM dd, yyyy")</td>
+                                    <td>
+                                        <div class="btn-group btn-group-sm">
+                                            <button type="button" class="btn btn-outline-primary">
+                                                <i class="bi bi-pencil"></i>
+                                            </button>
+                                            <button type="button" class="btn btn-outline-danger">
+                                                <i class="bi bi-trash"></i>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+@code {
+    [Inject] private ICourseService CourseService { get; set; } = default!;
+
+    private IEnumerable<Course>? courses;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadDataAsync();
+    }
+
+    private async Task LoadDataAsync()
+    {
+        try
+        {
+            courses = await CourseService.GetAllCoursesAsync(publishedOnly: false);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error loading courses: {ex.Message}");
+            courses = new List<Course>();
+        }
+    }
+}

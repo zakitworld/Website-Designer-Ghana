@@ -1,4 +1,6 @@
 @page "/blog/{slug}"
+@using Website_Designer_Ghana.Services.Interfaces
+@using BlogPostModel = Website_Designer_Ghana.Data.Models.BlogPost
 
 <PageTitle>@PostTitle - Website Designer in Ghana Blog</PageTitle>
 
@@ -261,11 +263,13 @@
 @code {
     [Parameter] public string Slug { get; set; } = "";
 
-    [Inject] IJSRuntime JS { get; set; }
-    [Inject] NavigationManager NavManager { get; set; }
+    [Inject] private IBlogService BlogService { get; set; } = default!;
+    [Inject] private IJSRuntime JS { get; set; } = default!;
+    [Inject] private NavigationManager NavManager { get; set; } = default!;
 
-    private string PostTitle = "";
-    private string FeaturedImage = "";
+    private BlogPostModel? blogPost;
+    private string PostTitle = "Loading...";
+    private string FeaturedImage = "https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=1200&q=80";
     private string Author = "Website Designer in Ghana";
     private string PublishDate = "";
     private string Category = "";
@@ -273,12 +277,12 @@
     private string PostContent = "";
     private List<string> Tags = new();
     private string ShareUrl = "";
-    private int CommentCount = 2;
+    private int CommentCount = 0;
 
-    protected override void OnInitialized()
+    protected override async Task OnInitializedAsync()
     {
         ShareUrl = NavManager.Uri;
-        LoadBlogPost();
+        await LoadBlogPostAsync();
     }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
@@ -289,151 +293,45 @@
         }
     }
 
-    private void LoadBlogPost()
+    private async Task LoadBlogPostAsync()
     {
-        // In a real application, you would fetch this from a database or CMS
-        // For now, we'll use hardcoded content based on the slug
-        switch (Slug)
+        try
         {
-            case "domain-hosting-prices-ghana-2026":
-                PostTitle = "Domain and Hosting Prices in Ghana (2026)";
-                FeaturedImage = "https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=1200&q=80";
-                PublishDate = "December 28, 2025";
-                Category = "Web Design";
-                ReadTime = 8;
-                Tags = new List<string> { "Hosting", "Domain", "Ghana", "Pricing", "Web Design" };
-                PostContent = @"
-                    <p class='lead'>Finding the right hosting and domain services at competitive prices is crucial for businesses in Ghana. This comprehensive guide breaks down the current pricing landscape and helps you make informed decisions.</p>
+            blogPost = await BlogService.GetPostBySlugAsync(Slug);
 
-                    <h3 class='fw-bold mt-5 mb-3'>Understanding Domain Registration</h3>
-                    <p>A domain name is your website's address on the internet. In Ghana, domain registration prices vary depending on the extension (.com, .gh, .com.gh, etc.) and the registrar you choose.</p>
+            if (blogPost != null)
+            {
+                PostTitle = blogPost.Title;
+                FeaturedImage = blogPost.FeaturedImage ?? "https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=1200&q=80";
+                Author = blogPost.Author;
+                PublishDate = blogPost.PublishedAt?.ToString("MMMM dd, yyyy") ?? "";
+                Category = blogPost.Category?.Name ?? "Uncategorized";
+                PostContent = blogPost.Content;
+                Tags = blogPost.Tags.Select(t => t.Name).ToList();
+                CommentCount = blogPost.Comments.Count();
+                ReadTime = EstimateReadTime(blogPost.Content);
 
-                    <h4 class='fw-bold mt-4 mb-3'>Popular Domain Extensions in Ghana:</h4>
-                    <ul>
-                        <li><strong>.com domains:</strong> GHS 120 - 180 per year</li>
-                        <li><strong>.gh domains:</strong> GHS 200 - 300 per year</li>
-                        <li><strong>.com.gh domains:</strong> GHS 180 - 250 per year</li>
-                        <li><strong>.org domains:</strong> GHS 150 - 200 per year</li>
-                    </ul>
-
-                    <h3 class='fw-bold mt-5 mb-3'>Web Hosting Options and Pricing</h3>
-                    <p>Web hosting is where your website's files are stored. There are several types of hosting available, each suited for different needs and budgets.</p>
-
-                    <h4 class='fw-bold mt-4 mb-3'>1. Shared Hosting</h4>
-                    <p>Perfect for small businesses and startups. Your website shares server resources with other websites.</p>
-                    <ul>
-                        <li>Basic Plan: GHS 300 - 500 per year</li>
-                        <li>Standard Plan: GHS 600 - 900 per year</li>
-                        <li>Premium Plan: GHS 1,200 - 1,800 per year</li>
-                    </ul>
-
-                    <h4 class='fw-bold mt-4 mb-3'>2. VPS Hosting</h4>
-                    <p>Ideal for growing businesses that need more resources and control.</p>
-                    <ul>
-                        <li>Entry Level: GHS 2,400 - 3,600 per year</li>
-                        <li>Mid-tier: GHS 4,800 - 7,200 per year</li>
-                        <li>High-end: GHS 9,600+ per year</li>
-                    </ul>
-
-                    <h4 class='fw-bold mt-4 mb-3'>3. Dedicated Hosting</h4>
-                    <p>Best for large e-commerce sites and high-traffic websites.</p>
-                    <ul>
-                        <li>Starting from GHS 15,000 per year</li>
-                    </ul>
-
-                    <h3 class='fw-bold mt-5 mb-3'>Recommended Hosting Providers for Ghana</h3>
-                    <p>When choosing a hosting provider, consider factors like uptime, customer support, server location, and local payment options (mobile money support).</p>
-
-                    <div class='alert alert-info mt-4'>
-                        <strong>Pro Tip:</strong> Look for hosting providers with servers in or near Ghana for better website loading speeds for your local audience.
-                    </div>
-
-                    <h3 class='fw-bold mt-5 mb-3'>Making the Right Choice</h3>
-                    <p>Consider these factors when selecting your hosting and domain:</p>
-                    <ul>
-                        <li>Your website's expected traffic</li>
-                        <li>Storage and bandwidth requirements</li>
-                        <li>Technical support availability</li>
-                        <li>Scalability options as your business grows</li>
-                        <li>Security features (SSL certificates, backups)</li>
-                    </ul>
-
-                    <p class='mt-4'><strong>Need help choosing the right hosting for your business?</strong> Contact Website Designer in Ghana for personalized recommendations and setup assistance.</p>
-                ";
-                break;
-
-            case "top-ecommerce-payment-gateways-ghana":
-                PostTitle = "Top 5 E-commerce Payment Gateways in Ghana";
-                FeaturedImage = "https://images.unsplash.com/photo-1563986768494-4dee2763ff3f?w=1200&q=80";
-                PublishDate = "December 15, 2025";
-                Category = "E-commerce";
-                ReadTime = 10;
-                Tags = new List<string> { "E-commerce", "Payment Gateways", "Ghana", "Paystack", "Flutterwave" };
-                PostContent = @"
-                    <p class='lead'>Selecting the right payment gateway is critical for your e-commerce success in Ghana. This guide reviews the top payment solutions that support both local and international transactions.</p>
-
-                    <h3 class='fw-bold mt-5 mb-3'>1. Paystack</h3>
-                    <p>One of the most popular payment gateways in Ghana, Paystack offers seamless integration and supports mobile money payments.</p>
-                    <ul>
-                        <li><strong>Transaction Fee:</strong> 1.95% + GHS 0.50</li>
-                        <li><strong>Supports:</strong> Visa, Mastercard, Mobile Money (MTN, Vodafone, AirtelTigo)</li>
-                        <li><strong>Integration:</strong> Easy API integration with plugins for major platforms</li>
-                    </ul>
-
-                    <h3 class='fw-bold mt-5 mb-3'>2. Flutterwave</h3>
-                    <p>A comprehensive payment solution supporting multiple African currencies and payment methods.</p>
-                    <ul>
-                        <li><strong>Transaction Fee:</strong> 3.8%</li>
-                        <li><strong>Supports:</strong> Cards, Mobile Money, Bank Transfers</li>
-                        <li><strong>Features:</strong> Multi-currency support, recurring payments</li>
-                    </ul>
-
-                    <h3 class='fw-bold mt-5 mb-3'>3. Stripe</h3>
-                    <p>Global payment platform now available in Ghana, ideal for businesses targeting international customers.</p>
-
-                    <h3 class='fw-bold mt-5 mb-3'>Choosing the Right Gateway</h3>
-                    <p>Consider transaction fees, customer preferences, integration ease, and supported payment methods when making your choice.</p>
-                ";
-                break;
-
-            case "why-your-business-needs-website":
-                PostTitle = "Why Your Business Needs a Website in 2026";
-                FeaturedImage = "https://images.unsplash.com/photo-1551434678-e076c223a692?w=1200&q=80";
-                PublishDate = "November 30, 2025";
-                Category = "Business Growth";
-                ReadTime = 6;
-                Tags = new List<string> { "Business", "Website", "Digital Marketing", "Ghana", "Online Presence" };
-                PostContent = @"
-                    <p class='lead'>In today's digital-first world, a professional website is no longer optional—it's essential for business success in Ghana and beyond.</p>
-
-                    <h3 class='fw-bold mt-5 mb-3'>24/7 Online Presence</h3>
-                    <p>Unlike physical stores with fixed hours, your website works around the clock, allowing customers to learn about your products and services anytime, anywhere.</p>
-
-                    <h3 class='fw-bold mt-5 mb-3'>Build Credibility and Trust</h3>
-                    <p>Customers expect legitimate businesses to have a professional online presence. A well-designed website builds trust and establishes your credibility in the market.</p>
-
-                    <h3 class='fw-bold mt-5 mb-3'>Reach More Customers</h3>
-                    <p>Expand beyond your local area and reach customers across Ghana and internationally. Your website breaks geographical barriers.</p>
-
-                    <h3 class='fw-bold mt-5 mb-3'>Cost-Effective Marketing</h3>
-                    <p>Digital marketing through your website is more affordable and measurable than traditional advertising methods.</p>
-
-                    <h3 class='fw-bold mt-5 mb-3'>Showcase Your Products/Services</h3>
-                    <p>Display your offerings with high-quality images, detailed descriptions, and customer testimonials to attract and convert visitors.</p>
-
-                    <div class='alert alert-success mt-4'>
-                        <strong>Ready to take your business online?</strong> Contact Website Designer in Ghana today for a free consultation and quote.
-                    </div>
-                ";
-                break;
-
-            default:
+                // Increment view count
+                await BlogService.IncrementViewCountAsync(blogPost.Id);
+            }
+            else
+            {
                 PostTitle = "Blog Post Not Found";
-                FeaturedImage = "https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=1200&q=80";
-                PublishDate = "January 1, 2026";
-                Category = "Uncategorized";
                 PostContent = "<p>The blog post you're looking for doesn't exist. Please check the URL or return to the <a href='/blog'>blog homepage</a>.</p>";
-                break;
+            }
         }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error loading blog post: {ex.Message}");
+            PostTitle = "Error Loading Post";
+            PostContent = "<p>An error occurred while loading this post. Please try again later.</p>";
+        }
+    }
+
+    private int EstimateReadTime(string content)
+    {
+        // Estimate reading time: average 200 words per minute
+        var wordCount = content.Split(new[] { ' ', '\n', '\r' }, StringSplitOptions.RemoveEmptyEntries).Length;
+        return Math.Max(1, (int)Math.Ceiling(wordCount / 200.0));
     }
 }

@@ -9,6 +9,7 @@ window.addEventListener('DOMContentLoaded', () => {
     initNavbarScroll();
     initFloatingButtons();
     removeFocusOutlines();
+    initCurrencyToggle();
 });
 
 // ==========================================
@@ -118,6 +119,7 @@ window.refreshScrollAnimations = function () {
     // Re-initialize scroll animations after Blazor renders new content
     setTimeout(() => {
         initScrollAnimations();
+        // Currency toggle uses event delegation, no need to re-init
     }, 100);
 }
 
@@ -153,5 +155,50 @@ window.scrollToTop = function () {
     window.scrollTo({
         top: 0,
         behavior: 'smooth'
+    });
+}
+
+// ==========================================
+// CURRENCY TOGGLE (PRICING PAGE)
+// ==========================================
+let currencyToggleInitialized = false;
+
+function initCurrencyToggle() {
+    // Only initialize once using event delegation
+    if (currencyToggleInitialized) return;
+    currencyToggleInitialized = true;
+
+    // Use event delegation to handle dynamically loaded content
+    document.body.addEventListener('click', function(e) {
+        // Check if clicked element is a currency button
+        if (e.target.classList.contains('currency-btn') || e.target.closest('.currency-btn')) {
+            const button = e.target.classList.contains('currency-btn') ? e.target : e.target.closest('.currency-btn');
+            const currency = button.getAttribute('data-currency');
+
+            if (!currency) return;
+
+            console.log('Currency button clicked:', currency); // Debug log
+
+            // Update active button state
+            document.querySelectorAll('.currency-btn').forEach(btn => btn.classList.remove('active'));
+            button.classList.add('active');
+
+            // Update all pricing amounts
+            const pricingAmounts = document.querySelectorAll('.pricing-amount');
+            console.log('Found pricing amounts:', pricingAmounts.length); // Debug log
+
+            pricingAmounts.forEach(priceElement => {
+                const currencySymbol = priceElement.querySelector('.currency-symbol');
+                const amount = priceElement.querySelector('.amount');
+
+                if (currency === 'USD') {
+                    currencySymbol.textContent = '$';
+                    amount.textContent = priceElement.getAttribute('data-price-usd');
+                } else {
+                    currencySymbol.textContent = 'GH₵';
+                    amount.textContent = priceElement.getAttribute('data-price-ghs');
+                }
+            });
+        }
     });
 }
