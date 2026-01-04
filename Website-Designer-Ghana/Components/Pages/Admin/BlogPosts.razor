@@ -7,15 +7,15 @@
 
 <PageTitle>Manage Blog Posts - Admin</PageTitle>
 
-<div class="blog-posts-admin">
-    <div class="row mb-4">
+<div class="blog-posts-admin pt-3">
+    <div class="row mb-5 align-items-center">
         <div class="col">
-            <h2 class="mb-0">Blog Posts</h2>
-            <p class="text-muted">Manage your blog content</p>
+            <h2 class="display-6 fw-bold gradient-text mb-1">Blog Posts</h2>
+            <p class="text-muted mb-0">Manage and polish your digital narratives.</p>
         </div>
         <div class="col-auto">
-            <a href="/admin/blog-posts/create" class="btn btn-secondary">
-                <i class="bi bi-plus-circle me-2"></i>
+            <a href="/admin/blog-posts/create" class="btn btn-primary px-4 py-2 border-0 shadow-lg ripple-effect">
+                <i class="bi bi-plus-lg me-2"></i>
                 Create New Post
             </a>
         </div>
@@ -29,12 +29,12 @@
         </div>
     }
 
-    <div class="card border-0 shadow-sm">
-        <div class="card-body">
+    <div class="glass-card border-0 shadow-lg overflow-hidden">
+        <div class="p-0">
             @if (blogPosts == null)
             {
                 <div class="text-center py-5">
-                    <div class="spinner-border text-secondary" role="status">
+                    <div class="spinner-border text-primary" role="status">
                         <span class="visually-hidden">Loading...</span>
                     </div>
                 </div>
@@ -42,59 +42,70 @@
             else if (!blogPosts.Any())
             {
                 <div class="text-center py-5">
-                    <i class="bi bi-inbox fs-1 text-muted"></i>
-                    <p class="text-muted mt-3">No blog posts yet. Create your first post!</p>
+                    <i class="bi bi-file-earmark-plus fs-1 text-muted mb-3 d-block"></i>
+                    <p class="text-muted mb-4">No blog posts yet. Start by creating your first post!</p>
+                    <a href="/admin/blog-posts/create" class="btn btn-outline-primary px-4">Create First Post</a>
                 </div>
             }
             else
             {
                 <div class="table-responsive">
-                    <table class="table table-hover">
-                        <thead>
+                    <table class="table table-dark table-hover align-middle mb-0">
+                        <thead class="bg-white bg-opacity-05">
                             <tr>
-                                <th>Title</th>
-                                <th>Category</th>
-                                <th>Author</th>
-                                <th>Status</th>
-                                <th>Views</th>
-                                <th>Published</th>
-                                <th>Actions</th>
+                                <th class="px-4 py-3 text-muted fw-semibold border-opacity-10">Title</th>
+                                <th class="py-3 text-muted fw-semibold border-opacity-10">Category</th>
+                                <th class="py-3 text-muted fw-semibold border-opacity-10">Author</th>
+                                <th class="py-3 text-muted fw-semibold border-opacity-10">Status</th>
+                                <th class="py-3 text-muted fw-semibold border-opacity-10">Views</th>
+                                <th class="py-3 text-muted fw-semibold border-opacity-10">Published</th>
+                                <th class="px-4 py-3 text-muted fw-semibold border-opacity-10 text-end">Actions</th>
                             </tr>
                         </thead>
                         <tbody>
                             @foreach (var post in blogPosts)
                             {
                                 <tr>
-                                    <td>
-                                        <a href="/blog/@post.Slug" target="_blank" class="text-decoration-none">
-                                            @post.Title
-                                        </a>
+                                    <td class="px-4 py-3">
+                                        <div class="fw-bold text-white mb-0">@post.Title</div>
+                                        <small class="text-muted">@post.Slug</small>
                                     </td>
                                     <td>
-                                        <span class="badge bg-secondary">
+                                        <span class="badge bg-opacity-10 bg-info text-info rounded-pill px-3">
                                             @(post.Category?.Name ?? "Uncategorized")
                                         </span>
                                     </td>
-                                    <td>@post.Author</td>
+                                    <td class="text-secondary">@post.Author</td>
                                     <td>
                                         @if (post.IsPublished)
                                         {
-                                            <span class="badge bg-success">Published</span>
+                                            <span class="badge bg-opacity-10 bg-success text-success rounded-pill px-3">
+                                                <i class="bi bi-check-circle me-1"></i> Published
+                                            </span>
                                         }
                                         else
                                         {
-                                            <span class="badge bg-warning text-dark">Draft</span>
+                                            <span class="badge bg-opacity-10 bg-warning text-warning rounded-pill px-3">
+                                                <i class="bi bi-pencil-square me-1"></i> Draft
+                                            </span>
                                         }
                                     </td>
-                                    <td>@post.ViewCount</td>
-                                    <td>@post.PublishedAt?.ToString("MMM dd, yyyy")</td>
                                     <td>
-                                        <div class="btn-group btn-group-sm">
-                                            <a href="/admin/blog-posts/edit/@post.Id" class="btn btn-outline-primary">
+                                        <span class="text-white fw-medium">@post.ViewCount.ToString("N0")</span>
+                                    </td>
+                                    <td class="text-muted">@post.PublishedAt?.ToString("MMM dd, yyyy")</td>
+                                    <td class="px-4 text-end">
+                                        <div class="btn-group shadow-sm">
+                                            <a href="/admin/blog-posts/edit/@post.Id"
+                                                class="btn btn-outline-light btn-sm border-opacity-10" title="Edit">
                                                 <i class="bi bi-pencil"></i>
                                             </a>
-                                            <button type="button" class="btn btn-outline-danger"
-                                                @onclick="() => DeletePost(post.Id)">
+                                            <a href="/blog/@post.Slug" target="_blank"
+                                                class="btn btn-outline-light btn-sm border-opacity-10" title="View">
+                                                <i class="bi bi-eye"></i>
+                                            </a>
+                                            <button type="button" class="btn btn-outline-danger btn-sm border-opacity-10"
+                                            @onclick="() => DeletePost(post.Id)" title="Delete">
                                                 <i class="bi bi-trash"></i>
                                             </button>
                                         </div>
@@ -108,6 +119,21 @@
         </div>
     </div>
 </div>
+
+<style>
+    .table-dark {
+        --bs-table-bg: transparent;
+    }
+
+    .table> :not(caption)>*>* {
+        border-bottom-color: rgba(255, 255, 255, 0.05);
+    }
+
+    .badge {
+        font-weight: 500;
+        letter-spacing: 0.3px;
+    }
+</style>
 
 @code {
     [Inject] private IBlogService BlogService { get; set; } = default!;
@@ -127,7 +153,7 @@
         try
         {
             blogPosts = (await BlogService.GetAllPostsAsync(publishedOnly: false))
-                .OrderByDescending(p => p.CreatedAt);
+            .OrderByDescending(p => p.CreatedAt);
         }
         catch (Exception ex)
         {

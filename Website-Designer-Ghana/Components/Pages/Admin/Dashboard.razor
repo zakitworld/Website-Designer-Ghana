@@ -6,75 +6,67 @@
 
 <PageTitle>Admin Dashboard - Website Designer Ghana</PageTitle>
 
-<div class="dashboard">
-    <div class="row mb-4">
+<div class="dashboard pt-2">
+    <div class="row mb-5">
         <div class="col">
-            <h2 class="mb-0">Dashboard</h2>
-            <p class="text-muted">Welcome to your content management dashboard</p>
+            <h2 class="display-5 fw-bold gradient-text mb-2">Dashboard</h2>
+            <p class="text-muted lead">Manage your digital presence with precision.</p>
         </div>
     </div>
 
     <!-- Stats Cards -->
-    <div class="row g-4 mb-4">
+    <div class="row g-4 mb-5">
         <div class="col-md-3">
-            <div class="card border-0 shadow-sm h-100">
-                <div class="card-body">
-                    <div class="d-flex justify-content-between align-items-center">
-                        <div>
-                            <h6 class="text-muted mb-2">Total Blog Posts</h6>
-                            <h3 class="mb-0">@(blogPosts?.Count() ?? 0)</h3>
-                        </div>
-                        <div class="fs-1 text-primary">
-                            <i class="bi bi-file-text"></i>
-                        </div>
+            <div class="glass-card p-4 h-100 border-0 shadow-lg">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h6 class="text-muted text-uppercase small ls-wide mb-2">Total Blog Posts</h6>
+                        <h2 class="fw-bold mb-0">@(blogPosts?.Count() ?? 0)</h2>
+                    </div>
+                    <div class="fs-1 gradient-text">
+                        <i class="bi bi-file-text"></i>
                     </div>
                 </div>
             </div>
         </div>
 
         <div class="col-md-3">
-            <div class="card border-0 shadow-sm h-100">
-                <div class="card-body">
-                    <div class="d-flex justify-content-between align-items-center">
-                        <div>
-                            <h6 class="text-muted mb-2">Published Posts</h6>
-                            <h3 class="mb-0">@(blogPosts?.Count(p => p.IsPublished) ?? 0)</h3>
-                        </div>
-                        <div class="fs-1 text-success">
-                            <i class="bi bi-check-circle"></i>
-                        </div>
+            <div class="glass-card p-4 h-100 border-0 shadow-lg">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h6 class="text-muted text-uppercase small ls-wide mb-2">Published Posts</h6>
+                        <h2 class="fw-bold mb-0">@(blogPosts?.Count(p => p.IsPublished) ?? 0)</h2>
+                    </div>
+                    <div class="fs-1 text-success">
+                        <i class="bi bi-check-circle"></i>
                     </div>
                 </div>
             </div>
         </div>
 
         <div class="col-md-3">
-            <div class="card border-0 shadow-sm h-100">
-                <div class="card-body">
-                    <div class="d-flex justify-content-between align-items-center">
-                        <div>
-                            <h6 class="text-muted mb-2">Total Portfolio Items</h6>
-                            <h3 class="mb-0">@(portfolios?.Count() ?? 0)</h3>
-                        </div>
-                        <div class="fs-1 text-info">
-                            <i class="bi bi-briefcase"></i>
-                        </div>
+            <div class="glass-card p-4 h-100 border-0 shadow-lg">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h6 class="text-muted text-uppercase small ls-wide mb-2">Portfolios</h6>
+                        <h2 class="fw-bold mb-0">@(portfolios?.Count() ?? 0)</h2>
+                    </div>
+                    <div class="fs-1 text-info">
+                        <i class="bi bi-briefcase"></i>
                     </div>
                 </div>
             </div>
         </div>
 
         <div class="col-md-3">
-            <div class="card border-0 shadow-sm h-100">
-                <div class="card-body">
-                    <div class="d-flex justify-content-between align-items-center">
-                        <div>
-                            <h6 class="text-muted mb-2">Contact Submissions</h6>
-                            <h3 class="mb-0">@(contactSubmissions?.Count() ?? 0)</h3>
-                        </div>
-                        <div class="fs-1 text-warning">
-                            <i class="bi bi-envelope"></i>
-                        </div>
+            <div class="glass-card p-4 h-100 border-0 shadow-lg">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h6 class="text-muted text-uppercase small ls-wide mb-2">Submissions</h6>
+                        <h2 class="fw-bold mb-0">@(contactSubmissions?.Count() ?? 0)</h2>
+                    </div>
+                    <div class="fs-1 text-warning">
+                        <i class="bi bi-envelope"></i>
                     </div>
                 </div>
             </div>
@@ -82,36 +74,41 @@
     </div>
 
     <!-- Recent Activity -->
-    <div class="row">
+    <div class="row g-4">
         <div class="col-lg-8">
-            <div class="card border-0 shadow-sm">
-                <div class="card-header bg-white">
-                    <h5 class="mb-0">Recent Blog Posts</h5>
+            <div class="glass-card border-0 shadow-lg overflow-hidden">
+                <div
+                    class="p-4 border-bottom border-white border-opacity-10 d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0 fw-bold">Recent Blog Posts</h5>
+                    <a href="/admin/blog-posts" class="btn btn-sm btn-outline-light opacity-75">View All</a>
                 </div>
-                <div class="card-body">
+                <div class="p-4">
                     @if (blogPosts == null)
                     {
-                        <div class="text-center py-4">
-                            <div class="spinner-border text-secondary" role="status">
+                        <div class="text-center py-5">
+                            <div class="spinner-border text-primary" role="status">
                                 <span class="visually-hidden">Loading...</span>
                             </div>
                         </div>
                     }
                     else if (!blogPosts.Any())
                     {
-                        <p class="text-muted text-center py-4">No blog posts yet.</p>
+                        <div class="text-center py-5">
+                            <i class="bi bi-file-earmark-x fs-1 text-muted mb-3 d-block"></i>
+                            <p class="text-muted mb-0">No blog posts yet.</p>
+                        </div>
                     }
                     else
                     {
                         <div class="table-responsive">
-                            <table class="table table-hover">
+                            <table class="table table-dark table-hover align-middle mb-0">
                                 <thead>
                                     <tr>
-                                        <th>Title</th>
-                                        <th>Category</th>
-                                        <th>Status</th>
-                                        <th>Views</th>
-                                        <th>Published</th>
+                                        <th class="text-muted fw-normal border-opacity-10">Title</th>
+                                        <th class="text-muted fw-normal border-opacity-10">Category</th>
+                                        <th class="text-muted fw-normal border-opacity-10">Status</th>
+                                        <th class="text-muted fw-normal border-opacity-10">Views</th>
+                                        <th class="text-muted fw-normal border-opacity-10">Published</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -119,27 +116,28 @@
                                     {
                                         <tr>
                                             <td>
-                                                <a href="/admin/blog-posts/edit/@post.Id" class="text-decoration-none">
+                                                <a href="/admin/blog-posts/edit/@post.Id"
+                                                    class="text-white text-decoration-none fw-medium">
                                                     @post.Title
                                                 </a>
                                             </td>
                                             <td>
-                                                <span class="badge bg-secondary">
+                                                <span class="badge bg-opacity-10 bg-info text-info">
                                                     @(post.Category?.Name ?? "Uncategorized")
                                                 </span>
                                             </td>
                                             <td>
                                                 @if (post.IsPublished)
                                                 {
-                                                    <span class="badge bg-success">Published</span>
+                                                    <span class="badge bg-opacity-10 bg-success text-success">Published</span>
                                                 }
                                                 else
                                                 {
-                                                    <span class="badge bg-warning">Draft</span>
+                                                    <span class="badge bg-opacity-10 bg-warning text-warning">Draft</span>
                                                 }
                                             </td>
-                                            <td>@post.ViewCount</td>
-                                            <td>@post.PublishedAt?.ToString("MMM dd, yyyy")</td>
+                                            <td>@post.ViewCount.ToString("N0")</td>
+                                            <td class="text-muted">@post.PublishedAt?.ToString("MMM dd, yyyy")</td>
                                         </tr>
                                     }
                                 </tbody>
@@ -151,39 +149,44 @@
         </div>
 
         <div class="col-lg-4">
-            <div class="card border-0 shadow-sm">
-                <div class="card-header bg-white">
-                    <h5 class="mb-0">Recent Contact Submissions</h5>
+            <div class="glass-card border-0 shadow-lg h-100 overflow-hidden">
+                <div
+                    class="p-4 border-bottom border-white border-opacity-10 d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0 fw-bold">Recent Submissions</h5>
+                    <a href="/admin/contact-submissions" class="btn btn-sm btn-outline-light opacity-75">All</a>
                 </div>
-                <div class="card-body">
+                <div class="p-4">
                     @if (contactSubmissions == null)
                     {
-                        <div class="text-center py-4">
-                            <div class="spinner-border text-secondary" role="status">
+                        <div class="text-center py-5">
+                            <div class="spinner-border text-primary" role="status">
                                 <span class="visually-hidden">Loading...</span>
                             </div>
                         </div>
                     }
                     else if (!contactSubmissions.Any())
                     {
-                        <p class="text-muted text-center py-4">No submissions yet.</p>
+                        <div class="text-center py-5">
+                            <i class="bi bi-envelope-x fs-1 text-muted mb-3 d-block"></i>
+                            <p class="text-muted mb-0">No submissions yet.</p>
+                        </div>
                     }
                     else
                     {
-                        <div class="list-group list-group-flush">
+                        <div class="list-group list-group-flush bg-transparent">
                             @foreach (var submission in contactSubmissions.Take(5))
                             {
-                                <div class="list-group-item px-0">
-                                    <div class="d-flex justify-content-between align-items-start">
+                                <div class="list-group-item bg-transparent border-white border-opacity-10 px-0 py-3">
+                                    <div class="d-flex justify-content-between align-items-start mb-1">
                                         <div>
-                                            <h6 class="mb-1">@submission.FullName</h6>
-                                            <small class="text-muted">@submission.Email</small>
+                                            <h6 class="mb-0 fw-bold text-white">@submission.FullName</h6>
+                                            <small class="text-secondary">@submission.Email</small>
                                         </div>
                                         <small class="text-muted">
                                             @submission.SubmittedAt.ToString("MMM dd")
                                         </small>
                                     </div>
-                                    <p class="mb-0 mt-2 small text-muted">
+                                    <p class="mb-0 small text-muted">
                                         @(submission.Message.Length > 60
                                             ? submission.Message.Substring(0, 60) + "..."
                                             : submission.Message)
@@ -197,6 +200,20 @@
         </div>
     </div>
 </div>
+
+<style>
+    .ls-wide {
+        letter-spacing: 0.1em;
+    }
+
+    .table-dark {
+        --bs-table-bg: transparent;
+    }
+
+    .list-group-item:last-child {
+        border-bottom: 0;
+    }
+</style>
 
 @code {
     [Inject] private IBlogService BlogService { get; set; } = default!;
@@ -219,7 +236,7 @@
             blogPosts = await BlogService.GetAllPostsAsync(publishedOnly: false);
             portfolios = await PortfolioService.GetAllPortfoliosAsync(publishedOnly: false);
             contactSubmissions = (await ContactService.GetRecentSubmissionsAsync(20))
-                .OrderByDescending(s => s.SubmittedAt);
+            .OrderByDescending(s => s.SubmittedAt);
         }
         catch (Exception ex)
         {

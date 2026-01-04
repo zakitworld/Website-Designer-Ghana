@@ -3,11 +3,11 @@
 
 <div class="admin-wrapper">
     <!-- Admin Sidebar -->
-    <aside class="admin-sidebar bg-dark text-white">
-        <div class="sidebar-header p-4 border-bottom border-secondary">
+    <aside class="admin-sidebar text-white">
+        <div class="sidebar-header p-4 border-bottom border-white border-opacity-10">
             <h4 class="mb-0">
-                <i class="bi bi-gear-fill text-secondary me-2"></i>
-                Admin Panel
+                <i class="bi bi-rocket-takeoff-fill text-secondary me-2"></i>
+                Admin
             </h4>
         </div>
         <nav class="sidebar-nav p-3">
@@ -48,10 +48,10 @@
                         Contact Submissions
                     </a>
                 </li>
-                <li class="nav-item mt-4 pt-3 border-top border-secondary">
+                <li class="nav-item mt-4 pt-3 border-top border-white border-opacity-10">
                     <a href="/" class="nav-link text-white">
-                        <i class="bi bi-arrow-left me-2"></i>
-                        Back to Website
+                        <i class="bi bi-house-door me-2"></i>
+                        View Site
                     </a>
                 </li>
             </ul>
@@ -61,7 +61,7 @@
     <!-- Admin Content -->
     <div class="admin-content">
         <!-- Admin Header -->
-        <header class="admin-header bg-white border-bottom">
+        <header class="admin-header py-1">
             <div class="container-fluid">
                 <div class="row align-items-center py-3">
                     <div class="col">
@@ -75,7 +75,8 @@
                                     @context.User.Identity?.Name
                                 </span>
                                 <form action="/Account/Logout" method="post" class="d-inline">
-                                    <button type="submit" class="btn btn-outline-secondary btn-sm">
+                                    <button type="submit"
+                                        class="btn btn-outline-light btn-sm opacity-75 border-opacity-25 ripple-effect">
                                         <i class="bi bi-box-arrow-right me-1"></i>
                                         Logout
                                     </button>
@@ -98,6 +99,7 @@
     .admin-wrapper {
         display: flex;
         min-height: 100vh;
+        background-color: var(--color-bg-primary);
     }
 
     .admin-sidebar {
@@ -108,32 +110,54 @@
         height: 100vh;
         overflow-y: auto;
         z-index: 1000;
+        background-color: var(--color-bg-secondary) !important;
+        border-right: 1px solid rgba(255, 255, 255, 0.05);
     }
 
     .admin-content {
         flex: 1;
         margin-left: 260px;
-        background: #f8f9fa;
+        background: transparent;
     }
 
     .admin-header {
         position: sticky;
         top: 0;
         z-index: 999;
+        background: rgba(255, 255, 255, 0.03) !important;
+        backdrop-filter: blur(10px);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.05) !important;
     }
 
     .admin-sidebar .nav-link {
         border-radius: 0.5rem;
         transition: all 0.3s ease;
+        color: #94a3b8 !important;
+        margin: 0.2rem 0;
+    }
+
+    .admin-sidebar .nav-link i {
+        font-size: 1.1rem;
     }
 
     .admin-sidebar .nav-link:hover,
     .admin-sidebar .nav-link.active {
-        background: rgba(250, 204, 21, 0.1);
-        color: #facc15 !important;
+        background: rgba(255, 140, 0, 0.1);
+        color: var(--color-secondary) !important;
     }
 
     .admin-main {
         max-width: 1400px;
+        margin: 0 auto;
+    }
+
+    .sidebar-header h4 {
+        font-weight: 700;
+        letter-spacing: -0.5px;
+    }
+
+    .admin-header h5 {
+        font-weight: 600;
+        color: #f8fafc;
     }
 </style>

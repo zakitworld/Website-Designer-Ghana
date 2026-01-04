@@ -9,138 +9,176 @@
 
 <PageTitle>@(Id.HasValue ? "Edit" : "Create") Blog Post - Admin</PageTitle>
 
-<div class="blog-post-edit">
-    <div class="row mb-4">
+<div class="blog-post-edit pt-3">
+    <div class="row mb-5 align-items-center">
         <div class="col">
-            <h2 class="mb-0">@(Id.HasValue ? "Edit" : "Create") Blog Post</h2>
-            <p class="text-muted">@(Id.HasValue ? "Update" : "Write") your blog post</p>
+            <h2 class="display-6 fw-bold gradient-text mb-1">@(Id.HasValue ? "Edit" : "Create") Post</h2>
+            <p class="text-muted mb-0">@(Id.HasValue ? "Refine and update" : "Draft") your digital story.</p>
         </div>
         <div class="col-auto">
-            <a href="/admin/blog-posts" class="btn btn-outline-secondary">
+            <a href="/admin/blog-posts" class="btn btn-outline-light btn-sm border-opacity-10 px-3">
                 <i class="bi bi-arrow-left me-2"></i>
                 Back to Posts
             </a>
         </div>
     </div>
 
-    <div class="card border-0 shadow-sm">
-        <div class="card-body p-4">
-            <EditForm Model="@model" OnValidSubmit="@HandleSubmit">
-                <DataAnnotationsValidator />
+    <div class="glass-card border-0 shadow-lg p-4 p-md-5">
+        <EditForm Model="@model" OnValidSubmit="@HandleSubmit">
+            <DataAnnotationsValidator />
 
-                <div class="row g-4">
-                    <div class="col-12">
-                        <label class="form-label">Title</label>
-                        <InputText @bind-Value="model.Title" class="form-control" placeholder="Enter post title" />
-                        <ValidationMessage For="@(() => model.Title)" class="text-danger" />
-                    </div>
+            <div class="row g-4">
+                <div class="col-12">
+                    <label class="form-label text-secondary small text-uppercase fw-bold ls-wide">Title</label>
+                    <InputText @bind-Value="model.Title"
+                        class="form-control form-control-lg bg-white bg-opacity-05 border-white border-opacity-10 text-white"
+                        placeholder="Enter post title" />
+                    <ValidationMessage For="@(() => model.Title)" class="text-danger small mt-1" />
+                </div>
 
-                    <div class="col-md-6">
-                        <label class="form-label">Slug (URL)</label>
-                        <InputText @bind-Value="model.Slug" class="form-control" placeholder="blog-post-url" />
-                        <small class="form-text text-muted">URL-friendly version of the title</small>
-                        <ValidationMessage For="@(() => model.Slug)" class="text-danger" />
-                    </div>
+                <div class="col-md-6">
+                    <label class="form-label text-secondary small text-uppercase fw-bold ls-wide">Slug (URL)</label>
+                    <InputText @bind-Value="model.Slug"
+                        class="form-control bg-white bg-opacity-05 border-white border-opacity-10 text-white"
+                        placeholder="blog-post-url" />
+                    <div class="form-text text-muted small opacity-50">URL-friendly version of the title</div>
+                    <ValidationMessage For="@(() => model.Slug)" class="text-danger small mt-1" />
+                </div>
 
-                    <div class="col-md-6">
-                        <label class="form-label">Category</label>
-                        <InputSelect @bind-Value="model.CategoryId" class="form-select">
-                            <option value="">Select a category</option>
-                            @if (categories != null)
+                <div class="col-md-6">
+                    <label class="form-label text-secondary small text-uppercase fw-bold ls-wide">Category</label>
+                    <InputSelect @bind-Value="model.CategoryId"
+                        class="form-select bg-white bg-opacity-05 border-white border-opacity-10 text-white">
+                        <option value="">Select a category</option>
+                        @if (categories != null)
+                        {
+                            @foreach (var category in categories)
                             {
-                                @foreach (var category in categories)
-                                {
-                                    <option value="@category.Id">@category.Name</option>
-                                }
+                                <option value="@category.Id">@category.Name</option>
                             }
-                        </InputSelect>
-                    </div>
+                        }
+                    </InputSelect>
+                </div>
 
-                    <div class="col-12">
-                        <label class="form-label">Summary</label>
-                        <InputTextArea @bind-Value="model.Summary" class="form-control" rows="3"
-                            placeholder="Brief summary of the post" />
-                        <ValidationMessage For="@(() => model.Summary)" class="text-danger" />
-                    </div>
+                <div class="col-12">
+                    <label class="form-label text-secondary small text-uppercase fw-bold ls-wide">Summary</label>
+                    <InputTextArea @bind-Value="model.Summary"
+                        class="form-control bg-white bg-opacity-05 border-white border-opacity-10 text-white" rows="3"
+                        placeholder="Brief summary of the post" />
+                    <ValidationMessage For="@(() => model.Summary)" class="text-danger small mt-1" />
+                </div>
 
-                    <div class="col-12">
-                        <label class="form-label">Content (HTML)</label>
-                        <InputTextArea @bind-Value="model.Content" class="form-control" rows="15"
-                            placeholder="Enter post content (HTML supported)" />
-                        <ValidationMessage For="@(() => model.Content)" class="text-danger" />
-                    </div>
+                <div class="col-12">
+                    <label class="form-label text-secondary small text-uppercase fw-bold ls-wide">Content (HTML)</label>
+                    <InputTextArea @bind-Value="model.Content"
+                        class="form-control bg-white bg-opacity-05 border-white border-opacity-10 text-white font-monospace"
+                        rows="15" placeholder="Enter post content (HTML supported)" />
+                    <ValidationMessage For="@(() => model.Content)" class="text-danger small mt-1" />
+                </div>
 
-                    <div class="col-12">
-                        <div class="row">
-                            <div class="col-md-6">
-                                <label class="form-label">Featured Image URL</label>
-                                <InputText @bind-Value="model.FeaturedImage" class="form-control"
-                                    placeholder="https://example.com/image.jpg or upload below" />
-                            </div>
-                            <div class="col-md-6">
-                                <FileUpload Label="Or Upload Featured Image"
-                                    Accept="image/*"
-                                    ImagesOnly="true"
-                                    Folder="blog"
-                                    MaxFileSizeInMB="5"
-                                    OnFileUploaded="@HandleImageUploaded" />
-                            </div>
+                <div class="col-12 border-top border-white border-opacity-10 pt-4">
+                    <div class="row g-4">
+                        <div class="col-md-6">
+                            <label class="form-label text-secondary small text-uppercase fw-bold ls-wide">Featured Image
+                                URL</label>
+                            <InputText @bind-Value="model.FeaturedImage"
+                                class="form-control bg-white bg-opacity-05 border-white border-opacity-10 text-white"
+                                placeholder="https://example.com/image.jpg" />
                         </div>
-                    </div>
-
-                    <div class="col-md-6">
-                        <label class="form-label">Author</label>
-                        <InputText @bind-Value="model.Author" class="form-control" placeholder="Author name" />
-                        <ValidationMessage For="@(() => model.Author)" class="text-danger" />
-                    </div>
-
-                    <div class="col-md-4">
-                        <label class="form-label">Meta Title (SEO)</label>
-                        <InputText @bind-Value="model.MetaTitle" class="form-control" placeholder="SEO title" />
-                    </div>
-
-                    <div class="col-md-8">
-                        <label class="form-label">Meta Description (SEO)</label>
-                        <InputText @bind-Value="model.MetaDescription" class="form-control"
-                            placeholder="SEO description" />
-                    </div>
-
-                    <div class="col-md-6">
-                        <label class="form-label">Meta Keywords (SEO)</label>
-                        <InputText @bind-Value="model.MetaKeywords" class="form-control"
-                            placeholder="keyword1, keyword2, keyword3" />
-                    </div>
-
-                    <div class="col-md-6">
-                        <div class="form-check mt-4 pt-2">
-                            <InputCheckbox @bind-Value="model.IsPublished" class="form-check-input" id="isPublished" />
-                            <label class="form-check-label" for="isPublished">
-                                Publish this post
-                            </label>
-                        </div>
-                    </div>
-
-                    <div class="col-12">
-                        <hr />
-                        <div class="d-flex justify-content-between">
-                            <button type="button" class="btn btn-outline-secondary" @onclick="Cancel">
-                                Cancel
-                            </button>
-                            <button type="submit" class="btn btn-secondary" disabled="@isSaving">
-                                @if (isSaving)
-                                {
-                                    <span class="spinner-border spinner-border-sm me-2"></span>
-                                }
-                                <i class="bi bi-check-circle me-2"></i>
-                                @(Id.HasValue ? "Update" : "Create") Post
-                            </button>
+                        <div class="col-md-6">
+                            <label class="form-label text-secondary small text-uppercase fw-bold ls-wide">Or Upload
+                                Image</label>
+                            <div class="p-3 bg-white bg-opacity-05 border-white border-opacity-10 rounded">
+                                <FileUpload Label="Upload Featured Image" Accept="image/*" ImagesOnly="true"
+                                    Folder="blog" MaxFileSizeInMB="5" OnFileUploaded="@HandleImageUploaded" />
+                            </div>
                         </div>
                     </div>
                 </div>
-            </EditForm>
-        </div>
+
+                <div class="col-md-6">
+                    <label class="form-label text-secondary small text-uppercase fw-bold ls-wide">Author</label>
+                    <InputText @bind-Value="model.Author"
+                        class="form-control bg-white bg-opacity-05 border-white border-opacity-10 text-white"
+                        placeholder="Author name" />
+                    <ValidationMessage For="@(() => model.Author)" class="text-danger small mt-1" />
+                </div>
+
+                <div class="col-12 border-top border-white border-opacity-10 pt-4">
+                    <h5 class="text-white fw-bold mb-3 ls-wide">SEO Settings</h5>
+                    <div class="row g-4">
+                        <div class="col-md-4">
+                            <label class="form-label text-secondary small text-uppercase fw-bold ls-wide">Meta
+                                Title</label>
+                            <InputText @bind-Value="model.MetaTitle"
+                                class="form-control bg-white bg-opacity-05 border-white border-opacity-10 text-white"
+                                placeholder="SEO title" />
+                        </div>
+
+                        <div class="col-md-8">
+                            <label class="form-label text-secondary small text-uppercase fw-bold ls-wide">Meta
+                                Description</label>
+                            <InputText @bind-Value="model.MetaDescription"
+                                class="form-control bg-white bg-opacity-05 border-white border-opacity-10 text-white"
+                                placeholder="SEO description" />
+                        </div>
+
+                        <div class="col-md-12">
+                            <label class="form-label text-secondary small text-uppercase fw-bold ls-wide">Meta
+                                Keywords</label>
+                            <InputText @bind-Value="model.MetaKeywords"
+                                class="form-control bg-white bg-opacity-05 border-white border-opacity-10 text-white"
+                                placeholder="keyword1, keyword2, keyword3" />
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-12 border-top border-white border-opacity-10 pt-4">
+                    <div class="d-flex align-items-center py-2">
+                        <div class="form-check form-switch">
+                            <InputCheckbox @bind-Value="model.IsPublished" class="form-check-input" id="isPublished" />
+                            <label class="form-check-label text-white fw-bold ms-2" for="isPublished">
+                                Publish post now
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-12 pt-4">
+                    <div class="d-flex justify-content-end gap-3">
+                        <button type="button" class="btn btn-outline-light border-opacity-10 px-4" @onclick="Cancel">
+                            Cancel
+                        </button>
+                        <button type="submit" class="btn btn-primary px-5 py-2 border-0 shadow-lg ripple-effect"
+                            disabled="@isSaving">
+                            @if (isSaving)
+                            {
+                                <span class="spinner-border spinner-border-sm me-2"></span>
+                            }
+                            <i class="bi bi-check-circle me-2"></i>
+                            @(Id.HasValue ? "Save Changes" : "Create Post")
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </EditForm>
     </div>
 </div>
+
+<style>
+    .ls-wide {
+        letter-spacing: 0.1em;
+    }
+
+    .form-control:focus,
+    .form-select:focus {
+        background-color: rgba(255, 255, 255, 0.08) !important;
+    }
+
+    .breadcrumb-item.active {
+        color: var(--color-secondary);
+    }
+</style>
 
 @code {
     [Parameter] public int? Id { get; set; }

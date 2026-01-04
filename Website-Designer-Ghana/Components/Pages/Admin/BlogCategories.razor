@@ -8,15 +8,15 @@
 
 <PageTitle>Blog Categories - Admin</PageTitle>
 
-<div class="blog-categories-admin">
-    <div class="row mb-4">
+<div class="blog-categories-admin pt-3">
+    <div class="row mb-5 align-items-center">
         <div class="col">
-            <h2 class="mb-0">Blog Categories</h2>
-            <p class="text-muted">Organize your blog content</p>
+            <h2 class="display-6 fw-bold gradient-text mb-1">Blog Categories</h2>
+            <p class="text-muted mb-0">Organize and tag your content systematically.</p>
         </div>
         <div class="col-auto">
-            <button type="button" class="btn btn-secondary" @onclick="ShowCreateModal">
-                <i class="bi bi-plus-circle me-2"></i>
+            <button type="button" class="btn btn-primary px-4 py-2 border-0 shadow-lg ripple-effect" @onclick="ShowCreateModal">
+                <i class="bi bi-plus-lg me-2"></i>
                 Create Category
             </button>
         </div>
@@ -30,12 +30,12 @@
         </div>
     }
 
-    <div class="card border-0 shadow-sm">
-        <div class="card-body">
+    <div class="glass-card border-0 shadow-lg overflow-hidden">
+        <div class="p-0">
             @if (categories == null)
             {
                 <div class="text-center py-5">
-                    <div class="spinner-border text-secondary" role="status">
+                    <div class="spinner-border text-primary" role="status">
                         <span class="visually-hidden">Loading...</span>
                     </div>
                 </div>
@@ -43,43 +43,49 @@
             else if (!categories.Any())
             {
                 <div class="text-center py-5">
-                    <i class="bi bi-inbox fs-1 text-muted"></i>
-                    <p class="text-muted mt-3">No categories yet. Create your first category!</p>
+                    <i class="bi bi-folder-plus fs-1 text-muted mb-3 d-block"></i>
+                    <p class="text-muted mb-4">No categories yet. Create your first category to organize posts!</p>
+                    <button class="btn btn-outline-primary px-4" @onclick="ShowCreateModal">Create First Category</button>
                 </div>
             }
             else
             {
                 <div class="table-responsive">
-                    <table class="table table-hover">
-                        <thead>
+                    <table class="table table-dark table-hover align-middle mb-0">
+                        <thead class="bg-white bg-opacity-05">
                             <tr>
-                                <th>Name</th>
-                                <th>Slug</th>
-                                <th>Description</th>
-                                <th>Posts Count</th>
-                                <th>Actions</th>
+                                <th class="px-4 py-3 text-muted fw-semibold border-opacity-10">Name</th>
+                                <th class="py-3 text-muted fw-semibold border-opacity-10">Slug</th>
+                                <th class="py-3 text-muted fw-semibold border-opacity-10">Description</th>
+                                <th class="py-3 text-muted fw-semibold border-opacity-10">Posts</th>
+                                <th class="px-4 py-3 text-muted fw-semibold border-opacity-10 text-end">Actions</th>
                             </tr>
                         </thead>
                         <tbody>
                             @foreach (var category in categories)
                             {
                                 <tr>
+                                    <td class="px-4 py-3">
+                                        <div class="d-flex align-items-center">
+                                            <div class="category-color-dot me-3 shadow-sm" style="background-color: @category.Color;"></div>
+                                            <span class="fw-bold text-white">@category.Name</span>
+                                        </div>
+                                    </td>
+                                    <td class="text-secondary small">@category.Slug</td>
+                                    <td class="text-muted small">@category.Description</td>
                                     <td>
-                                        <span class="badge" style="background-color: @category.Color;">
-                                            @category.Name
+                                        <span class="badge bg-opacity-10 bg-primary text-primary rounded-pill px-3">
+                                            @category.Posts.Count() Posts
                                         </span>
                                     </td>
-                                    <td>@category.Slug</td>
-                                    <td>@category.Description</td>
-                                    <td>@category.Posts.Count()</td>
-                                    <td>
-                                        <div class="btn-group btn-group-sm">
-                                            <button type="button" class="btn btn-outline-primary"
-                                                @onclick="() => EditCategory(category)">
+                                    <td class="px-4 text-end">
+                                        <div class="btn-group shadow-sm">
+                                            <button type="button" class="btn btn-outline-light btn-sm border-opacity-10"
+                                                @onclick="() => EditCategory(category)" title="Edit">
                                                 <i class="bi bi-pencil"></i>
                                             </button>
-                                            <button type="button" class="btn btn-outline-danger"
-                                                @onclick="() => DeleteCategory(category.Id)">
+                                            <button type="button" class="btn btn-outline-danger btn-sm border-opacity-10"
+                                                @onclick="() => DeleteCategory(category.Id)" title="Delete">
                                                 <i class="bi bi-trash"></i>
                                             </button>
                                         </div>
@@ -94,47 +100,58 @@
     </div>
 </div>
 
+<style>
+    .category-color-dot { width: 12px; height: 12px; border-radius: 50%; border: 2px solid rgba(255,255,255,0.2); }
+    .table-dark { --bs-table-bg: transparent; }
+</style>
+
 <!-- Create/Edit Modal -->
 @if (showModal)
 {
-    <div class="modal fade show d-block" tabindex="-1" style="background: rgba(0,0,0,0.5);">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">@(editingCategory != null ? "Edit" : "Create") Category</h5>
-                    <button type="button" class="btn-close" @onclick="CloseModal"></button>
+    <div class="modal fade show d-block" tabindex="-1" style="background: rgba(0,0,0,0.8); backdrop-filter: blur(8px);">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="glass-card border-0 shadow-2xl w-100 overflow-hidden">
+                <div class="p-4 border-bottom border-white border-opacity-10 d-flex justify-content-between align-items-center">
+                    <h5 class="modal-title fw-bold text-white mb-0">
+                        <i class="bi bi-folder2-open text-primary me-2"></i>
+                        @(editingCategory != null ? "Edit" : "Create") Category
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white opacity-50" @onclick="CloseModal"></button>
                 </div>
                 <EditForm Model="@model" OnValidSubmit="@HandleSubmit">
                     <DataAnnotationsValidator />
-                    <div class="modal-body">
+                    <div class="p-4">
                         <div class="mb-3">
-                            <label class="form-label">Name</label>
-                            <InputText @bind-Value="model.Name" class="form-control" placeholder="Category name" />
-                            <ValidationMessage For="@(() => model.Name)" class="text-danger" />
+                            <label class="form-label text-secondary small text-uppercase fw-bold">Name</label>
+                            <InputText @bind-Value="model.Name" class="form-control bg-white bg-opacity-05 border-white border-opacity-10 text-white py-2" placeholder="e.g. Web Design" />
+                            <ValidationMessage For="@(() => model.Name)" class="text-danger small mt-1" />
                         </div>
                         <div class="mb-3">
-                            <label class="form-label">Slug</label>
-                            <InputText @bind-Value="model.Slug" class="form-control" placeholder="category-slug" />
-                            <ValidationMessage For="@(() => model.Slug)" class="text-danger" />
+                            <label class="form-label text-secondary small text-uppercase fw-bold">Slug</label>
+                            <InputText @bind-Value="model.Slug" class="form-control bg-white bg-opacity-05 border-white border-opacity-10 text-white py-2" placeholder="e.g. web-design" />
+                            <ValidationMessage For="@(() => model.Slug)" class="text-danger small mt-1" />
                         </div>
                         <div class="mb-3">
-                            <label class="form-label">Description</label>
-                            <InputTextArea @bind-Value="model.Description" class="form-control" rows="2"
-                                placeholder="Category description" />
+                            <label class="form-label text-secondary small text-uppercase fw-bold">Description</label>
+                            <InputTextArea @bind-Value="model.Description" class="form-control bg-white bg-opacity-05 border-white border-opacity-10 text-white py-2" rows="3"
+                                placeholder="A brief overview of this category..." />
                         </div>
-                        <div class="mb-3">
-                            <label class="form-label">Color</label>
-                            <InputText @bind-Value="model.Color" type="color" class="form-control form-control-color" />
+                        <div class="mb-0">
+                            <label class="form-label text-secondary small text-uppercase fw-bold">Color Theme</label>
+                            <div class="d-flex align-items-center bg-white bg-opacity-05 border-white border-opacity-10 rounded p-2">
+                                <InputText @bind-Value="model.Color" type="color" class="form-control form-control-color border-0 bg-transparent p-0 me-3" style="width: 40px; height: 30px;" />
+                                <span class="text-muted small">Choose a recognizable color for this category</span>
+                            </div>
                         </div>
                     </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-outline-secondary" @onclick="CloseModal">Cancel</button>
-                        <button type="submit" class="btn btn-secondary" disabled="@isSaving">
+                    <div class="p-4 bg-white bg-opacity-05 border-top border-white border-opacity-10 d-flex justify-content-end gap-2">
+                        <button type="button" class="btn btn-outline-light border-opacity-10 px-4" @onclick="CloseModal">Cancel</button>
+                        <button type="submit" class="btn btn-primary px-4 border-0 shadow-lg" disabled="@isSaving">
                             @if (isSaving)
                             {
                                 <span class="spinner-border spinner-border-sm me-2"></span>
                             }
-                            @(editingCategory != null ? "Update" : "Create")
+                            @(editingCategory != null ? "Save Changes" : "Create Category")
                         </button>
                     </div>
                 </EditForm>
