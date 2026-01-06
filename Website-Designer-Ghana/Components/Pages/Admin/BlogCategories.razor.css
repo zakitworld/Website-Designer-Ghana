@@ -1,0 +1,10 @@
+.category-color-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    border: 2px solid rgba(255, 255, 255, 0.2);
+}
+
+.table-dark {
+    --bs-table-bg: transparent;
+}

@@ -2,8 +2,10 @@
 @using Microsoft.AspNetCore.Authorization
 @using Website_Designer_Ghana.Services.Interfaces
 @using Website_Designer_Ghana.Data.Models
+@using Website_Designer_Ghana.Models.Admin
 @attribute [Authorize(Roles = "Admin")]
 @layout AdminLayout
+@rendermode InteractiveServer
 
 <PageTitle>Course Management - Admin</PageTitle>
 
@@ -14,7 +16,7 @@
             <p class="text-muted mb-0">Manage and organize your educational content.</p>
         </div>
         <div class="col-auto">
-            <button type="button" class="btn btn-primary border-0 shadow-lg px-4 py-2 ripple-effect">
+            <button type="button" class="btn btn-primary border-0 shadow-lg px-4 py-2 ripple-effect" @onclick="ShowCreateModal">
                 <i class="bi bi-plus-circle me-2"></i>
                 Create Course
             </button>
@@ -53,7 +55,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach (var course in courses)
+                            @foreach (Website_Designer_Ghana.Data.Models.Course course in courses)
                             {
                                 <tr>
                                     <td class="px-4 py-3">
@@ -81,10 +83,12 @@
                                     </td>
                                     <td class="px-4 text-end">
                                         <div class="btn-group btn-group-sm">
-                                            <button type="button" class="btn btn-outline-light border-opacity-10 px-3 shadow-sm ripple-effect">
+                                            <button type="button" class="btn btn-outline-light border-opacity-10 px-3 shadow-sm ripple-effect"
+                                                @onclick="() => EditCourse(course)">
                                                 <i class="bi bi-pencil"></i>
                                             </button>
-                                            <button type="button" class="btn btn-outline-danger border-opacity-10 px-3 shadow-sm ripple-effect ms-1">
+                                            <button type="button" class="btn btn-outline-danger border-opacity-10 px-3 shadow-sm ripple-effect ms-1"
+                                                @onclick="() => DeleteCourse(course.Id)">
                                                 <i class="bi bi-trash"></i>
                                             </button>
                                         </div>
@@ -99,31 +103,112 @@
     </div>
 </div>
 
-<style>
-    .table-dark { --bs-table-bg: transparent; }
-    .table > :not(caption) > * > * { border-bottom-color: rgba(255,255,255,0.05); }
-</style>
-
-@code {
-    [Inject] private ICourseService CourseService { get; set; } = default!;
-
-    private IEnumerable<Course>? courses;
-
-    protected override async Task OnInitializedAsync()
-    {
-        await LoadDataAsync();
-    }
-
-    private async Task LoadDataAsync()
-    {
-        try
-        {
-            courses = await CourseService.GetAllCoursesAsync(publishedOnly: false);
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine($"Error loading courses: {ex.Message}");
-            courses = new List<Course>();
-        }
-    }
+@if (showSuccessMessage)
+{
+    <div class="position-fixed top-0 start-50 translate-middle-x mt-5 px-3" style="z-index: 9999;">
+        <div class="alert alert-success alert-dismissible fade show shadow-lg" role="alert">
+            @successMessage
+            <button type="button" class="btn-close" @onclick="() => showSuccessMessage = false"></button>
+        </div>
+    </div>
 }
+
+@if (showErrorMessage)
+{
+    <div class="position-fixed top-0 start-50 translate-middle-x mt-5 px-3" style="z-index: 9999;">
+        <div class="alert alert-danger alert-dismissible fade show shadow-lg" role="alert">
+            <strong>Error!</strong> @errorMessage
+            <button type="button" class="btn-close" @onclick="() => showErrorMessage = false"></button>
+        </div>
+    </div>
+}
+
+<!-- Create/Edit Modal -->
+@if (showModal)
+{
+    <div class="modal show d-block" tabindex="-1" style="background: rgba(0,0,0,0.8); backdrop-filter: blur(8px);">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content bg-transparent border-0">
+                <div class="glass-card border-0 shadow-2xl w-100 overflow-hidden">
+                    <div class="p-4 border-bottom border-white border-opacity-10 d-flex justify-content-between align-items-center">
+                        <h5 class="modal-title fw-bold text-white mb-0">
+                            <i class="bi bi-book text-primary me-2"></i>
+                            @(editingCourse != null ? "Edit" : "Create") Course
+                        </h5>
+                        <button type="button" class="btn-close btn-close-white opacity-50" @onclick="CloseModal"></button>
+                    </div>
+                    <EditForm Model="@model" OnValidSubmit="@HandleSubmit">
+                        <DataAnnotationsValidator />
+                        <div class="p-4" style="max-height: 70vh; overflow-y: auto;">
+                            <div class="row g-3">
+                                <div class="col-12">
+                                    <label class="form-label text-secondary small text-uppercase fw-bold">Title</label>
+                                    <InputText @bind-Value="model.Title" class="form-control bg-dark bg-opacity-50 border-white border-opacity-10 text-white" placeholder="Course Title" />
+                                    <ValidationMessage For="@(() => model.Title)" class="text-danger small mt-1" />
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label text-secondary small text-uppercase fw-bold">Slug</label>
+                                    <InputText @bind-Value="model.Slug" class="form-control bg-dark bg-opacity-50 border-white border-opacity-10 text-white" placeholder="course-url" />
+                                    <ValidationMessage For="@(() => model.Slug)" class="text-danger small mt-1" />
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label text-secondary small text-uppercase fw-bold">Level</label>
+                                    <InputSelect @bind-Value="model.Level" class="form-select bg-dark bg-opacity-50 border-white border-opacity-10 text-white">
+                                        <option value="">Select level</option>
+                                        <option value="Beginner">Beginner</option>
+                                        <option value="Intermediate">Intermediate</option>
+                                        <option value="Advanced">Advanced</option>
+                                    </InputSelect>
+                                </div>
+                                <div class="col-12">
+                                    <label class="form-label text-secondary small text-uppercase fw-bold">Description</label>
+                                    <InputTextArea @bind-Value="model.Description" class="form-control bg-dark bg-opacity-50 border-white border-opacity-10 text-white" rows="3" placeholder="Course description" />
+                                    <ValidationMessage For="@(() => model.Description)" class="text-danger small mt-1" />
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label text-secondary small text-uppercase fw-bold">Price (GH₵)</label>
+                                    <InputNumber @bind-Value="model.Price" class="form-control bg-dark bg-opacity-50 border-white border-opacity-10 text-white" placeholder="0.00" />
+                                    <ValidationMessage For="@(() => model.Price)" class="text-danger small mt-1" />
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label text-secondary small text-uppercase fw-bold">Discount Price</label>
+                                    <InputNumber @bind-Value="model.DiscountPrice" class="form-control bg-dark bg-opacity-50 border-white border-opacity-10 text-white" placeholder="0.00" />
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label text-secondary small text-uppercase fw-bold">Duration</label>
+                                    <InputText @bind-Value="model.Duration" class="form-control bg-dark bg-opacity-50 border-white border-opacity-10 text-white" placeholder="e.g. 8 weeks" />
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label text-secondary small text-uppercase fw-bold">Featured Image URL</label>
+                                    <InputText @bind-Value="model.FeaturedImage" class="form-control bg-dark bg-opacity-50 border-white border-opacity-10 text-white" placeholder="https://..." />
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label text-secondary small text-uppercase fw-bold">Icon</label>
+                                    <InputText @bind-Value="model.Icon" class="form-control bg-dark bg-opacity-50 border-white border-opacity-10 text-white" placeholder="bi-code-slash" />
+                                </div>
+                                <div class="col-12">
+                                    <div class="form-check form-switch">
+                                        <InputCheckbox @bind-Value="model.IsPublished" class="form-check-input" id="isPublished" />
+                                        <label class="form-check-label text-white ms-2" for="isPublished">Publish Course</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="p-4 bg-black bg-opacity-50 border-top border-white border-opacity-10 d-flex justify-content-end gap-2">
+                            <button type="button" class="btn btn-outline-light border-opacity-10 px-4" @onclick="CloseModal">Cancel</button>
+                            <button type="submit" class="btn btn-primary px-4 border-0 shadow-lg" disabled="@isSaving">
+                                @if (isSaving)
+                                {
+                                    <span class="spinner-border spinner-border-sm me-2"></span>
+                                }
+                                @(editingCourse != null ? "Save Changes" : "Create Course")
+                            </button>
+                        </div>
+                    </EditForm>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+

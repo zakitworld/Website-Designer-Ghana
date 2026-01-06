@@ -27,6 +27,7 @@
         opacity: 0;
         transform: translateY(30px);
     }
+
     to {
         opacity: 1;
         transform: translateY(0);
@@ -34,18 +35,7 @@
 }
 
 /* Contact Form Styling */
-.contact-form .form-control {
-    border: 2px solid #e9ecef;
-    border-radius: 8px;
-    padding: 12px 16px;
-    transition: all 0.3s ease;
-}
-
-.contact-form .form-control:focus {
-    border-color: #dc3545;
-    box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.1);
-}
-
+/* Use global styles from app.css for form-control */
 .contact-form .form-label {
     margin-bottom: 0.75rem;
     font-size: 1rem;
@@ -106,18 +96,24 @@
 }
 
 @keyframes float {
-    0%, 100% {
+
+    0%,
+    100% {
         transform: translateY(0px);
     }
+
     50% {
         transform: translateY(-20px);
     }
 }
 
 @keyframes float-reverse {
-    0%, 100% {
+
+    0%,
+    100% {
         transform: translateY(0px);
     }
+
     50% {
         transform: translateY(20px);
     }

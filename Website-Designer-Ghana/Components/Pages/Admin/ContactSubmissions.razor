@@ -4,6 +4,7 @@
 @using Website_Designer_Ghana.Data.Models
 @attribute [Authorize(Roles = "Admin")]
 @layout AdminLayout
+@rendermode InteractiveServer
 
 <PageTitle>Contact Submissions - Admin</PageTitle>
 
@@ -90,15 +91,6 @@
     </div>
 </div>
 
-<style>
-    .table-dark {
-        --bs-table-bg: transparent;
-    }
-
-    .table> :not(caption)>*>* {
-        border-bottom-color: rgba(255, 255, 255, 0.05);
-    }
-</style>
 
 <!-- View Modal -->
 @if (selectedSubmission != null)
@@ -147,7 +139,7 @@
                         <div class="col-12 border-top border-white border-opacity-10 pt-4">
                             <label class="text-secondary small text-uppercase fw-bold ls-wide mb-2 d-block">Message
                                 Content</label>
-                            <div class="bg-white bg-opacity-05 p-4 rounded border border-white border-opacity-10 text-white-50 lh-lg"
+                            <div class="bg-black bg-opacity-50 p-4 rounded border border-white border-opacity-10 text-white-50 lh-lg"
                                 style="white-space: pre-wrap;">@selectedSubmission.Message</div>
                         </div>
                         <div class="col-md-6 border-top border-white border-opacity-10 pt-4">
@@ -164,7 +156,7 @@
                     </div>
                 </div>
                 <div
-                    class="p-4 bg-white bg-opacity-05 border-top border-white border-opacity-10 d-flex justify-content-end">
+                    class="p-4 bg-black bg-opacity-50 border-top border-white border-opacity-10 d-flex justify-content-end">
                     <button type="button" class="btn btn-outline-light border-opacity-10 px-4"
                     @onclick="CloseModal">Close</button>
                     <a href="mailto:@selectedSubmission.Email" class="btn btn-primary px-4 border-0 shadow-lg ms-2">
@@ -176,51 +168,3 @@
     </div>
 }
 
-@code {
-    [Inject] private IContactService ContactService { get; set; } = default!;
-
-    private IEnumerable<ContactSubmission>? submissions;
-    private ContactSubmission? selectedSubmission;
-
-    protected override async Task OnInitializedAsync()
-    {
-        await LoadDataAsync();
-    }
-
-    private async Task LoadDataAsync()
-    {
-        try
-        {
-            submissions = (await ContactService.GetRecentSubmissionsAsync(100))
-            .OrderByDescending(s => s.SubmittedAt);
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine($"Error loading contact submissions: {ex.Message}");
-            submissions = new List<ContactSubmission>();
-        }
-    }
-
-    private async Task ViewSubmission(ContactSubmission submission)
-    {
-        selectedSubmission = submission;
-
-        if (!submission.IsRead)
-        {
-            try
-            {
-                await ContactService.MarkAsReadAsync(submission.Id);
-                submission.IsRead = true;
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Error marking submission as read: {ex.Message}");
-            }
-        }
-    }
-
-    private void CloseModal()
-    {
-        selectedSubmission = null;
-    }
-}

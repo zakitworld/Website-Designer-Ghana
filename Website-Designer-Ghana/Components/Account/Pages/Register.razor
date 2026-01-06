@@ -7,18 +7,10 @@
 @using Microsoft.AspNetCore.WebUtilities
 @using Website_Designer_Ghana.Data
 
-@inject UserManager<ApplicationUser> UserManager
-@inject IUserStore<ApplicationUser> UserStore
-@inject SignInManager<ApplicationUser> SignInManager
-@inject IEmailSender<ApplicationUser> EmailSender
-@inject ILogger<Register> Logger
-@inject NavigationManager NavigationManager
-@inject IdentityRedirectManager RedirectManager
-
 <PageTitle>Register - Website Designer in Ghana</PageTitle>
 
-<div class="register-container">
-    <div class="register-card">
+<div class="register-container bg-black">
+    <div class="register-card glass-card">
         <div class="register-header">
             <h1>Create Account</h1>
             <p>Join our community today</p>
@@ -27,9 +19,9 @@
         <div class="register-body">
             @if (!string.IsNullOrEmpty(Message))
             {
-                    <div class="error-message">
+                <div class="error-message">
                     @Message
-                    </div>
+                </div>
             }
 
             <EditForm Model="Input" method="post" OnValidSubmit="RegisterUser" FormName="register">
@@ -40,11 +32,13 @@
                     <div class="form-group">
                         <label for="Input.FirstName" class="form-label">First Name</label>
                         <div class="input-with-icon">
-                            <svg class="input-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <svg class="input-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                                stroke="currentColor" stroke-width="2">
                                 <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
                                 <circle cx="12" cy="7" r="4"></circle>
                             </svg>
-                            <InputText @bind-Value="Input.FirstName" id="Input.FirstName" class="form-control" autocomplete="given-name" placeholder="First Name" />
+                            <InputText @bind-Value="Input.FirstName" id="Input.FirstName" class="form-control"
+                                autocomplete="given-name" placeholder="First Name" />
                         </div>
                         <ValidationMessage For="() => Input.FirstName" class="text-danger" />
                     </div>
@@ -52,38 +46,30 @@
                     <div class="form-group">
                         <label for="Input.LastName" class="form-label">Last Name</label>
                         <div class="input-with-icon">
-                            <svg class="input-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <svg class="input-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                                stroke="currentColor" stroke-width="2">
                                 <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
                                 <circle cx="12" cy="7" r="4"></circle>
                             </svg>
-                            <InputText @bind-Value="Input.LastName" id="Input.LastName" class="form-control" autocomplete="family-name" placeholder="Last Name" />
+                            <InputText @bind-Value="Input.LastName" id="Input.LastName" class="form-control"
+                                autocomplete="family-name" placeholder="Last Name" />
                         </div>
                         <ValidationMessage For="() => Input.LastName" class="text-danger" />
                     </div>
                 </div>
 
-                <div class="form-group">
-                    <label for="Input.Username" class="form-label">Username</label>
-                    <div class="input-with-icon">
-                        <svg class="input-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <circle cx="12" cy="12" r="10"></circle>
-                            <path d="M8 14s1.5 2 4 2 4-2 4-2"></path>
-                            <line x1="9" y1="9" x2="9.01" y2="9"></line>
-                            <line x1="15" y1="9" x2="15.01" y2="9"></line>
-                        </svg>
-                        <InputText @bind-Value="Input.Username" id="Input.Username" class="form-control" autocomplete="username" placeholder="Username" />
-                    </div>
-                    <ValidationMessage For="() => Input.Username" class="text-danger" />
-                </div>
 
                 <div class="form-group">
                     <label for="Input.Email" class="form-label">Email Address</label>
                     <div class="input-with-icon">
-                        <svg class="input-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+                        <svg class="input-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2">
+                            <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z">
+                            </path>
                             <polyline points="22,6 12,13 2,6"></polyline>
                         </svg>
-                        <InputText @bind-Value="Input.Email" id="Input.Email" class="form-control" autocomplete="email" placeholder="Email Address" />
+                        <InputText @bind-Value="Input.Email" id="Input.Email" class="form-control" autocomplete="email"
+                            placeholder="Email Address" />
                     </div>
                     <ValidationMessage For="() => Input.Email" class="text-danger" />
                 </div>
@@ -91,11 +77,13 @@
                 <div class="form-group">
                     <label for="Input.Password" class="form-label">Password</label>
                     <div class="input-with-icon">
-                        <svg class="input-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <svg class="input-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2">
                             <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
                             <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
                         </svg>
-                        <InputText type="password" @bind-Value="Input.Password" id="Input.Password" class="form-control" autocomplete="new-password" placeholder="Password" />
+                        <InputText type="password" @bind-Value="Input.Password" id="Input.Password" class="form-control"
+                            autocomplete="new-password" placeholder="Password" />
                     </div>
                     <ValidationMessage For="() => Input.Password" class="text-danger" />
                 </div>
@@ -103,11 +91,13 @@
                 <div class="form-group">
                     <label for="Input.ConfirmPassword" class="form-label">Confirm Password</label>
                     <div class="input-with-icon">
-                        <svg class="input-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <svg class="input-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2">
                             <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
                             <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
                         </svg>
-                        <InputText type="password" @bind-Value="Input.ConfirmPassword" id="Input.ConfirmPassword" class="form-control" autocomplete="new-password" placeholder="Confirm Password" />
+                        <InputText type="password" @bind-Value="Input.ConfirmPassword" id="Input.ConfirmPassword"
+                            class="form-control" autocomplete="new-password" placeholder="Confirm Password" />
                     </div>
                     <ValidationMessage For="() => Input.ConfirmPassword" class="text-danger" />
                 </div>
@@ -121,7 +111,8 @@
                 </div>
 
                 <button type="submit" class="btn-register">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2">
                         <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
                         <circle cx="8.5" cy="7" r="4"></circle>
                         <polyline points="17 11 19 13 23 9"></polyline>
@@ -136,116 +127,3 @@
         </div>
     </div>
 </div>
-
-@code {
-    private IEnumerable<IdentityError>? identityErrors;
-
-    [SupplyParameterFromForm]
-    private InputModel Input { get; set; } = default!;
-
-    [SupplyParameterFromQuery]
-    private string? ReturnUrl { get; set; }
-
-    private string? Message => identityErrors is null ? null : $"Error: {string.Join(", ", identityErrors.Select(error => error.Description))}";
-
-    protected override void OnInitialized()
-    {
-        Input ??= new();
-    }
-
-    public async Task RegisterUser(EditContext editContext)
-    {
-        var user = CreateUser();
-
-        // Set the additional user properties
-        user.FirstName = Input.FirstName;
-        user.LastName = Input.LastName;
-
-        await UserStore.SetUserNameAsync(user, Input.Username, CancellationToken.None);
-        var emailStore = GetEmailStore();
-        await emailStore.SetEmailAsync(user, Input.Email, CancellationToken.None);
-        var result = await UserManager.CreateAsync(user, Input.Password);
-
-        if (!result.Succeeded)
-        {
-            identityErrors = result.Errors;
-            return;
-        }
-
-        Logger.LogInformation("User created a new account with password.");
-
-        var userId = await UserManager.GetUserIdAsync(user);
-        var code = await UserManager.GenerateEmailConfirmationTokenAsync(user);
-        code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
-        var callbackUrl = NavigationManager.GetUriWithQueryParameters(
-            NavigationManager.ToAbsoluteUri("Account/ConfirmEmail").AbsoluteUri,
-            new Dictionary<string, object?> { ["userId"] = userId, ["code"] = code, ["returnUrl"] = ReturnUrl });
-
-        await EmailSender.SendConfirmationLinkAsync(user, Input.Email, HtmlEncoder.Default.Encode(callbackUrl));
-
-        if (UserManager.Options.SignIn.RequireConfirmedAccount)
-        {
-            RedirectManager.RedirectTo(
-                "Account/RegisterConfirmation",
-                new() { ["email"] = Input.Email, ["returnUrl"] = ReturnUrl });
-        }
-        else
-        {
-            await SignInManager.SignInAsync(user, isPersistent: false);
-            RedirectManager.RedirectTo(ReturnUrl);
-        }
-    }
-
-    private ApplicationUser CreateUser()
-    {
-        try
-        {
-            return Activator.CreateInstance<ApplicationUser>();
-        }
-        catch
-        {
-            throw new InvalidOperationException($"Can't create an instance of '{nameof(ApplicationUser)}'. " +
-                $"Ensure that '{nameof(ApplicationUser)}' is not an abstract class and has a parameterless constructor.");
-        }
-    }
-
-    private IUserEmailStore<ApplicationUser> GetEmailStore()
-    {
-        if (!UserManager.SupportsUserEmail)
-        {
-            throw new NotSupportedException("The default UI requires a user store with email support.");
-        }
-        return (IUserEmailStore<ApplicationUser>)UserStore;
-    }
-
-    private sealed class InputModel
-    {
-        [Required]
-        [Display(Name = "First Name")]
-        public string FirstName { get; set; } = "";
-
-        [Required]
-        [Display(Name = "Last Name")]
-        public string LastName { get; set; } = "";
-
-        [Required]
-        [Display(Name = "Username")]
-        public string Username { get; set; } = "";
-
-        [Required]
-        [EmailAddress]
-        [Display(Name = "Email")]
-        public string Email { get; set; } = "";
-
-        [Required]
-        [StringLength(100, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 6)]
-        [DataType(DataType.Password)]
-        [Display(Name = "Password")]
-        public string Password { get; set; } = "";
-
-        [DataType(DataType.Password)]
-        [Display(Name = "Confirm password")]
-        [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
-        public string ConfirmPassword { get; set; } = "";
-    }
-}

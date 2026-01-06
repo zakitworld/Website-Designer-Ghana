@@ -3,17 +3,32 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    background: #f3f4f6;
     padding: 100px 20px 20px 20px;
+    position: relative;
+    overflow: hidden;
+}
+
+.login-container::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background:
+        radial-gradient(circle at 20% 50%, rgba(59, 130, 246, 0.1) 0%, transparent 50%),
+        radial-gradient(circle at 80% 80%, rgba(255, 140, 0, 0.1) 0%, transparent 50%);
+    pointer-events: none;
 }
 
 .login-card {
-    background: white;
     border-radius: 20px;
-    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
     overflow: hidden;
     max-width: 500px;
     width: 100%;
+    position: relative;
+    z-index: 1;
 }
 
 .login-header {
@@ -27,11 +42,12 @@
     font-size: 2.5rem;
     font-weight: 700;
     margin-bottom: 10px;
+    text-transform: uppercase;
 }
 
 .login-header p {
-    color: rgba(255, 255, 255, 0.9);
-    font-size: 1.125rem;
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 1.1rem;
     margin: 0;
 }
 
@@ -44,7 +60,7 @@
 }
 
 .form-label {
-    color: #374151;
+    color: #94a3b8;
     font-weight: 600;
     font-size: 0.95rem;
     margin-bottom: 8px;
@@ -57,31 +73,18 @@
 
 .input-icon {
     position: absolute;
-    left: 12px;
+    left: 15px;
     top: 50%;
     transform: translateY(-50%);
-    color: #9ca3af;
+    color: #64748b;
     width: 18px;
     height: 18px;
-    flex-shrink: 0;
+    z-index: 2;
 }
 
+/* Base form-control styles are inherited from app.css */
 ::deep .form-control {
-    width: 100%;
-    padding: 14px 14px 14px 42px;
-    border: 2px solid #e5e7eb;
-    border-radius: 12px;
-    font-size: 0.95rem;
-    transition: all 0.3s ease;
-    background: #f9fafb;
-    color: #1f2937;
-}
-
-::deep .form-control:focus {
-    outline: none;
-    border-color: #1e293b;
-    background: white;
-    box-shadow: 0 0 0 3px rgba(30, 41, 59, 0.1);
+    padding-left: 45px !important;
 }
 
 .checkbox-group {
@@ -93,13 +96,13 @@
 .checkbox-group input[type="checkbox"] {
     width: 18px;
     height: 18px;
-    margin-right: 8px;
+    margin-right: 10px;
     cursor: pointer;
     accent-color: var(--color-secondary);
 }
 
 .checkbox-group label {
-    color: #6b7280;
+    color: #94a3b8;
     font-size: 0.95rem;
     cursor: pointer;
     margin: 0;
@@ -108,54 +111,56 @@
 .btn-login {
     width: 100%;
     padding: 16px;
-    background: linear-gradient(135deg, var(--color-primary) 0%, #082d6b 100%);
+    background: linear-gradient(135deg, var(--color-secondary) 0%, var(--color-accent) 100%);
     color: white;
     border: none;
     border-radius: 12px;
-    font-size: 1.125rem;
+    font-size: 1.1rem;
     font-weight: 700;
     cursor: pointer;
     transition: all 0.3s ease;
-    box-shadow: 0 4px 15px rgba(30, 41, 59, 0.3);
+    box-shadow: 0 4px 15px rgba(255, 140, 0, 0.3);
     display: flex;
     align-items: center;
     justify-content: center;
     gap: 10px;
+    text-transform: uppercase;
 }
 
 .btn-login:hover {
     transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(30, 41, 59, 0.4);
+    box-shadow: 0 8px 25px rgba(255, 140, 0, 0.4);
 }
 
 .login-footer {
     text-align: center;
     margin-top: 30px;
     padding-top: 25px;
-    border-top: 1px solid #e5e7eb;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .login-footer p {
-    color: #6b7280;
+    color: #94a3b8;
     margin: 0;
     font-size: 0.95rem;
 }
 
 .login-footer a {
-    color: #1e293b;
-    font-weight: 600;
+    color: var(--color-secondary);
+    font-weight: 700;
     text-decoration: none;
-    transition: color 0.3s ease;
+    transition: all 0.3s ease;
 }
 
 .login-footer a:hover {
-    color: #0f172a;
+    color: var(--color-accent);
     text-decoration: underline;
 }
 
 .error-message {
-    background: #fee2e2;
-    color: #991b1b;
+    background: rgba(239, 68, 68, 0.1);
+    border: 1px solid rgba(239, 68, 68, 0.2);
+    color: #fca5a5;
     padding: 12px 16px;
     border-radius: 8px;
     margin-bottom: 20px;
@@ -168,11 +173,12 @@
 }
 
 .forgot-password a {
-    color: #6b7280;
+    color: #64748b;
     font-size: 0.875rem;
     text-decoration: none;
+    transition: all 0.3s ease;
 }
 
 .forgot-password a:hover {
-    color: #1e293b;
+    color: var(--color-secondary);
 }

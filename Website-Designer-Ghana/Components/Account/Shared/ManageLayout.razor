@@ -1,17 +1,37 @@
 ﻿@inherits LayoutComponentBase
 @layout Website_Designer_Ghana.Components.Layout.MainLayout
 
-<h1>Manage your account</h1>
-
-<div>
-    <h2>Change your account settings</h2>
-    <hr />
-    <div class="row">
-        <div class="col-lg-3">
-            <ManageNavMenu />
+<div class="manage-account-wrapper py-5 mt-5">
+    <div class="container">
+        <div class="header-section mb-5 text-center">
+            <h1 class="display-4 fw-bold gradient-text mb-2">My Account</h1>
+            <p class="text-secondary fs-5">Manage your profile, security, and preferences</p>
         </div>
-        <div class="col-lg-9">
-            @Body
+
+        <div class="row g-4">
+            <div class="col-lg-3">
+                <div class="glass-card border-0 shadow-lg p-3 h-100">
+                    <ManageNavMenu />
+                </div>
+            </div>
+            <div class="col-lg-9">
+                <div class="glass-card border-0 shadow-lg p-4 p-md-5 h-100">
+                    @Body
+                </div>
+            </div>
         </div>
     </div>
 </div>
+
+<style>
+    .manage-account-wrapper {
+        min-height: 80vh;
+    }
+
+    .gradient-text {
+        background: var(--gradient-primary);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+</style>

@@ -1,0 +1,12 @@
+.table-dark {
+    --bs-table-bg: transparent;
+}
+
+.table> :not(caption)>*>* {
+    border-bottom-color: rgba(255, 255, 255, 0.05);
+}
+
+.badge {
+    font-weight: 500;
+    letter-spacing: 0.3px;
+}

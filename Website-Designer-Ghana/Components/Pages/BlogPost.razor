@@ -1,6 +1,9 @@
 @page "/blog/{slug}"
 @using Website_Designer_Ghana.Services.Interfaces
 @using BlogPostModel = Website_Designer_Ghana.Data.Models.BlogPost
+@using Website_Designer_Ghana.Data.Models
+@using System.ComponentModel.DataAnnotations
+@rendermode InteractiveServer
 
 <PageTitle>@PostTitle - Website Designer in Ghana Blog</PageTitle>
 
@@ -10,156 +13,211 @@
         <div class="row g-5">
             <!-- Main Content -->
             <div class="col-lg-8">
-                <!-- Featured Image -->
-                <div class="mb-4 rounded overflow-hidden border border-white border-opacity-10 shadow-lg">
-                    <img src="@FeaturedImage" alt="@PostTitle" class="w-100" style="height: 450px; object-fit: cover;">
-                </div>
+                @if (blogPost == null && !isLoading)
+                {
+                    <div class="text-center py-5">
+                        <h2 class="text-white">Blog Post Not Found</h2>
+                        <p class="text-secondary">The post you're looking for doesn't exist.</p>
+                        <a href="/blog" class="btn btn-primary mt-3">Back to Blog</a>
+                    </div>
+                }
+                else if (isLoading)
+                {
+                    <div class="text-center py-5">
+                        <div class="spinner-border text-primary" role="status">
+                            <span class="visually-hidden">Loading...</span>
+                        </div>
+                    </div>
+                }
+                else
+                {
+                    <!-- Featured Image -->
+                    <div class="mb-4 rounded overflow-hidden border border-white border-opacity-10 shadow-lg">
+                        <img src="@FeaturedImage" alt="@PostTitle" class="w-100" style="height: 450px; object-fit: cover;">
+                    </div>
 
-                <!-- Post Meta -->
-                <div class="d-flex flex-wrap gap-3 mb-4 text-secondary">
-                    <span><i class="bi bi-person text-secondary me-2"></i>@Author</span>
-                    <span><i class="bi bi-calendar text-secondary me-2"></i>@PublishDate</span>
-                    <span><i class="bi bi-folder text-secondary me-2"></i>@Category</span>
-                    <span><i class="bi bi-clock text-secondary me-2"></i>@ReadTime min read</span>
-                </div>
+                    <!-- Post Meta -->
+                    <div class="d-flex flex-wrap gap-3 mb-4 text-secondary">
+                        <span><i class="bi bi-person text-secondary me-2"></i>@Author</span>
+                        <span><i class="bi bi-calendar text-secondary me-2"></i>@PublishDate</span>
+                        <span><i class="bi bi-folder text-secondary me-2"></i>@Category</span>
+                        <span><i class="bi bi-clock text-secondary me-2"></i>@ReadTime min read</span>
+                    </div>
 
-                <!-- Post Title -->
-                <h1 class="display-4 fw-bold mb-4 text-white">@PostTitle</h1>
+                    <!-- Post Title -->
+                    <h1 class="display-4 fw-bold mb-4 text-white">@PostTitle</h1>
 
-                <!-- Post Content -->
-                <div class="blog-post-content text-secondary fs-5 lh-lg">
-                    @((MarkupString)PostContent)
-                </div>
+                    <!-- Post Content -->
+                    <div class="blog-post-content text-secondary fs-5 lh-lg">
+                        @((MarkupString)PostContent)
+                    </div>
 
-                <!-- Tags -->
-                <div class="mt-5 pt-4 border-top border-white border-opacity-10">
-                    <h6 class="fw-bold mb-3 text-white">Tags:</h6>
-                    <div class="d-flex flex-wrap gap-2">
-                        @foreach (var tag in Tags)
+                    <!-- Tags -->
+                    @if (Tags.Any())
+                    {
+                        <div class="mt-5 pt-4 border-top border-white border-opacity-10">
+                            <h6 class="fw-bold mb-3 text-white">Tags:</h6>
+                            <div class="d-flex flex-wrap gap-2">
+                                @foreach (var tag in Tags)
+                                {
+                                    <a href="#" class="badge bg-white bg-opacity-05 text-secondary border border-white border-opacity-10 px-3 py-2 text-decoration-none hover-bg-secondary hover-text-white transition-03">@tag</a>
+                                }
+                            </div>
+                        </div>
+                    }
+
+                    <!-- Share Buttons -->
+                    <div class="mt-4 pt-4 border-top border-white border-opacity-10">
+                        <h6 class="fw-bold mb-3 text-white">Share this article:</h6>
+                        <div class="d-flex gap-2 flex-wrap">
+                            <a href="https://www.facebook.com/sharer/sharer.php?u=@ShareUrl" target="_blank"
+                               class="btn btn-primary d-flex align-items-center gap-2 px-4">
+                                <i class="bi bi-facebook"></i> Facebook
+                            </a>
+                            <a href="https://twitter.com/intent/tweet?url=@ShareUrl&text=@PostTitle" target="_blank"
+                               class="btn btn-dark d-flex align-items-center gap-2 px-4 border border-white border-opacity-10">
+                                <i class="bi bi-twitter-x"></i> Twitter
+                            </a>
+                            <a href="https://www.linkedin.com/shareArticle?mini=true&url=@ShareUrl&title=@PostTitle" target="_blank"
+                               class="btn btn-primary d-flex align-items-center gap-2 px-4" style="background-color: #0077b5;">
+                                <i class="bi bi-linkedin"></i> LinkedIn
+                            </a>
+                            <a href="https://wa.me/?text=@PostTitle%20@ShareUrl" target="_blank"
+                               class="btn btn-success d-flex align-items-center gap-2 px-4">
+                                <i class="bi bi-whatsapp"></i> WhatsApp
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Author Bio -->
+                    <div class="mt-5 p-4 glass-card rounded">
+                        <div class="d-flex gap-4 flex-column flex-md-row align-items-center align-items-md-start">
+                            <div class="flex-shrink-0">
+                                <div class="bg-secondary rounded-circle text-white d-flex align-items-center justify-content-center fw-bold shadow-lg"
+                                     style="width: 100px; height: 100px; font-size: 2.5rem;">
+                                    WDIG
+                                </div>
+                            </div>
+                            <div>
+                                <h5 class="fw-bold mb-2 text-white text-center text-md-start">About Website Designer in Ghana</h5>
+                                <p class="text-secondary mb-0 text-center text-md-start">
+                                    We are Ghana's leading web design and development company, specializing in creating stunning,
+                                    high-performance websites for businesses across Accra and beyond. With years of experience and a
+                                    passion for innovation, we help businesses establish a strong online presence.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Comments Section -->
+                    <div class="mt-5 pt-5 border-top border-white border-opacity-10">
+                        <h4 class="fw-bold mb-4 text-white">Comments (@comments.Count())</h4>
+
+                        @if (!comments.Any())
                         {
-                            <a href="#" class="badge bg-white bg-opacity-05 text-secondary border border-white border-opacity-10 px-3 py-2 text-decoration-none hover-bg-secondary hover-text-white transition-03">@tag</a>
+                            <p class="text-secondary italic">No comments yet. Be the first to share your thoughts!</p>
+                        }
+                        else
+                        {
+                            @foreach (var comment in comments)
+                            {
+                                <div class="comment-item mb-4 pb-4 border-bottom border-white border-opacity-10">
+                                    <div class="d-flex gap-3">
+                                        <div class="flex-shrink-0">
+                                            <div class="bg-primary bg-opacity-20 rounded-circle text-primary d-flex align-items-center justify-content-center fw-bold"
+                                                 style="width: 50px; height: 50px;">
+                                                @(comment.AuthorName.Length > 0 ? comment.AuthorName[0].ToString().ToUpper() : "U")
+                                            </div>
+                                        </div>
+                                        <div class="flex-grow-1">
+                                            <div class="d-flex justify-content-between align-items-start mb-2">
+                                                <div>
+                                                    <h6 class="fw-bold mb-0 text-white">@comment.AuthorName</h6>
+                                                    <small class="text-muted">@comment.CreatedAt.ToString("MMMM dd, yyyy")</small>
+                                                </div>
+                                                <button class="btn btn-sm btn-outline-secondary border-opacity-25" @onclick="() => ReplyToComment(comment.Id, comment.AuthorName)">Reply</button>
+                                            </div>
+                                            <p class="text-secondary mb-0">@comment.Content</p>
+
+                                            <!-- Replies -->
+                                            @if (comment.Replies != null && comment.Replies.Any())
+                                            {
+                                                @foreach (var reply in comment.Replies.Where(r => r.IsApproved))
+                                                {
+                                                    <div class="mt-4 ps-4 border-start border-white border-opacity-10">
+                                                        <div class="d-flex gap-3">
+                                                            <div class="flex-shrink-0">
+                                                                <div class="bg-secondary bg-opacity-20 rounded-circle text-secondary d-flex align-items-center justify-content-center fw-bold"
+                                                                     style="width: 40px; height: 40px;">
+                                                                    @(reply.AuthorName.Length > 0 ? reply.AuthorName[0].ToString().ToUpper() : "U")
+                                                                </div>
+                                                            </div>
+                                                            <div class="flex-grow-1">
+                                                                <div class="mb-1">
+                                                                    <h6 class="fw-bold mb-0 text-white small">@reply.AuthorName</h6>
+                                                                    <small class="text-muted">@reply.CreatedAt.ToString("MMMM dd, yyyy")</small>
+                                                                </div>
+                                                                <p class="text-secondary mb-0 small">@reply.Content</p>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                }
+                                            }
+                                        </div>
+                                    </div>
+                                </div>
+                            }
                         }
                     </div>
-                </div>
 
-                <!-- Share Buttons -->
-                <div class="mt-4 pt-4 border-top border-white border-opacity-10">
-                    <h6 class="fw-bold mb-3 text-white">Share this article:</h6>
-                    <div class="d-flex gap-2 flex-wrap">
-                        <a href="https://www.facebook.com/sharer/sharer.php?u=@ShareUrl" target="_blank"
-                           class="btn btn-primary d-flex align-items-center gap-2 px-4">
-                            <i class="bi bi-facebook"></i> Facebook
-                        </a>
-                        <a href="https://twitter.com/intent/tweet?url=@ShareUrl&text=@PostTitle" target="_blank"
-                           class="btn btn-dark d-flex align-items-center gap-2 px-4 border border-white border-opacity-10">
-                            <i class="bi bi-twitter-x"></i> Twitter
-                        </a>
-                        <a href="https://www.linkedin.com/shareArticle?mini=true&url=@ShareUrl&title=@PostTitle" target="_blank"
-                           class="btn btn-primary d-flex align-items-center gap-2 px-4" style="background-color: #0077b5;">
-                            <i class="bi bi-linkedin"></i> LinkedIn
-                        </a>
-                        <a href="https://wa.me/?text=@PostTitle%20@ShareUrl" target="_blank"
-                           class="btn btn-success d-flex align-items-center gap-2 px-4">
-                            <i class="bi bi-whatsapp"></i> WhatsApp
-                        </a>
-                    </div>
-                </div>
+                    <!-- Leave a Reply -->
+                    <div class="mt-5 pt-4 border-top border-white border-opacity-10" id="reply-form">
+                        <h4 class="fw-bold mb-4 text-white">
+                            @(commentModel.ParentCommentId.HasValue ? $"Reply to {replyToAuthor}" : "Leave a Reply")
+                            @if (commentModel.ParentCommentId.HasValue)
+                            {
+                                <button class="btn btn-sm btn-link text-decoration-none text-muted" @onclick="CancelReply">(Cancel Reply)</button>
+                            }
+                        </h4>
 
-                <!-- Author Bio -->
-                <div class="mt-5 p-4 glass-card rounded">
-                    <div class="d-flex gap-4 flex-column flex-md-row align-items-center align-items-md-start">
-                        <div class="flex-shrink-0">
-                            <div class="bg-secondary rounded-circle text-white d-flex align-items-center justify-content-center fw-bold shadow-lg"
-                                 style="width: 100px; height: 100px; font-size: 2.5rem;">
-                                WDIG
+                        @if (submitSuccess)
+                        {
+                            <div class="alert alert-success bg-success bg-opacity-10 border-success border-opacity-20 text-success mb-4">
+                                <i class="bi bi-check-circle me-2"></i> Thank you! Your comment has been submitted and is awaiting approval.
                             </div>
-                        </div>
-                        <div>
-                            <h5 class="fw-bold mb-2 text-white text-center text-md-start">About Website Designer in Ghana</h5>
-                            <p class="text-secondary mb-0 text-center text-md-start">
-                                We are Ghana's leading web design and development company, specializing in creating stunning,
-                                high-performance websites for businesses across Accra and beyond. With years of experience and a
-                                passion for innovation, we help businesses establish a strong online presence.
-                            </p>
-                        </div>
-                    </div>
-                </div>
+                        }
 
-                <!-- Comments Section -->
-                <div class="mt-5 pt-5 border-top border-white border-opacity-10">
-                    <h4 class="fw-bold mb-4 text-white">Comments (@CommentCount)</h4>
-
-                    <!-- Sample Comments -->
-                    <div class="comment-item mb-4 pb-4 border-bottom border-white border-opacity-10">
-                        <div class="d-flex gap-3">
-                            <div class="flex-shrink-0">
-                                <div class="bg-primary bg-opacity-20 rounded-circle text-primary d-flex align-items-center justify-content-center fw-bold"
-                                     style="width: 50px; height: 50px;">
-                                    KA
+                        <EditForm Model="@commentModel" OnValidSubmit="HandleCommentSubmit" class="glass-card p-4 p-md-5 rounded">
+                            <DataAnnotationsValidator />
+                            <div class="row g-4">
+                                <div class="col-md-6">
+                                    <label for="commentName" class="form-label text-secondary">Name *</label>
+                                    <InputText class="form-control form-control-lg" id="commentName" @bind-Value="commentModel.AuthorName" />
+                                    <ValidationMessage For="@(() => commentModel.AuthorName)" class="text-danger small mt-1" />
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="commentEmail" class="form-label text-secondary">Email *</label>
+                                    <InputText type="email" class="form-control form-control-lg" id="commentEmail" @bind-Value="commentModel.AuthorEmail" />
+                                    <ValidationMessage For="@(() => commentModel.AuthorEmail)" class="text-danger small mt-1" />
+                                </div>
+                                <div class="col-12">
+                                    <label for="commentMessage" class="form-label text-secondary">Comment *</label>
+                                    <InputTextArea class="form-control form-control-lg" id="commentMessage" rows="5" @bind-Value="commentModel.Content" />
+                                    <ValidationMessage For="@(() => commentModel.Content)" class="text-danger small mt-1" />
+                                </div>
+                                <div class="col-12 text-end">
+                                    <button type="submit" class="btn btn-secondary btn-lg px-5 fw-bold" disabled="@isSubmitting">
+                                        @if (isSubmitting)
+                                        {
+                                            <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                                        }
+                                        Post Comment
+                                    </button>
                                 </div>
                             </div>
-                            <div class="flex-grow-1">
-                                <div class="d-flex justify-content-between align-items-start mb-2">
-                                    <div>
-                                        <h6 class="fw-bold mb-0 text-white">Kwame Asante</h6>
-                                        <small class="text-muted">January 2, 2026</small>
-                                    </div>
-                                    <button class="btn btn-sm btn-outline-secondary border-opacity-25">Reply</button>
-                                </div>
-                                <p class="text-secondary mb-0">
-                                    Great article! Very informative and helpful. I learned a lot about hosting options in Ghana.
-                                </p>
-                            </div>
-                        </div>
+                        </EditForm>
                     </div>
-
-                    <div class="comment-item mb-4 pb-4 border-bottom border-white border-opacity-10">
-                        <div class="d-flex gap-3">
-                            <div class="flex-shrink-0">
-                                <div class="bg-success bg-opacity-20 rounded-circle text-success d-flex align-items-center justify-content-center fw-bold"
-                                     style="width: 50px; height: 50px;">
-                                    AM
-                                </div>
-                            </div>
-                            <div class="flex-grow-1">
-                                <div class="d-flex justify-content-between align-items-start mb-2">
-                                    <div>
-                                        <h6 class="fw-bold mb-0 text-white">Ama Mensah</h6>
-                                        <small class="text-muted">January 1, 2026</small>
-                                    </div>
-                                    <button class="btn btn-sm btn-outline-secondary border-opacity-25">Reply</button>
-                                </div>
-                                <p class="text-secondary mb-0">
-                                    Thanks for sharing this! Would love to see more content about website security.
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Leave a Reply -->
-                <div class="mt-5 pt-4 border-top border-white border-opacity-10">
-                    <h4 class="fw-bold mb-4 text-white">Leave a Reply</h4>
-                    <form class="glass-card p-4 p-md-5 rounded">
-                        <div class="row g-4">
-                            <div class="col-md-6">
-                                <label for="commentName" class="form-label text-secondary">Name *</label>
-                                <input type="text" class="form-control form-control-lg bg-white bg-opacity-05 border-white border-opacity-10 text-white" id="commentName" required>
-                            </div>
-                            <div class="col-md-6">
-                                <label for="commentEmail" class="form-label text-secondary">Email *</label>
-                                <input type="email" class="form-control form-control-lg bg-white bg-opacity-05 border-white border-opacity-10 text-white" id="commentEmail" required>
-                            </div>
-                            <div class="col-12">
-                                <label for="commentMessage" class="form-label text-secondary">Comment *</label>
-                                <textarea class="form-control form-control-lg bg-white bg-opacity-05 border-white border-opacity-10 text-white" id="commentMessage" rows="5" required></textarea>
-                            </div>
-                            <div class="col-12 text-end">
-                                <button type="submit" class="btn btn-secondary btn-lg px-5 fw-bold">Post Comment</button>
-                            </div>
-                        </div>
-                    </form>
-                </div>
+                }
             </div>
 
             <!-- Sidebar -->
@@ -169,7 +227,7 @@
                     <div class="card-body p-4">
                         <h5 class="fw-bold mb-3 text-white">Search</h5>
                         <div class="input-group">
-                            <input type="text" class="form-control bg-white bg-opacity-05 border-white border-opacity-10 text-white" placeholder="Search articles...">
+                            <input type="text" class="form-control" placeholder="Search articles...">
                             <button class="btn btn-secondary" type="button">
                                 <i class="bi bi-search"></i>
                             </button>
@@ -177,69 +235,45 @@
                     </div>
                 </div>
 
-                <!-- Categories -->
-                <div class="card border-0 glass-card mb-4">
-                    <div class="card-body p-4">
-                        <h5 class="fw-bold mb-3 text-white">Categories</h5>
-                        <ul class="list-unstyled mb-0">
-                            <li class="mb-2">
-                                <a href="#" class="text-decoration-none text-secondary d-flex justify-content-between align-items-center hover-text-white">
-                                    <span><i class="bi bi-folder text-secondary me-2"></i>Web Design</span>
-                                    <span class="badge bg-secondary">3</span>
-                                </a>
-                            </li>
-                            <li class="mb-2">
-                                <a href="#" class="text-decoration-none text-secondary d-flex justify-content-between align-items-center hover-text-white">
-                                    <span><i class="bi bi-folder text-secondary me-2"></i>E-commerce</span>
-                                    <span class="badge bg-secondary">2</span>
-                                </a>
-                            </li>
-                            <li class="mb-2">
-                                <a href="#" class="text-decoration-none text-secondary d-flex justify-content-between align-items-center hover-text-white">
-                                    <span><i class="bi bi-folder text-secondary me-2"></i>Business Growth</span>
-                                    <span class="badge bg-secondary">4</span>
-                                </a>
-                            </li>
-                            <li class="mb-2">
-                                <a href="#" class="text-decoration-none text-secondary d-flex justify-content-between align-items-center hover-text-white">
-                                    <span><i class="bi bi-folder text-secondary me-2"></i>SEO Tips</span>
-                                    <span class="badge bg-secondary">5</span>
-                                </a>
-                            </li>
-                            <li>
-                                <a href="#" class="text-decoration-none text-secondary d-flex justify-content-between align-items-center hover-text-white">
-                                    <span><i class="bi bi-folder text-secondary me-2"></i>Digital Marketing</span>
-                                    <span class="badge bg-secondary">3</span>
-                                </a>
-                            </li>
-                        </ul>
+                @if (categories != null && categories.Any())
+                {
+                    <!-- Categories -->
+                    <div class="card border-0 glass-card mb-4">
+                        <div class="card-body p-4">
+                            <h5 class="fw-bold mb-3 text-white">Categories</h5>
+                            <ul class="list-unstyled mb-0">
+                                @foreach (var cat in categories)
+                                {
+                                    <li class="mb-2">
+                                        <a href="/blog/category/@cat.Slug" class="text-decoration-none text-secondary d-flex justify-content-between align-items-center hover-text-white">
+                                            <span><i class="bi bi-folder text-secondary me-2"></i>@cat.Name</span>
+                                            @* <span class="badge bg-secondary">@cat.Posts.Count()</span> *@
+                                        </a>
+                                    </li>
+                                }
+                            </ul>
+                        </div>
                     </div>
-                </div>
+                }
 
-                <!-- Recent Posts -->
-                <div class="card border-0 glass-card mb-4">
-                    <div class="card-body p-4">
-                        <h5 class="fw-bold mb-3 text-white">Recent Posts</h5>
-                        <div class="recent-post-item mb-3 pb-3 border-bottom border-white border-opacity-10">
-                            <a href="/blog/domain-hosting-prices-ghana-2026" class="text-decoration-none">
-                                <h6 class="fw-semibold text-white mb-1 hover-text-secondary transition-03">Domain and Hosting Prices in Ghana</h6>
-                                <small class="text-secondary text-opacity-75">December 28, 2025</small>
-                            </a>
-                        </div>
-                        <div class="recent-post-item mb-3 pb-3 border-bottom border-white border-opacity-10">
-                            <a href="/blog/top-ecommerce-payment-gateways-ghana" class="text-decoration-none">
-                                <h6 class="fw-semibold text-white mb-1 hover-text-secondary transition-03">Top 5 E-commerce Payment Gateways</h6>
-                                <small class="text-secondary text-opacity-75">December 15, 2025</small>
-                            </a>
-                        </div>
-                        <div class="recent-post-item">
-                            <a href="/blog/why-your-business-needs-website" class="text-decoration-none">
-                                <h6 class="fw-semibold text-white mb-1 hover-text-secondary transition-03">Why Your Business Needs a Website</h6>
-                                <small class="text-secondary text-opacity-75">November 30, 2025</small>
-                            </a>
+                @if (recentPosts != null && recentPosts.Any())
+                {
+                    <!-- Recent Posts -->
+                    <div class="card border-0 glass-card mb-4">
+                        <div class="card-body p-4">
+                            <h5 class="fw-bold mb-3 text-white">Recent Posts</h5>
+                            @foreach (var post in recentPosts)
+                            {
+                                <div class="recent-post-item mb-3 pb-3 border-bottom border-white border-opacity-10">
+                                    <a href="/blog/@post.Slug" class="text-decoration-none">
+                                        <h6 class="fw-semibold text-white mb-1 hover-text-secondary transition-03">@post.Title</h6>
+                                        <small class="text-secondary text-opacity-75">@post.PublishedAt?.ToString("MMMM dd, yyyy")</small>
+                                    </a>
+                                </div>
+                            }
                         </div>
                     </div>
-                </div>
+                }
 
                 <!-- Tags -->
                 <div class="card border-0 glass-card">
@@ -277,12 +311,23 @@
     private string PostContent = "";
     private List<string> Tags = new();
     private string ShareUrl = "";
-    private int CommentCount = 0;
+    private IEnumerable<BlogComment> comments = new List<BlogComment>();
+    private IEnumerable<BlogCategory>? categories;
+    private IEnumerable<BlogPostModel>? recentPosts;
+    private bool isLoading = true;
+
+    // Comment Form
+    private CommentFormModel commentModel = new();
+    private bool isSubmitting = false;
+    private bool submitSuccess = false;
+    private string replyToAuthor = "";
 
     protected override async Task OnInitializedAsync()
     {
         ShareUrl = NavManager.Uri;
         await LoadBlogPostAsync();
+        categories = await BlogService.GetAllCategoriesAsync();
+        recentPosts = await BlogService.GetRecentPostsAsync(3);
     }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
@@ -297,6 +342,7 @@
     {
         try
         {
+            isLoading = true;
             blogPost = await BlogService.GetPostBySlugAsync(Slug);
 
             if (blogPost != null)
@@ -308,7 +354,10 @@
                 Category = blogPost.Category?.Name ?? "Uncategorized";
                 PostContent = blogPost.Content;
                 Tags = blogPost.Tags.Select(t => t.Name).ToList();
-                CommentCount = blogPost.Comments.Count();
+                
+                // Load actual comments
+                comments = await BlogService.GetPostCommentsAsync(blogPost.Id);
+
                 ReadTime = EstimateReadTime(blogPost.Content);
 
                 // Increment view count
@@ -326,12 +375,85 @@
             PostTitle = "Error Loading Post";
             PostContent = "<p>An error occurred while loading this post. Please try again later.</p>";
         }
+        finally
+        {
+            isLoading = false;
+        }
     }
 
     private int EstimateReadTime(string content)
     {
+        if (string.IsNullOrEmpty(content)) return 1;
         // Estimate reading time: average 200 words per minute
         var wordCount = content.Split(new[] { ' ', '\n', '\r' }, StringSplitOptions.RemoveEmptyEntries).Length;
         return Math.Max(1, (int)Math.Ceiling(wordCount / 200.0));
+    }
+
+    private async Task HandleCommentSubmit()
+    {
+        if (blogPost == null) return;
+
+        isSubmitting = true;
+        submitSuccess = false;
+
+        try
+        {
+            var comment = new BlogComment
+            {
+                BlogPostId = blogPost.Id,
+                AuthorName = commentModel.AuthorName,
+                AuthorEmail = commentModel.AuthorEmail,
+                Content = commentModel.Content,
+                ParentCommentId = commentModel.ParentCommentId,
+                CreatedAt = DateTime.UtcNow,
+                IsApproved = false // Require approval by default
+            };
+
+            await BlogService.AddCommentAsync(comment);
+            
+            // Reset form
+            commentModel = new CommentFormModel();
+            replyToAuthor = "";
+            submitSuccess = true;
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error submitting comment: {ex.Message}");
+        }
+        finally
+        {
+            isSubmitting = false;
+        }
+    }
+
+    private void ReplyToComment(int commentId, string authorName)
+    {
+        commentModel.ParentCommentId = commentId;
+        replyToAuthor = authorName;
+        // Scroll to form (simplified for demo)
+    }
+
+    private void CancelReply()
+    {
+        commentModel.ParentCommentId = null;
+        replyToAuthor = "";
+    }
+
+    public class CommentFormModel
+    {
+        [Required(ErrorMessage = "Name is required")]
+        [StringLength(100, ErrorMessage = "Name is too long")]
+        public string AuthorName { get; set; } = string.Empty;
+
+        [Required(ErrorMessage = "Email is required")]
+        [EmailAddress(ErrorMessage = "Invalid email address")]
+        [StringLength(200, ErrorMessage = "Email is too long")]
+        public string AuthorEmail { get; set; } = string.Empty;
+
+        [Required(ErrorMessage = "Comment is required")]
+        [StringLength(2000, ErrorMessage = "Comment is too long")]
+        public string Content { get; set; } = string.Empty;
+
+        public int? ParentCommentId { get; set; }
     }
 }

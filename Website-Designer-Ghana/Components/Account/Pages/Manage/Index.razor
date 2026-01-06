@@ -10,47 +10,64 @@
 
 <PageTitle>Manage Profile - Website Designer in Ghana</PageTitle>
 
-<div class="manage-container">
-    <div class="manage-card">
-        <div class="manage-header">
-            <h3>Manage Your Profile</h3>
-        </div>
+<div class="profile-header mb-4">
+    <h3 class="fw-bold text-white mb-1">Profile Information</h3>
+    <p class="text-secondary small">Update your personal details and contact information</p>
+</div>
 
-        <div class="manage-body">
-            <StatusMessage />
+<StatusMessage />
 
-            <EditForm Model="Input" FormName="profile" OnValidSubmit="OnValidSubmitAsync" method="post">
-                <DataAnnotationsValidator />
-                <ValidationSummary class="text-danger mb-3" role="alert" />
+<EditForm Model="Input" FormName="profile" OnValidSubmit="OnValidSubmitAsync" method="post">
+    <DataAnnotationsValidator />
 
-                <div class="form-floating mb-3">
-                    <input type="text" value="@username" id="username" class="form-control" placeholder="Username" disabled />
-                    <label for="username" class="form-label">Username</label>
-                </div>
-
-                <div class="form-floating mb-3">
-                    <input type="text" value="@user?.Email" id="email" class="form-control" placeholder="Email" disabled />
-                    <label for="email" class="form-label">Email</label>
-                </div>
-
-                <div class="form-floating mb-3">
-                    <InputText @bind-Value="Input.PhoneNumber" id="Input.PhoneNumber" class="form-control" placeholder="Phone number" />
-                    <label for="Input.PhoneNumber" class="form-label">Phone number</label>
-                    <ValidationMessage For="() => Input.PhoneNumber" class="text-danger" />
-                </div>
-
-                <button type="submit" class="btn btn-primary btn-lg">Save Changes</button>
-            </EditForm>
-
-            <div class="mt-4 pt-4 border-top">
-                <div class="d-flex gap-3">
-                    <a href="/Account/Manage/Email" class="btn btn-outline-secondary flex-fill">Change Email</a>
-                    <a href="/Account/Manage/ChangePassword" class="btn btn-outline-secondary flex-fill">Change Password</a>
-                </div>
+    <div class="row g-4">
+        <div class="col-md-6 text-start">
+            <label for="username"
+                class="form-label text-secondary small text-uppercase fw-bold ls-wide">Username</label>
+            <div class="input-group">
+                <span class="input-group-text bg-dark border-white border-opacity-10 text-secondary">
+                    <i class="bi bi-person-fill"></i>
+                </span>
+                <input type="text" value="@username" id="username"
+                    class="form-control bg-dark bg-opacity-50 border-white border-opacity-10 text-white"
+                    placeholder="Username" disabled />
             </div>
         </div>
+
+        <div class="col-md-6 text-start">
+            <label for="email" class="form-label text-secondary small text-uppercase fw-bold ls-wide">Email
+                Address</label>
+            <div class="input-group">
+                <span class="input-group-text bg-dark border-white border-opacity-10 text-secondary">
+                    <i class="bi bi-envelope-fill"></i>
+                </span>
+                <input type="text" value="@user?.Email" id="email"
+                    class="form-control bg-dark bg-opacity-50 border-white border-opacity-10 text-white"
+                    placeholder="Email" disabled />
+            </div>
+        </div>
+
+        <div class="col-12 text-start">
+            <label for="Input.PhoneNumber" class="form-label text-secondary small text-uppercase fw-bold ls-wide">Phone
+                Number</label>
+            <div class="input-group">
+                <span class="input-group-text bg-dark border-white border-opacity-10 text-secondary">
+                    <i class="bi bi-telephone-fill"></i>
+                </span>
+                <InputText @bind-Value="Input.PhoneNumber" id="Input.PhoneNumber" class="form-control"
+                    placeholder="Enter your phone number" />
+            </div>
+            <ValidationMessage For="() => Input.PhoneNumber" class="text-danger small mt-1" />
+        </div>
+
+        <div class="col-12 mt-4">
+            <button type="submit" class="btn btn-primary px-5 py-3 border-0 shadow-lg ripple-effect">
+                <i class="bi bi-check-circle me-2"></i>
+                Save Profile Changes
+            </button>
+        </div>
     </div>
-</div>
+</EditForm>
 
 @code {
     private ApplicationUser? user;

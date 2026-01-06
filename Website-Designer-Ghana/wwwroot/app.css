@@ -131,21 +131,49 @@ h6,
 /* Forms */
 .form-control,
 .form-select {
-    background-color: rgba(255, 255, 255, 0.05);
-    border-color: rgba(255, 255, 255, 0.1);
-    color: white;
+    background-color: rgba(15, 23, 42, 0.6);
+    /* Darker, more opaque background */
+    border-color: rgba(255, 255, 255, 0.15);
+    color: #ffffff !important;
+    backdrop-filter: blur(8px);
 }
 
 .form-control:focus,
 .form-select:focus {
-    background-color: rgba(255, 255, 255, 0.1);
-    border-color: var(--color-primary);
-    color: white;
-    box-shadow: 0 0 0 .25rem rgba(59, 130, 246, .25);
+    background-color: rgba(15, 23, 42, 0.8);
+    border-color: var(--color-secondary);
+    /* Use orange accent for focus */
+    color: #ffffff !important;
+    box-shadow: 0 0 0 .25rem rgba(255, 140, 0, 0.25);
 }
 
 .form-control::placeholder {
-    color: #94a3b8;
+    color: rgba(148, 163, 184, 0.7);
+    /* Slate-400 with opacity */
+}
+
+/* Ensure input text is always visible */
+input.form-control,
+textarea.form-control {
+    color: #ffffff !important;
+}
+
+input.form-control:focus,
+textarea.form-control:focus {
+    color: #ffffff !important;
+}
+
+/* Handle Autofill Styles */
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+textarea:-webkit-autofill,
+textarea:-webkit-autofill:hover,
+textarea:-webkit-autofill:focus {
+    -webkit-text-fill-color: #ffffff !important;
+    -webkit-box-shadow: 0 0 0px 1000px #0f172a inset !important;
+    /* Matches --bg-dark */
+    transition: background-color 5000s ease-in-out 0s;
 }
 
 /* UTILITY OVERRIDES FOR DARK MODE */
@@ -165,7 +193,7 @@ h6,
 }
 
 .bg-white {
-    background-color: #ffffff !important;
+    background-color: #ffffff;
 }
 
 .bg-dark {
@@ -204,6 +232,13 @@ h6,
     backdrop-filter: blur(10px);
     border: 1px solid rgba(255, 255, 255, 0.1);
     border-radius: 1rem;
+    pointer-events: auto;
+    /* Ensure interaction is enabled */
+}
+
+/* Specific fix for Bootstrap modals using glass-card */
+.modal-dialog .glass-card {
+    pointer-events: auto;
 }
 
 .grayscale-hover {

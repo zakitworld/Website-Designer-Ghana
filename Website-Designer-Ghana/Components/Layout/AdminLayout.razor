@@ -1,5 +1,6 @@
 @inherits LayoutComponentBase
 @using Microsoft.AspNetCore.Components.Authorization
+@inject NavigationManager NavigationManager
 
 <div class="admin-wrapper">
     <!-- Admin Sidebar -->
@@ -28,6 +29,12 @@
                     <a href="/admin/blog-categories" class="nav-link text-white">
                         <i class="bi bi-folder me-2"></i>
                         Blog Categories
+                    </a>
+                </li>
+                <li class="nav-item mb-2">
+                    <a href="/admin/blog-comments" class="nav-link text-white">
+                        <i class="bi bi-chat-dots me-2"></i>
+                        Blog Comments
                     </a>
                 </li>
                 <li class="nav-item mb-2">
@@ -75,6 +82,8 @@
                                     @context.User.Identity?.Name
                                 </span>
                                 <form action="/Account/Logout" method="post" class="d-inline">
+                                    <AntiforgeryToken />
+                                    <input type="hidden" name="returnUrl" value="@NavigationManager.ToBaseRelativePath(NavigationManager.Uri)" />
                                     <button type="submit"
                                         class="btn btn-outline-light btn-sm opacity-75 border-opacity-25 ripple-effect">
                                         <i class="bi bi-box-arrow-right me-1"></i>

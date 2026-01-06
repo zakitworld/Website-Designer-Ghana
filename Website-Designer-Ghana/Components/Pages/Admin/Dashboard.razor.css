@@ -1,0 +1,11 @@
+.ls-wide {
+    letter-spacing: 0.1em;
+}
+
+.table-dark {
+    --bs-table-bg: transparent;
+}
+
+.list-group-item:last-child {
+    border-bottom: 0;
+}

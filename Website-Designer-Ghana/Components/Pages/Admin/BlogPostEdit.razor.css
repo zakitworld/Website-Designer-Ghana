@@ -1,0 +1,12 @@
+.ls-wide {
+    letter-spacing: 0.1em;
+}
+
+.form-control:focus,
+.form-select:focus {
+    background-color: rgba(255, 255, 255, 0.08) !important;
+}
+
+.breadcrumb-item.active {
+    color: var(--color-secondary);
+}

@@ -3,7 +3,11 @@
     "allow": [
       "Bash(dotnet ef migrations add:*)",
       "Bash(dotnet ef database update:*)",
-      "Bash(git add:*)"
+      "Bash(git add:*)",
+      "Bash(grep:*)",
+      "Bash(dotnet build:*)",
+      "Bash(taskkill /F /PID 23284)",
+      "Bash(powershell -Command \"Stop-Process -Id 23284 -Force\")"
     ],
     "deny": [],
     "ask": []

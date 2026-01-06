@@ -239,6 +239,20 @@ public class BlogService : IBlogService
         return await query.OrderByDescending(c => c.CreatedAt).ToListAsync();
     }
 
+    public async Task<IEnumerable<BlogComment>> GetAllCommentsAsync(bool approvedOnly = false)
+    {
+        var query = _context.BlogComments
+            .Include(c => c.BlogPost)
+            .AsQueryable();
+
+        if (approvedOnly)
+        {
+            query = query.Where(c => c.IsApproved);
+        }
+
+        return await query.OrderByDescending(c => c.CreatedAt).ToListAsync();
+    }
+
     public async Task<BlogComment> AddCommentAsync(BlogComment comment)
     {
         comment.CreatedAt = DateTime.UtcNow;

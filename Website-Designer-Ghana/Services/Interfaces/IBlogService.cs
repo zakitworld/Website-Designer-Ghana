@@ -31,6 +31,7 @@ public interface IBlogService
 
     // Comments
     Task<IEnumerable<BlogComment>> GetPostCommentsAsync(int postId, bool approvedOnly = true);
+    Task<IEnumerable<BlogComment>> GetAllCommentsAsync(bool approvedOnly = false);
     Task<BlogComment> AddCommentAsync(BlogComment comment);
     Task ApproveCommentAsync(int commentId);
     Task DeleteCommentAsync(int commentId);

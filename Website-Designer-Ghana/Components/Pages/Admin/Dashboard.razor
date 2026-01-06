@@ -3,6 +3,7 @@
 @using Website_Designer_Ghana.Services.Interfaces
 @attribute [Authorize(Roles = "Admin")]
 @layout AdminLayout
+@rendermode InteractiveServer
 
 <PageTitle>Admin Dashboard - Website Designer Ghana</PageTitle>
 
@@ -112,7 +113,7 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @foreach (var post in blogPosts.Take(5))
+                                    @foreach (Website_Designer_Ghana.Data.Models.BlogPost post in blogPosts.Take(5))
                                     {
                                         <tr>
                                             <td>
@@ -201,46 +202,4 @@
     </div>
 </div>
 
-<style>
-    .ls-wide {
-        letter-spacing: 0.1em;
-    }
 
-    .table-dark {
-        --bs-table-bg: transparent;
-    }
-
-    .list-group-item:last-child {
-        border-bottom: 0;
-    }
-</style>
-
-@code {
-    [Inject] private IBlogService BlogService { get; set; } = default!;
-    [Inject] private IPortfolioService PortfolioService { get; set; } = default!;
-    [Inject] private IContactService ContactService { get; set; } = default!;
-
-    private IEnumerable<Data.Models.BlogPost>? blogPosts;
-    private IEnumerable<Data.Models.Portfolio>? portfolios;
-    private IEnumerable<Data.Models.ContactSubmission>? contactSubmissions;
-
-    protected override async Task OnInitializedAsync()
-    {
-        await LoadDataAsync();
-    }
-
-    private async Task LoadDataAsync()
-    {
-        try
-        {
-            blogPosts = await BlogService.GetAllPostsAsync(publishedOnly: false);
-            portfolios = await PortfolioService.GetAllPortfoliosAsync(publishedOnly: false);
-            contactSubmissions = (await ContactService.GetRecentSubmissionsAsync(20))
-            .OrderByDescending(s => s.SubmittedAt);
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine($"Error loading dashboard data: {ex.Message}");
-        }
-    }
-}

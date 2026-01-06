@@ -3,32 +3,77 @@
 
 @inject SignInManager<ApplicationUser> SignInManager
 
-<ul class="nav nav-pills flex-column">
+<ul class="nav nav-pills flex-column gap-2 manage-nav">
     <li class="nav-item">
-        <NavLink class="nav-link" href="Account/Manage" Match="NavLinkMatch.All">Profile</NavLink>
+        <NavLink class="nav-link d-flex align-items-center px-4 py-3" href="Account/Manage" Match="NavLinkMatch.All">
+            <i class="bi bi-person-circle me-3 fs-5"></i>
+            <span>Profile</span>
+        </NavLink>
     </li>
     <li class="nav-item">
-        <NavLink class="nav-link" href="Account/Manage/Email">Email</NavLink>
+        <NavLink class="nav-link d-flex align-items-center px-4 py-3" href="Account/Manage/Email">
+            <i class="bi bi-envelope-fill me-3 fs-5"></i>
+            <span>Email</span>
+        </NavLink>
     </li>
     <li class="nav-item">
-        <NavLink class="nav-link" href="Account/Manage/ChangePassword">Password</NavLink>
+        <NavLink class="nav-link d-flex align-items-center px-4 py-3" href="Account/Manage/ChangePassword">
+            <i class="bi bi-shield-lock-fill me-3 fs-5"></i>
+            <span>Password</span>
+        </NavLink>
     </li>
     @if (hasExternalLogins)
     {
         <li class="nav-item">
-            <NavLink class="nav-link" href="Account/Manage/ExternalLogins">External logins</NavLink>
+            <NavLink class="nav-link d-flex align-items-center px-4 py-3" href="Account/Manage/ExternalLogins">
+                <i class="bi bi-box-arrow-in-right me-3 fs-5"></i>
+                <span>External Logins</span>
+            </NavLink>
         </li>
     }
     <li class="nav-item">
-        <NavLink class="nav-link" href="Account/Manage/TwoFactorAuthentication">Two-factor authentication</NavLink>
+        <NavLink class="nav-link d-flex align-items-center px-4 py-3" href="Account/Manage/TwoFactorAuthentication">
+            <i class="bi bi-key-fill me-3 fs-5"></i>
+            <span>Security</span>
+        </NavLink>
     </li>
     <li class="nav-item">
-        <NavLink class="nav-link" href="Account/Manage/Passkeys">Passkeys</NavLink>
+        <NavLink class="nav-link d-flex align-items-center px-4 py-3" href="Account/Manage/Passkeys">
+            <i class="bi bi-fingerprint me-3 fs-5"></i>
+            <span>Passkeys</span>
+        </NavLink>
     </li>
     <li class="nav-item">
-        <NavLink class="nav-link" href="Account/Manage/PersonalData">Personal data</NavLink>
+        <NavLink class="nav-link d-flex align-items-center px-4 py-3" href="Account/Manage/PersonalData">
+            <i class="bi bi-database-fill me-3 fs-5"></i>
+            <span>Personal Data</span>
+        </NavLink>
     </li>
 </ul>
+
+<style>
+    .manage-nav .nav-link {
+        color: #cbd5e1;
+        border-radius: 12px;
+        transition: all 0.3s ease;
+        border: 1px solid transparent;
+        background: rgba(255, 255, 255, 0.02);
+    }
+
+    .manage-nav .nav-link:hover {
+        background: rgba(255, 255, 255, 0.05);
+        color: white;
+        border-color: rgba(255, 255, 255, 0.1);
+        transform: translateX(5px);
+    }
+
+    .manage-nav .nav-link.active {
+        background: var(--gradient-secondary) !important;
+        color: #0a0e27 !important;
+        font-weight: 700;
+        box-shadow: 0 4px 15px rgba(252, 209, 22, 0.3);
+    }
+</style>
 
 @code {
     private bool hasExternalLogins;

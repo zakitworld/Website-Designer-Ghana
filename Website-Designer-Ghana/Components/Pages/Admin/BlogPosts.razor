@@ -4,6 +4,7 @@
 @using Website_Designer_Ghana.Data.Models
 @attribute [Authorize(Roles = "Admin")]
 @layout AdminLayout
+@rendermode InteractiveServer
 
 <PageTitle>Manage Blog Posts - Admin</PageTitle>
 
@@ -63,7 +64,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach (var post in blogPosts)
+                            @foreach (Website_Designer_Ghana.Data.Models.BlogPost post in blogPosts)
                             {
                                 <tr>
                                     <td class="px-4 py-3">
@@ -120,65 +121,4 @@
     </div>
 </div>
 
-<style>
-    .table-dark {
-        --bs-table-bg: transparent;
-    }
 
-    .table> :not(caption)>*>* {
-        border-bottom-color: rgba(255, 255, 255, 0.05);
-    }
-
-    .badge {
-        font-weight: 500;
-        letter-spacing: 0.3px;
-    }
-</style>
-
-@code {
-    [Inject] private IBlogService BlogService { get; set; } = default!;
-    [Inject] private NavigationManager NavigationManager { get; set; } = default!;
-
-    private IEnumerable<BlogPost>? blogPosts;
-    private bool showSuccessMessage = false;
-    private string successMessage = string.Empty;
-
-    protected override async Task OnInitializedAsync()
-    {
-        await LoadDataAsync();
-    }
-
-    private async Task LoadDataAsync()
-    {
-        try
-        {
-            blogPosts = (await BlogService.GetAllPostsAsync(publishedOnly: false))
-            .OrderByDescending(p => p.CreatedAt);
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine($"Error loading blog posts: {ex.Message}");
-            blogPosts = new List<BlogPost>();
-        }
-    }
-
-    private async Task DeletePost(int postId)
-    {
-        if (await JSRuntime.InvokeAsync<bool>("confirm", "Are you sure you want to delete this blog post?"))
-        {
-            try
-            {
-                await BlogService.DeletePostAsync(postId);
-                successMessage = "Blog post deleted successfully.";
-                showSuccessMessage = true;
-                await LoadDataAsync();
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Error deleting blog post: {ex.Message}");
-            }
-        }
-    }
-
-    [Inject] private IJSRuntime JSRuntime { get; set; } = default!;
-}

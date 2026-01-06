@@ -81,7 +81,8 @@
         <div class="row g-5 mt-4">
             <!-- Contact Form -->
             <div class="col-lg-7">
-                <EditForm Model="@contactForm" OnValidSubmit="@HandleSubmit" class="contact-form glass-card p-4 p-md-5">
+                <EditForm Model="@contactForm" OnValidSubmit="@HandleSubmit" FormName="contactForm"
+                    class="contact-form glass-card p-4 p-md-5">
                     <DataAnnotationsValidator />
 
                     @if (showSuccessMessage)
@@ -104,45 +105,41 @@
 
                     <div class="mb-4">
                         <label for="name" class="form-label fw-semibold text-secondary">Name</label>
-                        <InputText @bind-Value="contactForm.FullName"
-                            class="form-control form-control-lg bg-white bg-opacity-05 border-white border-opacity-10 text-white"
-                            id="name" placeholder="Enter your name" />
+                        <InputText @bind-Value="contactForm.FullName" class="form-control form-control-lg" id="name"
+                            placeholder="Enter your name" />
                         <ValidationMessage For="@(() => contactForm.FullName)" class="text-danger small mt-1" />
                     </div>
 
                     <div class="mb-4">
                         <label for="email" class="form-label fw-semibold text-secondary">Email</label>
-                        <InputText @bind-Value="contactForm.Email" type="email"
-                            class="form-control form-control-lg bg-white bg-opacity-05 border-white border-opacity-10 text-white"
+                        <InputText @bind-Value="contactForm.Email" type="email" class="form-control form-control-lg"
                             id="email" placeholder="Enter your email" />
                         <ValidationMessage For="@(() => contactForm.Email)" class="text-danger small mt-1" />
                     </div>
 
                     <div class="mb-4">
                         <label for="phone" class="form-label fw-semibold text-secondary">Phone (Optional)</label>
-                        <InputText @bind-Value="contactForm.Phone"
-                            class="form-control form-control-lg bg-white bg-opacity-05 border-white border-opacity-10 text-white"
-                            id="phone" placeholder="Enter your phone number" />
+                        <InputText @bind-Value="contactForm.Phone" class="form-control form-control-lg" id="phone"
+                            placeholder="Enter your phone number" />
                         <ValidationMessage For="@(() => contactForm.Phone)" class="text-danger small mt-1" />
                     </div>
 
                     <div class="mb-4">
                         <label for="subject" class="form-label fw-semibold text-secondary">Subject</label>
-                        <InputText @bind-Value="contactForm.Subject"
-                            class="form-control form-control-lg bg-white bg-opacity-05 border-white border-opacity-10 text-white"
-                            id="subject" placeholder="What's this about?" />
+                        <InputText @bind-Value="contactForm.Subject" class="form-control form-control-lg" id="subject"
+                            placeholder="What's this about?" />
                         <ValidationMessage For="@(() => contactForm.Subject)" class="text-danger small mt-1" />
                     </div>
 
                     <div class="mb-4">
                         <label for="message" class="form-label fw-semibold text-secondary">Message</label>
-                        <InputTextArea @bind-Value="contactForm.Message"
-                            class="form-control form-control-lg bg-white bg-opacity-05 border-white border-opacity-10 text-white"
+                        <InputTextArea @bind-Value="contactForm.Message" class="form-control form-control-lg"
                             id="message" rows="6" placeholder="Enter your message" />
                         <ValidationMessage For="@(() => contactForm.Message)" class="text-danger small mt-1" />
                     </div>
 
-                    <button type="submit" class="btn btn-secondary btn-lg px-5 py-3 fw-semibold" disabled="@isSubmitting">
+                    <button type="submit" class="btn btn-secondary btn-lg px-5 py-3 fw-semibold"
+                        disabled="@isSubmitting">
                         @if (isSubmitting)
                         {
                             <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
@@ -270,7 +267,8 @@
     [Inject] private IHttpContextAccessor HttpContextAccessor { get; set; } = default!;
     [Inject] private ILogger<Contact> Logger { get; set; } = default!;
 
-    private ContactFormModel contactForm = new();
+    [SupplyParameterFromForm]
+    private ContactFormModel contactForm { get; set; } = new();
     private bool isSubmitting = false;
     private bool showSuccessMessage = false;
     private string errorMessage = string.Empty;
@@ -298,15 +296,15 @@
 
             // Create contact submission
             var submission = new ContactSubmission
-            {
-                FullName = contactForm.FullName,
-                Email = contactForm.Email,
-                Phone = contactForm.Phone,
-                Subject = contactForm.Subject,
-                Message = contactForm.Message,
-                IpAddress = ipAddress,
-                UserAgent = userAgent
-            };
+                {
+                    FullName = contactForm.FullName,
+                    Email = contactForm.Email,
+                    Phone = contactForm.Phone,
+                    Subject = contactForm.Subject,
+                    Message = contactForm.Message,
+                    IpAddress = ipAddress,
+                    UserAgent = userAgent
+                };
 
             // Save to database
             await ContactService.SubmitContactFormAsync(submission);
@@ -315,15 +313,15 @@
             try
             {
                 await EmailService.SendContactFormEmailAsync(
-                    contactForm.Email,
-                    contactForm.FullName,
-                    contactForm.Subject,
-                    contactForm.Message
+                contactForm.Email,
+                contactForm.FullName,
+                contactForm.Subject,
+                contactForm.Message
                 );
 
                 await EmailService.SendContactConfirmationAsync(
-                    contactForm.Email,
-                    contactForm.FullName
+                contactForm.Email,
+                contactForm.FullName
                 );
             }
             catch (Exception emailEx)

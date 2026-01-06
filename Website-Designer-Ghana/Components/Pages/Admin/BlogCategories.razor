@@ -2,9 +2,10 @@
 @using Microsoft.AspNetCore.Authorization
 @using Website_Designer_Ghana.Services.Interfaces
 @using Website_Designer_Ghana.Data.Models
-@using System.ComponentModel.DataAnnotations
+@using Website_Designer_Ghana.Models.Admin
 @attribute [Authorize(Roles = "Admin")]
 @layout AdminLayout
+@rendermode InteractiveServer
 
 <PageTitle>Blog Categories - Admin</PageTitle>
 
@@ -15,7 +16,8 @@
             <p class="text-muted mb-0">Organize and tag your content systematically.</p>
         </div>
         <div class="col-auto">
-            <button type="button" class="btn btn-primary px-4 py-2 border-0 shadow-lg ripple-effect" @onclick="ShowCreateModal">
+            <button type="button" class="btn btn-primary px-4 py-2 border-0 shadow-lg ripple-effect"
+                @onclick="ShowCreateModal">
                 <i class="bi bi-plus-lg me-2"></i>
                 Create Category
             </button>
@@ -27,6 +29,14 @@
         <div class="alert alert-success alert-dismissible fade show" role="alert">
             @successMessage
             <button type="button" class="btn-close" @onclick="() => showSuccessMessage = false"></button>
+        </div>
+    }
+
+    @if (showErrorMessage)
+    {
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <strong>Error!</strong> @errorMessage
+            <button type="button" class="btn-close" @onclick="() => showErrorMessage = false"></button>
         </div>
     }
 
@@ -67,7 +77,8 @@
                                 <tr>
                                     <td class="px-4 py-3">
                                         <div class="d-flex align-items-center">
-                                            <div class="category-color-dot me-3 shadow-sm" style="background-color: @category.Color;"></div>
+                                            <div class="category-color-dot me-3 shadow-sm"
+                                                style="background-color: @category.Color;"></div>
                                             <span class="fw-bold text-white">@category.Name</span>
                                         </div>
                                     </td>
@@ -81,11 +92,11 @@
                                     <td class="px-4 text-end">
                                         <div class="btn-group shadow-sm">
                                             <button type="button" class="btn btn-outline-light btn-sm border-opacity-10"
-                                                @onclick="() => EditCategory(category)" title="Edit">
+                                            @onclick="() => EditCategory(category)" title="Edit">
                                                 <i class="bi bi-pencil"></i>
                                             </button>
                                             <button type="button" class="btn btn-outline-danger btn-sm border-opacity-10"
-                                                @onclick="() => DeleteCategory(category.Id)" title="Delete">
+                                            @onclick="() => DeleteCategory(category.Id)" title="Delete">
                                                 <i class="bi bi-trash"></i>
                                             </button>
                                         </div>
@@ -100,196 +111,73 @@
     </div>
 </div>
 
-<style>
-    .category-color-dot { width: 12px; height: 12px; border-radius: 50%; border: 2px solid rgba(255,255,255,0.2); }
-    .table-dark { --bs-table-bg: transparent; }
-</style>
 
 <!-- Create/Edit Modal -->
 @if (showModal)
 {
-    <div class="modal fade show d-block" tabindex="-1" style="background: rgba(0,0,0,0.8); backdrop-filter: blur(8px);">
+    <div class="modal show d-block" tabindex="-1"
+        style="background: rgba(0,0,0,0.8); backdrop-filter: blur(8px); z-index: 1055; pointer-events: auto;">
         <div class="modal-dialog modal-dialog-centered">
-            <div class="glass-card border-0 shadow-2xl w-100 overflow-hidden">
-                <div class="p-4 border-bottom border-white border-opacity-10 d-flex justify-content-between align-items-center">
-                    <h5 class="modal-title fw-bold text-white mb-0">
-                        <i class="bi bi-folder2-open text-primary me-2"></i>
-                        @(editingCategory != null ? "Edit" : "Create") Category
-                    </h5>
-                    <button type="button" class="btn-close btn-close-white opacity-50" @onclick="CloseModal"></button>
-                </div>
-                <EditForm Model="@model" OnValidSubmit="@HandleSubmit">
-                    <DataAnnotationsValidator />
-                    <div class="p-4">
-                        <div class="mb-3">
-                            <label class="form-label text-secondary small text-uppercase fw-bold">Name</label>
-                            <InputText @bind-Value="model.Name" class="form-control bg-white bg-opacity-05 border-white border-opacity-10 text-white py-2" placeholder="e.g. Web Design" />
-                            <ValidationMessage For="@(() => model.Name)" class="text-danger small mt-1" />
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label text-secondary small text-uppercase fw-bold">Slug</label>
-                            <InputText @bind-Value="model.Slug" class="form-control bg-white bg-opacity-05 border-white border-opacity-10 text-white py-2" placeholder="e.g. web-design" />
-                            <ValidationMessage For="@(() => model.Slug)" class="text-danger small mt-1" />
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label text-secondary small text-uppercase fw-bold">Description</label>
-                            <InputTextArea @bind-Value="model.Description" class="form-control bg-white bg-opacity-05 border-white border-opacity-10 text-white py-2" rows="3"
-                                placeholder="A brief overview of this category..." />
-                        </div>
-                        <div class="mb-0">
-                            <label class="form-label text-secondary small text-uppercase fw-bold">Color Theme</label>
-                            <div class="d-flex align-items-center bg-white bg-opacity-05 border-white border-opacity-10 rounded p-2">
-                                <InputText @bind-Value="model.Color" type="color" class="form-control form-control-color border-0 bg-transparent p-0 me-3" style="width: 40px; height: 30px;" />
-                                <span class="text-muted small">Choose a recognizable color for this category</span>
+            <div class="modal-content bg-transparent border-0">
+                <div class="glass-card border-0 shadow-2xl w-100 overflow-hidden">
+                    <div
+                        class="p-4 border-bottom border-white border-opacity-10 d-flex justify-content-between align-items-center">
+                        <h5 class="modal-title fw-bold text-white mb-0">
+                            <i class="bi bi-folder2-open text-primary me-2"></i>
+                            @(editingCategory != null ? "Edit" : "Create") Category
+                        </h5>
+                        <button type="button" class="btn-close btn-close-white opacity-50" @onclick="CloseModal"></button>
+                    </div>
+                    <EditForm Model="@model" OnValidSubmit="@HandleSubmit">
+                        <DataAnnotationsValidator />
+                        <div class="p-4">
+                            <div class="mb-3">
+                                <label class="form-label text-secondary small text-uppercase fw-bold">Name</label>
+                                <InputText @bind-Value="model.Name"
+                                    class="form-control bg-dark bg-opacity-50 border-white border-opacity-10 text-white py-2"
+                                    placeholder="e.g. Web Design" />
+                                <ValidationMessage For="@(() => model.Name)" class="text-danger small mt-1" />
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label text-secondary small text-uppercase fw-bold">Slug</label>
+                                <InputText @bind-Value="model.Slug"
+                                    class="form-control bg-dark bg-opacity-50 border-white border-opacity-10 text-white py-2"
+                                    placeholder="e.g. web-design" />
+                                <ValidationMessage For="@(() => model.Slug)" class="text-danger small mt-1" />
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label text-secondary small text-uppercase fw-bold">Description</label>
+                                <InputTextArea @bind-Value="model.Description"
+                                    class="form-control bg-dark bg-opacity-50 border-white border-opacity-10 text-white py-2"
+                                    rows="3" placeholder="A brief overview of this category..." />
+                            </div>
+                            <div class="mb-0">
+                                <label class="form-label text-secondary small text-uppercase fw-bold">Color Theme</label>
+                                <div
+                                    class="d-flex align-items-center bg-dark bg-opacity-50 border-white border-opacity-10 rounded p-2">
+                                    <InputText @bind-Value="model.Color" type="color"
+                                        class="form-control form-control-color border-0 bg-transparent p-0 me-3"
+                                        style="width: 40px; height: 30px;" />
+                                    <span class="text-muted small">Choose a recognizable color for this category</span>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                    <div class="p-4 bg-white bg-opacity-05 border-top border-white border-opacity-10 d-flex justify-content-end gap-2">
-                        <button type="button" class="btn btn-outline-light border-opacity-10 px-4" @onclick="CloseModal">Cancel</button>
-                        <button type="submit" class="btn btn-primary px-4 border-0 shadow-lg" disabled="@isSaving">
-                            @if (isSaving)
-                            {
-                                <span class="spinner-border spinner-border-sm me-2"></span>
-                            }
-                            @(editingCategory != null ? "Save Changes" : "Create Category")
-                        </button>
-                    </div>
-                </EditForm>
+                        <div
+                            class="p-4 bg-black bg-opacity-50 border-top border-white border-opacity-10 d-flex justify-content-end gap-2">
+                            <button type="button" class="btn btn-outline-light border-opacity-10 px-4"
+                            @onclick="CloseModal">Cancel</button>
+                            <button type="submit" class="btn btn-primary px-4 border-0 shadow-lg" disabled="@isSaving">
+                                @if (isSaving)
+                                {
+                                    <span class="spinner-border spinner-border-sm me-2"></span>
+                                }
+                                @(editingCategory != null ? "Save Changes" : "Create Category")
+                            </button>
+                        </div>
+                    </EditForm>
+                </div>
             </div>
         </div>
     </div>
 }
 
-@code {
-    [Inject] private IBlogService BlogService { get; set; } = default!;
-    [Inject] private IJSRuntime JSRuntime { get; set; } = default!;
-
-    private IEnumerable<BlogCategory>? categories;
-    private BlogCategory? editingCategory;
-    private bool showModal = false;
-    private bool showSuccessMessage = false;
-    private string successMessage = string.Empty;
-    private bool isSaving = false;
-    private CategoryFormModel model = new();
-
-    protected override async Task OnInitializedAsync()
-    {
-        await LoadDataAsync();
-    }
-
-    private async Task LoadDataAsync()
-    {
-        try
-        {
-            categories = await BlogService.GetAllCategoriesAsync();
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine($"Error loading categories: {ex.Message}");
-            categories = new List<BlogCategory>();
-        }
-    }
-
-    private void ShowCreateModal()
-    {
-        editingCategory = null;
-        model = new CategoryFormModel { Color = "#3b82f6" };
-        showModal = true;
-    }
-
-    private void EditCategory(BlogCategory category)
-    {
-        editingCategory = category;
-        model = new CategoryFormModel
-            {
-                Name = category.Name,
-                Slug = category.Slug,
-                Description = category.Description,
-                Color = category.Color ?? "#3b82f6"
-            };
-        showModal = true;
-    }
-
-    private async Task HandleSubmit()
-    {
-        isSaving = true;
-        try
-        {
-            if (editingCategory != null)
-            {
-                editingCategory.Name = model.Name;
-                editingCategory.Slug = model.Slug;
-                editingCategory.Description = model.Description;
-                editingCategory.Color = model.Color;
-
-                await BlogService.UpdateCategoryAsync(editingCategory);
-                successMessage = "Category updated successfully.";
-            }
-            else
-            {
-                var category = new BlogCategory
-                    {
-                        Name = model.Name,
-                        Slug = model.Slug,
-                        Description = model.Description,
-                        Color = model.Color,
-                        CreatedAt = DateTime.UtcNow
-                    };
-
-                await BlogService.CreateCategoryAsync(category);
-                successMessage = "Category created successfully.";
-            }
-
-            showSuccessMessage = true;
-            CloseModal();
-            await LoadDataAsync();
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine($"Error saving category: {ex.Message}");
-        }
-        finally
-        {
-            isSaving = false;
-        }
-    }
-
-    private async Task DeleteCategory(int categoryId)
-    {
-        if (await JSRuntime.InvokeAsync<bool>("confirm", "Are you sure you want to delete this category?"))
-        {
-            try
-            {
-                await BlogService.DeleteCategoryAsync(categoryId);
-                successMessage = "Category deleted successfully.";
-                showSuccessMessage = true;
-                await LoadDataAsync();
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Error deleting category: {ex.Message}");
-            }
-        }
-    }
-
-    private void CloseModal()
-    {
-        showModal = false;
-        editingCategory = null;
-    }
-
-    public class CategoryFormModel
-    {
-        [Required(ErrorMessage = "Name is required")]
-        [MaxLength(100)]
-        public string Name { get; set; } = string.Empty;
-
-        [Required(ErrorMessage = "Slug is required")]
-        [MaxLength(150)]
-        public string Slug { get; set; } = string.Empty;
-
-        public string? Description { get; set; }
-
-        public string Color { get; set; } = "#3b82f6";
-    }
-}
