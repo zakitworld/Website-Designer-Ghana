@@ -31,9 +31,13 @@ function removeFocusOutlines() {
 // SMOOTH SCROLLING
 // ==========================================
 function initSmoothScroll() {
-    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-        anchor.addEventListener('click', function (e) {
-            const href = this.getAttribute('href');
+    // Use event delegation to handle dynamically loaded content
+    document.body.addEventListener('click', function (e) {
+        // Find the closest anchor tag that starts with #
+        const anchor = e.target.closest('a[href^="#"]');
+        
+        if (anchor) {
+            const href = anchor.getAttribute('href');
 
             // Skip if it's just "#"
             if (href === '#') return;
@@ -49,7 +53,7 @@ function initSmoothScroll() {
                     behavior: 'smooth'
                 });
             }
-        });
+        }
     });
 }
 
