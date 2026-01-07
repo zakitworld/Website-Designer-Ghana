@@ -12,7 +12,7 @@
                     in Ghana
                 </h1>
                 <p class="lead text-secondary mb-5">
-                    Best Web Designers in Ghana || Top Web Design Company in Accra
+                    Best Web Designers in Ghana || Top Freelance Web Design Team in Ghana
                 </p>
                 <div class="d-flex gap-3 mb-5">
                     <a href="/contact" class="btn btn-secondary btn-lg px-4">Email</a>
@@ -172,7 +172,7 @@
                     <h3 class="h4 text-white fw-bold mb-4">Our Vision</h3>
                     <ul class="mv-list">
                         <li>
-                            To become the leading web design agency in Ghana, known for delivering exceptional,
+                            To become the leading freelance web design team in Ghana, known for delivering exceptional,
                             results-driven digital solutions.
                         </li>
                         <li>
@@ -197,7 +197,7 @@
                         Project</span></h2>
                 <p class="text-secondary mb-4 lead">
                     Our commitment to quality, innovation, and customer satisfaction sets us apart as Ghana's leading
-                    web design agency.
+                    freelance web design network.
                 </p>
             </div>
 
@@ -244,7 +244,7 @@
                                 </svg>
                             </div>
                             <h3 class="h5 text-white fw-bold mb-2">Accra & Kumasi</h3>
-                            <p class="text-secondary mb-0 small">Offices in major cities</p>
+                            <p class="text-secondary mb-0 small">Serving clients nationwide</p>
                         </div>
                     </div>
                     <div class="col-sm-6">
@@ -360,27 +360,31 @@
         <SectionHeading Title="Latest Insights" Subtitle="Our Blog" />
 
         <div class="row g-4">
-            <div class="col-md-4">
-                <ArticleCard Image="https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=800&q=80"
-                    Author="Website Designer in Ghana" Category="web design" Date="December 28, 2025"
-                    Title="Domain and Hosting Prices in Ghana (2026)"
-                    Excerpt="A comprehensive guide to current web hosting and domain registration costs in Ghana for businesses."
-                    Link="/blog/domain-hosting-prices-ghana-2026" />
-            </div>
-            <div class="col-md-4">
-                <ArticleCard Image="https://images.unsplash.com/photo-1563986768494-4dee2763ff3f?w=800&q=80"
-                    Author="Website Designer in Ghana" Category="web design" Date="December 15, 2025"
-                    Title="Top 5 E-commerce Payment Gateways"
-                    Excerpt="Reviewing Paystack, Flutterwave, Stripe and other payment options for Ghanaian online stores."
-                    Link="/blog/top-ecommerce-payment-gateways-ghana" />
-            </div>
-            <div class="col-md-4">
-                <ArticleCard Image="https://images.unsplash.com/photo-1551434678-e076c223a692?w=800&q=80"
-                    Author="Website Designer in Ghana" Category="web design" Date="November 30, 2025"
-                    Title="Why Your Business Needs a Website"
-                    Excerpt="In the digital age, having a professional online presence is crucial for credibility and growth."
-                    Link="/blog/why-your-business-needs-website" />
-            </div>
+            @if (recentPosts == null)
+            {
+                <div class="col-12 text-center text-secondary">
+                    <p>Loading recent articles...</p>
+                </div>
+            }
+            else if (!recentPosts.Any())
+            {
+                <div class="col-12 text-center text-secondary">
+                    <p>No articles found. Check back soon for updates!</p>
+                </div>
+            }
+            else
+            {
+                @foreach (var post in recentPosts)
+                {
+                    <div class="col-md-4">
+                        <ArticleCard
+                            Image="@(post.FeaturedImage ?? "https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=800&q=80")"
+                            Author="@post.Author" Category="@(post.Category?.Name ?? "Web Design")"
+                            Date="@(post.PublishedAt?.ToString("MMMM dd, yyyy") ?? post.CreatedAt.ToString("MMMM dd, yyyy"))"
+                            Title="@post.Title" Excerpt="@post.Summary" Link="@($"/blog/{post.Slug}")" />
+                    </div>
+                }
+            }
         </div>
     </div>
 </section>
@@ -432,7 +436,8 @@
             <div class="col-lg-8">
                 <h2 class="cta-heading mb-4">Looking to Create a Website?</h2>
                 <p class="cta-text mb-0">
-                    Contact Website Designer in Ghana - Top Web Design Company in Accra. We develop the best web apps!
+                    Contact Website Designer in Ghana - Top Freelance Web Design Team in Ghana. We develop the best web
+                    apps!
                 </p>
             </div>
             <div class="col-lg-4 text-lg-end mt-4 mt-lg-0">
@@ -450,7 +455,28 @@
     </div>
 </section>
 
+@using Website_Designer_Ghana.Services.Interfaces
+@using BlogPostModel = Website_Designer_Ghana.Data.Models.BlogPost
+
 @code {
+    [Inject] private IBlogService BlogService { get; set; } = default!;
+    [Inject] IJSRuntime JS { get; set; } = default!;
+
+    private IEnumerable<BlogPostModel>? recentPosts;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            recentPosts = await BlogService.GetRecentPostsAsync(3);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error loading recent posts: {ex.Message}");
+            recentPosts = new List<BlogPostModel>();
+        }
+    }
+
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (firstRender)
@@ -459,6 +485,4 @@
             await JS.InvokeVoidAsync("refreshScrollAnimations");
         }
     }
-
-    [Inject] IJSRuntime JS { get; set; }
 }

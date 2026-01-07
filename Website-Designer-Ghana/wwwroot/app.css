@@ -214,6 +214,15 @@ textarea:-webkit-autofill:focus {
     color: var(--color-primary);
 }
 
+/* Custom Opacity Utilities */
+.bg-opacity-05 {
+    --bs-bg-opacity: 0.05;
+}
+
+.border-opacity-05 {
+    --bs-border-opacity: 0.05;
+}
+
 /* ==========================================
    CUSTOM UTILITIES & EFFECTS
    ========================================== */

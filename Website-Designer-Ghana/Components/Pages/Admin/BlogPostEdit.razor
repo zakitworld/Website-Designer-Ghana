@@ -32,15 +32,14 @@
                 <div class="col-12">
                     <label class="form-label text-secondary small text-uppercase fw-bold ls-wide">Title</label>
                     <InputText @bind-Value="model.Title"
-                        class="form-control form-control-lg bg-white bg-opacity-05 border-white border-opacity-10 text-white"
+                        class="form-control form-control-lg border-white border-opacity-10 text-white"
                         placeholder="Enter post title" />
                     <ValidationMessage For="@(() => model.Title)" class="text-danger small mt-1" />
                 </div>
 
                 <div class="col-md-6">
                     <label class="form-label text-secondary small text-uppercase fw-bold ls-wide">Slug (URL)</label>
-                    <InputText @bind-Value="model.Slug"
-                        class="form-control bg-white bg-opacity-05 border-white border-opacity-10 text-white"
+                    <InputText @bind-Value="model.Slug" class="form-control border-white border-opacity-10 text-white"
                         placeholder="blog-post-url" />
                     <div class="form-text text-muted small opacity-50">URL-friendly version of the title</div>
                     <ValidationMessage For="@(() => model.Slug)" class="text-danger small mt-1" />
@@ -49,7 +48,7 @@
                 <div class="col-md-6">
                     <label class="form-label text-secondary small text-uppercase fw-bold ls-wide">Category</label>
                     <InputSelect @bind-Value="model.CategoryId"
-                        class="form-select bg-white bg-opacity-05 border-white border-opacity-10 text-white">
+                        class="form-select border-white border-opacity-10 text-white">
                         <option value="">Select a category</option>
                         @if (categories != null)
                         {
@@ -64,7 +63,7 @@
                 <div class="col-12">
                     <label class="form-label text-secondary small text-uppercase fw-bold ls-wide">Summary</label>
                     <InputTextArea @bind-Value="model.Summary"
-                        class="form-control bg-white bg-opacity-05 border-white border-opacity-10 text-white" rows="3"
+                        class="form-control border-white border-opacity-10 text-white" rows="3"
                         placeholder="Brief summary of the post" />
                     <ValidationMessage For="@(() => model.Summary)" class="text-danger small mt-1" />
                 </div>
@@ -72,8 +71,8 @@
                 <div class="col-12">
                     <label class="form-label text-secondary small text-uppercase fw-bold ls-wide">Content (HTML)</label>
                     <InputTextArea @bind-Value="model.Content"
-                        class="form-control bg-white bg-opacity-05 border-white border-opacity-10 text-white font-monospace"
-                        rows="15" placeholder="Enter post content (HTML supported)" />
+                        class="form-control border-white border-opacity-10 text-white font-monospace" rows="15"
+                        placeholder="Enter post content (HTML supported)" />
                     <ValidationMessage For="@(() => model.Content)" class="text-danger small mt-1" />
                 </div>
 
@@ -83,13 +82,13 @@
                             <label class="form-label text-secondary small text-uppercase fw-bold ls-wide">Featured Image
                                 URL</label>
                             <InputText @bind-Value="model.FeaturedImage"
-                                class="form-control bg-white bg-opacity-05 border-white border-opacity-10 text-white"
+                                class="form-control border-white border-opacity-10 text-white"
                                 placeholder="https://example.com/image.jpg" />
                         </div>
                         <div class="col-md-6">
                             <label class="form-label text-secondary small text-uppercase fw-bold ls-wide">Or Upload
                                 Image</label>
-                            <div class="p-3 bg-white bg-opacity-05 border-white border-opacity-10 rounded">
+                            <div class="p-3 bg-white bg-opacity-10 border-white border-opacity-10 rounded">
                                 <FileUpload Label="Upload Featured Image" Accept="image/*" ImagesOnly="true"
                                     Folder="blog" MaxFileSizeInMB="5" OnFileUploaded="@HandleImageUploaded" />
                             </div>
@@ -99,8 +98,7 @@
 
                 <div class="col-md-6">
                     <label class="form-label text-secondary small text-uppercase fw-bold ls-wide">Author</label>
-                    <InputText @bind-Value="model.Author"
-                        class="form-control bg-white bg-opacity-05 border-white border-opacity-10 text-white"
+                    <InputText @bind-Value="model.Author" class="form-control border-white border-opacity-10 text-white"
                         placeholder="Author name" />
                     <ValidationMessage For="@(() => model.Author)" class="text-danger small mt-1" />
                 </div>
@@ -112,7 +110,7 @@
                             <label class="form-label text-secondary small text-uppercase fw-bold ls-wide">Meta
                                 Title</label>
                             <InputText @bind-Value="model.MetaTitle"
-                                class="form-control bg-white bg-opacity-05 border-white border-opacity-10 text-white"
+                                class="form-control border-white border-opacity-10 text-white"
                                 placeholder="SEO title" />
                         </div>
 
@@ -120,7 +118,7 @@
                             <label class="form-label text-secondary small text-uppercase fw-bold ls-wide">Meta
                                 Description</label>
                             <InputText @bind-Value="model.MetaDescription"
-                                class="form-control bg-white bg-opacity-05 border-white border-opacity-10 text-white"
+                                class="form-control border-white border-opacity-10 text-white"
                                 placeholder="SEO description" />
                         </div>
 
@@ -128,7 +126,7 @@
                             <label class="form-label text-secondary small text-uppercase fw-bold ls-wide">Meta
                                 Keywords</label>
                             <InputText @bind-Value="model.MetaKeywords"
-                                class="form-control bg-white bg-opacity-05 border-white border-opacity-10 text-white"
+                                class="form-control border-white border-opacity-10 text-white"
                                 placeholder="keyword1, keyword2, keyword3" />
                         </div>
                     </div>

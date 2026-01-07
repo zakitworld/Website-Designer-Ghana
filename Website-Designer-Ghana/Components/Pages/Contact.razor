@@ -87,20 +87,20 @@
 
                     @if (showSuccessMessage)
                     {
-                        <div class="alert alert-success alert-dismissible fade show mb-4" role="alert">
-                            <i class="bi bi-check-circle-fill me-2"></i>
-                            Thank you for contacting us! We'll get back to you within 24-48 hours.
-                            <button type="button" class="btn-close" @onclick="() => showSuccessMessage = false"></button>
-                        </div>
+                            <div class="alert alert-success alert-dismissible fade show mb-4" role="alert">
+                                <i class="bi bi-check-circle-fill me-2"></i>
+                                Thank you for contacting us! We'll get back to you within 24-48 hours.
+                                <button type="button" class="btn-close" @onclick="() => showSuccessMessage = false"></button>
+                            </div>
                     }
 
                     @if (!string.IsNullOrEmpty(errorMessage))
                     {
-                        <div class="alert alert-danger alert-dismissible fade show mb-4" role="alert">
-                            <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                            <div class="alert alert-danger alert-dismissible fade show mb-4" role="alert">
+                                <i class="bi bi-exclamation-triangle-fill me-2"></i>
                             @errorMessage
-                            <button type="button" class="btn-close" @onclick="() => errorMessage = string.Empty"></button>
-                        </div>
+                                <button type="button" class="btn-close" @onclick="() => errorMessage = string.Empty"></button>
+                            </div>
                     }
 
                     <div class="mb-4">
@@ -142,12 +142,12 @@
                         disabled="@isSubmitting">
                         @if (isSubmitting)
                         {
-                            <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
-                            <span>Sending...</span>
+                                <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                                <span>Sending...</span>
                         }
                         else
                         {
-                            <span>Send Message</span>
+                                <span>Send Message</span>
                         }
                     </button>
                 </EditForm>
@@ -166,7 +166,8 @@
                                 <i class="bi bi-geo-alt-fill text-secondary fs-5"></i>
                             </div>
                             <div>
-                                <p class="mb-0 text-secondary">Accra, Ghana</p>
+                                <p class="mb-0 text-white fw-bold">Remote / Online</p>
+                                <p class="mb-0 text-secondary small">Based in Accra, Serving Globally</p>
                             </div>
                         </div>
 
@@ -190,14 +191,25 @@
                             </div>
                         </div>
 
-                        <!-- Map Placeholder -->
-                        <div class="mt-4 rounded overflow-hidden"
-                            style="height: 250px; background: #1e293b; border: 1px solid rgba(255,255,255,0.1);">
-                            <iframe
-                                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d126846.33362443417!2d-0.2664308!3d5.6037168!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0xfdf9084b2b7a773%3A0xbed14ed8650e2dd3!2sAccra%2C%20Ghana!5e0!3m2!1sen!2s!4v1234567890123!5m2!1sen!2s"
-                                width="100%" height="100%" style="border:0; filter: invert(90%) hue-rotate(180deg);"
-                                allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade">
-                            </iframe>
+                        <!-- Remote Work Visual -->
+                        <div class="mt-4 rounded overflow-hidden position-relative d-flex align-items-center justify-content-center"
+                            style="height: 250px; background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); border: 1px solid rgba(255,255,255,0.1);">
+
+                            <div class="text-center p-4">
+                                <i class="bi bi-laptop text-primary mb-3" style="font-size: 3rem;"></i>
+                                <h4 class="h5 text-white mb-2">100% Remote Workflow</h4>
+                                <p class="text-secondary small mb-0">
+                                    We work efficiently from anywhere to deliver world-class results directly to you.
+                                </p>
+                            </div>
+
+                            <!-- Decorative elements -->
+                            <div class="position-absolute top-0 end-0 p-3 opacity-25">
+                                <i class="bi bi-wifi text-success fs-3"></i>
+                            </div>
+                            <div class="position-absolute bottom-0 start-0 p-3 opacity-25">
+                                <i class="bi bi-globe text-info fs-3"></i>
+                            </div>
                         </div>
                     </div>
                 </div>
