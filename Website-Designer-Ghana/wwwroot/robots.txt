@@ -1,0 +1,27 @@
+# Website Designer Ghana - Robots.txt
+# This file tells search engines which pages to crawl and which to ignore
+
+User-agent: *
+Allow: /
+Disallow: /admin/
+Disallow: /Account/
+Disallow: /api/
+Disallow: /uploads/temp/
+
+# Allow blog content
+Allow: /blog/
+Allow: /courses/
+Allow: /portfolio/
+
+# Crawl delay (optional - prevents aggressive crawling)
+Crawl-delay: 1
+
+# Sitemap location
+Sitemap: https://websitedesignerghana.com/sitemap.xml
+
+# Block specific bots if needed (uncomment to use)
+# User-agent: BadBot
+# Disallow: /
+
+# User-agent: AnotherBadBot
+# Disallow: /

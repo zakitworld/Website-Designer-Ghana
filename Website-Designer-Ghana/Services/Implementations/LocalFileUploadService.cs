@@ -9,6 +9,16 @@ public class LocalFileUploadService : IFileUploadService
     private readonly string _uploadBasePath;
     private static readonly string[] AllowedImageExtensions = { ".jpg", ".jpeg", ".png", ".gif", ".webp", ".svg" };
 
+    // Magic numbers for file type validation (first few bytes of valid files)
+    private static readonly Dictionary<string, byte[][]> FileMagicNumbers = new()
+    {
+        { ".jpg", new[] { new byte[] { 0xFF, 0xD8, 0xFF } } },
+        { ".jpeg", new[] { new byte[] { 0xFF, 0xD8, 0xFF } } },
+        { ".png", new[] { new byte[] { 0x89, 0x50, 0x4E, 0x47 } } },
+        { ".gif", new[] { new byte[] { 0x47, 0x49, 0x46, 0x38 } } },
+        { ".webp", new[] { new byte[] { 0x52, 0x49, 0x46, 0x46 } } },
+    };
+
     public LocalFileUploadService(IWebHostEnvironment environment, ILogger<LocalFileUploadService> logger)
     {
         _environment = environment;
@@ -63,6 +73,16 @@ public class LocalFileUploadService : IFileUploadService
         {
             throw new ArgumentException("Invalid image file type. Allowed types: jpg, jpeg, png, gif, webp, svg");
         }
+
+        // Validate file content (magic number validation) for security
+        var extension = Path.GetExtension(fileName).ToLowerInvariant();
+        if (extension != ".svg" && !await IsValidFileContentAsync(imageStream, extension))
+        {
+            throw new ArgumentException($"File content does not match the expected format for {extension} files. This could be a security risk.");
+        }
+
+        // Reset stream position after reading
+        imageStream.Position = 0;
 
         return await UploadFileAsync(imageStream, fileName, folder);
     }
@@ -172,5 +192,58 @@ public class LocalFileUploadService : IFileUploadService
         var randomString = Guid.NewGuid().ToString("N").Substring(0, 8);
 
         return $"{fileNameWithoutExtension}_{timestamp}_{randomString}{extension}";
+    }
+
+    /// <summary>
+    /// Validates file content by checking magic numbers (file signatures)
+    /// This prevents users from uploading malicious files with fake extensions
+    /// </summary>
+    private async Task<bool> IsValidFileContentAsync(Stream stream, string extension)
+    {
+        if (!FileMagicNumbers.ContainsKey(extension))
+        {
+            // If we don't have magic numbers for this extension, allow it
+            // (but log for security monitoring)
+            _logger.LogWarning("No magic number validation available for extension: {Extension}", extension);
+            return true;
+        }
+
+        var magicNumbers = FileMagicNumbers[extension];
+        var buffer = new byte[8]; // Read first 8 bytes
+        var bytesRead = await stream.ReadAsync(buffer, 0, buffer.Length);
+
+        if (bytesRead < 4)
+        {
+            _logger.LogWarning("File too small to validate: {BytesRead} bytes", bytesRead);
+            return false;
+        }
+
+        foreach (var magicNumber in magicNumbers)
+        {
+            if (ByteArrayStartsWith(buffer, magicNumber))
+            {
+                return true;
+            }
+        }
+
+        _logger.LogWarning("File magic number validation failed for extension: {Extension}", extension);
+        return false;
+    }
+
+    /// <summary>
+    /// Checks if a byte array starts with a specific sequence
+    /// </summary>
+    private bool ByteArrayStartsWith(byte[] array, byte[] sequence)
+    {
+        if (array.Length < sequence.Length)
+            return false;
+
+        for (int i = 0; i < sequence.Length; i++)
+        {
+            if (array[i] != sequence[i])
+                return false;
+        }
+
+        return true;
     }
 }

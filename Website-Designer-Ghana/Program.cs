@@ -8,8 +8,24 @@ using Website_Designer_Ghana.Data.Repositories;
 using Website_Designer_Ghana.Services.Interfaces;
 using Website_Designer_Ghana.Services.Implementations;
 using Website_Designer_Ghana.Services.Models;
+using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
+
+// Configure Serilog
+Log.Logger = new LoggerConfiguration()
+    .ReadFrom.Configuration(builder.Configuration)
+    .Enrich.FromLogContext()
+    .Enrich.WithProperty("Application", "Website-Designer-Ghana")
+    .WriteTo.Console()
+    .WriteTo.File(
+        path: "logs/log-.txt",
+        rollingInterval: RollingInterval.Day,
+        retainedFileCountLimit: 30,
+        outputTemplate: "{Timestamp:yyyy-MM-dd HH:mm:ss.fff zzz} [{Level:u3}] {Message:lj}{NewLine}{Exception}")
+    .CreateLogger();
+
+builder.Host.UseSerilog();
 
 // Add services to the container.
 builder.Services.AddRazorComponents()
@@ -21,14 +37,14 @@ builder.Services.AddHttpContextAccessor();
 // Add Rate Limiting
 builder.Services.AddRateLimiter(rateLimiterOptions =>
 {
-    // Global rate limiter with fixed window
+    // Global rate limiter with fixed window (reduced from 200 to 100 requests per minute)
     rateLimiterOptions.GlobalLimiter = System.Threading.RateLimiting.PartitionedRateLimiter.Create<Microsoft.AspNetCore.Http.HttpContext, string>(httpContext =>
         System.Threading.RateLimiting.RateLimitPartition.GetFixedWindowLimiter(
             partitionKey: httpContext.User.Identity?.Name ?? httpContext.Request.Headers.Host.ToString(),
             factory: partition => new System.Threading.RateLimiting.FixedWindowRateLimiterOptions
             {
                 AutoReplenishment = true,
-                PermitLimit = 200,
+                PermitLimit = 100,
                 QueueLimit = 0,
                 Window = TimeSpan.FromMinutes(1)
             }));
@@ -40,6 +56,36 @@ builder.Services.AddRateLimiter(rateLimiterOptions =>
 builder.Services.AddResponseCompression(options =>
 {
     options.EnableForHttps = true;
+});
+
+// Add output caching for performance
+builder.Services.AddOutputCache(options =>
+{
+    // Default cache policy: 10 minutes
+    options.AddBasePolicy(builder => builder
+        .Expire(TimeSpan.FromMinutes(10))
+        .Tag("default"));
+
+    // Blog posts cache: 1 hour
+    options.AddPolicy("blog-posts", builder => builder
+        .Expire(TimeSpan.FromHours(1))
+        .Tag("blog")
+        .SetVaryByQuery("page", "category", "tag"));
+
+    // Static pages cache: 30 minutes
+    options.AddPolicy("static-pages", builder => builder
+        .Expire(TimeSpan.FromMinutes(30))
+        .Tag("static"));
+
+    // Portfolio cache: 1 hour
+    options.AddPolicy("portfolio", builder => builder
+        .Expire(TimeSpan.FromHours(1))
+        .Tag("portfolio"));
+
+    // Course catalog cache: 1 hour
+    options.AddPolicy("courses", builder => builder
+        .Expire(TimeSpan.FromHours(1))
+        .Tag("courses"));
 });
 
 // Add health checks
@@ -64,8 +110,24 @@ builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
 builder.Services.AddIdentityCore<ApplicationUser>(options =>
     {
-        options.SignIn.RequireConfirmedAccount = false;
+        // Require email confirmation in production for security
+        options.SignIn.RequireConfirmedAccount = !builder.Environment.IsDevelopment();
         options.Stores.SchemaVersion = IdentitySchemaVersions.Version3;
+
+        // Password requirements
+        options.Password.RequireDigit = true;
+        options.Password.RequiredLength = 8;
+        options.Password.RequireNonAlphanumeric = true;
+        options.Password.RequireUppercase = true;
+        options.Password.RequireLowercase = true;
+
+        // Lockout settings
+        options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(15);
+        options.Lockout.MaxFailedAccessAttempts = 5;
+        options.Lockout.AllowedForNewUsers = true;
+
+        // User settings
+        options.User.RequireUniqueEmail = true;
     })
     .AddRoles<IdentityRole>()
     .AddEntityFrameworkStores<ApplicationDbContext>()
@@ -87,6 +149,7 @@ builder.Services.AddScoped<ICourseService, CourseService>();
 builder.Services.AddScoped<IPortfolioService, PortfolioService>();
 builder.Services.AddScoped<IEmailService, EmailService>();
 builder.Services.AddScoped<IFileUploadService, LocalFileUploadService>();
+builder.Services.AddScoped<ISitemapService, SitemapService>();
 
 var app = builder.Build();
 
@@ -99,7 +162,8 @@ using (var scope = app.Services.CreateScope())
         var context = services.GetRequiredService<ApplicationDbContext>();
         var userManager = services.GetRequiredService<UserManager<ApplicationUser>>();
         var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
-        await DatabaseSeeder.SeedAsync(context, userManager, roleManager);
+        var configuration = services.GetRequiredService<IConfiguration>();
+        await DatabaseSeeder.SeedAsync(context, userManager, roleManager, configuration);
     }
     catch (Exception ex)
     {
@@ -138,6 +202,9 @@ else
 app.UseStatusCodePagesWithReExecute("/not-found", createScopeForStatusCodePages: true);
 app.UseHttpsRedirection();
 
+// Enable output caching
+app.UseOutputCache();
+
 // Enable rate limiting
 app.UseRateLimiter();
 
@@ -152,5 +219,12 @@ app.MapAdditionalIdentityEndpoints();
 
 // Map health checks endpoint
 app.MapHealthChecks("/health");
+
+// Map sitemap.xml endpoint
+app.MapGet("/sitemap.xml", async (ISitemapService sitemapService) =>
+{
+    var sitemap = await sitemapService.GenerateSitemapAsync();
+    return Results.Content(sitemap, "application/xml");
+}).CacheOutput("static-pages");
 
 app.Run();

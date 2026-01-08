@@ -1,11 +1,12 @@
 using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Configuration;
 using Website_Designer_Ghana.Data.Models;
 
 namespace Website_Designer_Ghana.Data;
 
 public static class DatabaseSeeder
 {
-    public static async Task SeedAsync(ApplicationDbContext context, UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager)
+    public static async Task SeedAsync(ApplicationDbContext context, UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager, IConfiguration configuration)
     {
         // Seed Admin Role
         if (!await roleManager.RoleExistsAsync("Admin"))
@@ -14,23 +15,29 @@ public static class DatabaseSeeder
         }
 
         // Seed Default Admin User
-        var adminEmail = "admin@websitedesignerghana.com";
-        var adminUser = await userManager.FindByEmailAsync(adminEmail);
-        if (adminUser == null)
-        {
-            adminUser = new ApplicationUser
-            {
-                UserName = adminEmail,
-                Email = adminEmail,
-                EmailConfirmed = true,
-                FirstName = "Admin",
-                LastName = "User"
-            };
+        var adminEmail = configuration["AdminUser:Email"] ?? "admin@websitedesignerghana.com";
+        var adminPassword = configuration["AdminUser:Password"];
 
-            var result = await userManager.CreateAsync(adminUser, "Admin@123456");
-            if (result.Succeeded)
+        // Only seed admin if password is configured (prevents accidental seeding in production with weak password)
+        if (!string.IsNullOrEmpty(adminPassword))
+        {
+            var adminUser = await userManager.FindByEmailAsync(adminEmail);
+            if (adminUser == null)
             {
-                await userManager.AddToRoleAsync(adminUser, "Admin");
+                adminUser = new ApplicationUser
+                {
+                    UserName = adminEmail,
+                    Email = adminEmail,
+                    EmailConfirmed = true,
+                    FirstName = "Admin",
+                    LastName = "User"
+                };
+
+                var result = await userManager.CreateAsync(adminUser, adminPassword);
+                if (result.Succeeded)
+                {
+                    await userManager.AddToRoleAsync(adminUser, "Admin");
+                }
             }
         }
         // Seed Blog Categories

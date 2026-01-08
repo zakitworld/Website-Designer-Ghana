@@ -361,3 +361,13 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
+
+# Production configuration with sensitive data
+appsettings.Production.json
+
+# Serilog log files
+logs/
+*.log
+
+# User secrets (already handled by .NET, but being explicit)
+secrets.json
