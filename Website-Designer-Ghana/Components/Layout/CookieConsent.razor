@@ -1,0 +1,92 @@
+@inject IJSRuntime JS
+
+@if (ShowBanner)
+{
+    <div class="cookie-consent-banner fade-in-up">
+        <div class="container">
+            <div class="glass-card p-4 d-flex flex-column flex-md-row align-items-center justify-content-between gap-4">
+                <div class="cookie-content">
+                    <h5 class="text-white mb-2 fw-bold">Cookie Consent</h5>
+                    <p class="mb-0 text-white text-opacity-75 small">
+                        We use cookies to enhance your experience. By continuing to visit this site you agree to our use of
+                        cookies.
+                        Read our <a href="privacy" class="text-secondary fw-semibold">Privacy Policy</a> and <a href="terms"
+                            class="text-secondary fw-semibold">Terms of Service</a>.
+                    </p>
+                </div>
+                <div class="cookie-actions d-flex gap-3 shrink-0">
+                    <button class="btn btn-outline-light btn-sm px-4 rounded-pill"
+                    @onclick="DeclineCookies">Decline</button>
+                    <button class="btn btn-secondary btn-sm px-4 rounded-pill fw-bold"
+                    @onclick="AcceptCookies">Accept</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <style>
+        .cookie-consent-banner {
+            position: fixed;
+            bottom: 2rem;
+            left: 0;
+            right: 0;
+            z-index: 1040;
+            pointer-events: none;
+            /* Allow clicks through empty space */
+        }
+
+        .cookie-consent-banner .container {
+            pointer-events: auto;
+            /* Re-enable clicks on content */
+        }
+
+        .fade-in-up {
+            animation: fadeInUp 0.5s ease-out forwards;
+        }
+
+        @@keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .shrink-0 {
+            flex-shrink: 0;
+        }
+    </style>
+}
+
+@code {
+    private bool ShowBanner { get; set; } = false;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            var cookie = await JS.InvokeAsync<string>("getCookie", "cookieConsent");
+            if (string.IsNullOrEmpty(cookie))
+            {
+                ShowBanner = true;
+                StateHasChanged();
+            }
+        }
+    }
+
+    private async Task AcceptCookies()
+    {
+        await JS.InvokeVoidAsync("setCookie", "cookieConsent", "accepted", 365);
+        ShowBanner = false;
+    }
+
+    private async Task DeclineCookies()
+    {
+        await JS.InvokeVoidAsync("setCookie", "cookieConsent", "declined", 365);
+        ShowBanner = false;
+    }
+}
