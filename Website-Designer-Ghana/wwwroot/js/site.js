@@ -162,6 +162,15 @@ window.scrollToTop = function () {
     });
 }
 
+// Fallback event delegation to ensure the scroll top button works
+document.addEventListener('click', function(e) {
+    const btn = e.target.closest('#scrollToTopBtn');
+    if (btn) {
+        e.preventDefault();
+        window.scrollToTop();
+    }
+});
+
 // ==========================================
 // CURRENCY TOGGLE (PRICING PAGE)
 // ==========================================

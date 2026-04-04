@@ -337,8 +337,8 @@
             }
             catch (Exception emailEx)
             {
-                // Log email error but don't fail the submission
                 Logger.LogError(emailEx, "Failed to send email notifications for contact form");
+                errorMessage = $"Message saved, but email notification failed: {emailEx.Message}";
             }
 
             // Show success message

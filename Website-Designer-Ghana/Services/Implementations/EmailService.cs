@@ -60,8 +60,11 @@ public class EmailService : IEmailService
             using var smtp = new SmtpClient();
 
             // Connect to SMTP server
-            await smtp.ConnectAsync(_emailSettings.SmtpHost, _emailSettings.SmtpPort,
-                _emailSettings.UseSsl ? SecureSocketOptions.StartTls : SecureSocketOptions.None);
+            // Port 465 uses SSL on connect; port 587 uses STARTTLS
+            var socketOptions = _emailSettings.SmtpPort == 465
+                ? SecureSocketOptions.SslOnConnect
+                : SecureSocketOptions.StartTls;
+            await smtp.ConnectAsync(_emailSettings.SmtpHost, _emailSettings.SmtpPort, socketOptions);
 
             // Authenticate if credentials provided
             if (!string.IsNullOrEmpty(_emailSettings.SmtpUsername))
@@ -119,9 +122,13 @@ public class EmailService : IEmailService
             </body>
             </html>";
 
+        var adminEmail = string.IsNullOrEmpty(_emailSettings.AdminEmail)
+            ? _emailSettings.FromEmail
+            : _emailSettings.AdminEmail;
+
         await SendEmailAsync(new EmailMessage
         {
-            To = _emailSettings.FromEmail, // Send to admin
+            To = adminEmail,
             ToName = "Admin",
             Subject = $"New Contact Form: {subject}",
             Body = emailBody,
@@ -175,9 +182,13 @@ public class EmailService : IEmailService
 
     public async Task SendAdminNotificationAsync(string subject, string body)
     {
+        var adminEmail = string.IsNullOrEmpty(_emailSettings.AdminEmail)
+            ? _emailSettings.FromEmail
+            : _emailSettings.AdminEmail;
+
         await SendEmailAsync(new EmailMessage
         {
-            To = _emailSettings.FromEmail,
+            To = adminEmail,
             ToName = "Admin",
             Subject = subject,
             Body = body,
