@@ -130,7 +130,7 @@ public static class DatabaseSeeder
                         <h3>Getting Started with Blazor</h3>
                         <p>If you're a business owner in Ghana looking to build a modern web application, Blazor should be at the top of your list. Contact Website Designer Ghana to learn how we can help you leverage this powerful technology.</p>
                     ",
-                    FeaturedImage = "/images/blog/blazor-future.jpg",
+                    FeaturedImage = "/images/blog/blazor-future.png",
                     IsPublished = true,
                     PublishedAt = DateTime.UtcNow.AddDays(-5),
                     CreatedAt = DateTime.UtcNow.AddDays(-5),
@@ -175,7 +175,7 @@ public static class DatabaseSeeder
 
                         <p>Implementing these strategies will significantly improve your online visibility in Ghana. Need help with your SEO? Contact Website Designer Ghana today!</p>
                     ",
-                    FeaturedImage = "/images/blog/seo-strategies.jpg",
+                    FeaturedImage = "/images/blog/seo-strategies.png",
                     IsPublished = true,
                     PublishedAt = DateTime.UtcNow.AddDays(-3),
                     CreatedAt = DateTime.UtcNow.AddDays(-3),
@@ -217,7 +217,7 @@ public static class DatabaseSeeder
 
                         <p>Ready to modernize your website? Website Designer Ghana specializes in creating stunning, functional websites that incorporate the latest design trends while maintaining peak performance.</p>
                     ",
-                    FeaturedImage = "/images/blog/design-trends-2026.jpg",
+                    FeaturedImage = "/images/blog/design-trends-2026.png",
                     IsPublished = true,
                     PublishedAt = DateTime.UtcNow.AddDays(-1),
                     CreatedAt = DateTime.UtcNow.AddDays(-1),
