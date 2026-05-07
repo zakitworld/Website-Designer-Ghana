@@ -84,7 +84,7 @@ Update the connection string in `appsettings.Development.json`:
 ```json
 {
   "ConnectionStrings": {
-    "DefaultConnection": "Server=(localdb)\\mssqllocaldb;Database=aspnet-Website_Designer_Ghana-YOUR_GUID;Trusted_Connection=True;MultipleActiveResultSets=true"
+    "DefaultConnection": ""
   }
 }
 ```
@@ -96,8 +96,8 @@ For development, the admin credentials are in `appsettings.Development.json`:
 ```json
 {
   "AdminUser": {
-    "Email": "admin@websitedesignerghana.com",
-    "Password": "Admin@123456"
+    "Email": "",
+    "Password": ""
   }
 }
 ```
@@ -130,8 +130,8 @@ The application will be available at:
 ### 6. Login to Admin Panel
 
 Navigate to `/Account/Login` and use the admin credentials:
-- Email: `admin@websitedesignerghana.com`
-- Password: `Admin@123456` (development only)
+- Email: ``
+- Password: `` (development only)
 
 ## Project Structure
 
@@ -185,7 +185,7 @@ Website-Designer-Ghana/
 ConnectionStrings__DefaultConnection="Server=YOUR_SERVER;Database=YOUR_DB;..."
 
 # Admin User (set strong password!)
-AdminUser__Email="admin@websitedesignerghana.com"
+AdminUser__Email=""
 AdminUser__Password="YOUR_STRONG_PASSWORD_HERE"
 
 # Email Settings (example for SendGrid)
