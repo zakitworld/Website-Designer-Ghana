@@ -103,28 +103,17 @@ builder.Services.AddAuthentication(options =>
     })
     .AddIdentityCookies();
 
-// Configure Database
+// Configure Database (Forced PostgreSQL)
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
 
-// Check for Railway PostgreSQL environment variables
-var pgHost = Environment.GetEnvironmentVariable("PGHOST");
+// On Railway, the DATABASE_URL environment variable will override appsettings.json if present
 var databaseUrl = Environment.GetEnvironmentVariable("DATABASE_URL");
+string finalConnectionString = connectionString;
 
-if (!string.IsNullOrEmpty(pgHost) || !string.IsNullOrEmpty(databaseUrl))
+if (!string.IsNullOrEmpty(databaseUrl))
 {
-    string pgConnectionString = "";
-    
-    if (!string.IsNullOrEmpty(pgHost))
+    if (databaseUrl.StartsWith("postgres://") || databaseUrl.StartsWith("postgresql://"))
     {
-        var pgUser = Environment.GetEnvironmentVariable("PGUSER");
-        var pgPass = Environment.GetEnvironmentVariable("PGPASSWORD");
-        var pgDb = Environment.GetEnvironmentVariable("PGDATABASE");
-        var pgPort = Environment.GetEnvironmentVariable("PGPORT") ?? "5432";
-        pgConnectionString = $"Host={pgHost};Port={pgPort};Username={pgUser};Password={pgPass};Database={pgDb};SSL Mode=Require;Trust Server Certificate=True";
-    }
-    else if (!string.IsNullOrEmpty(databaseUrl))
-    {
-        // Parse postgres:// or postgresql:// user:pass@host:port/db
         try 
         {
             var uri = new Uri(databaseUrl);
@@ -134,31 +123,18 @@ if (!string.IsNullOrEmpty(pgHost) || !string.IsNullOrEmpty(databaseUrl))
             var host = uri.Host;
             var port = uri.Port > 0 ? uri.Port : 5432;
             var database = uri.AbsolutePath.TrimStart('/');
-            pgConnectionString = $"Host={host};Port={port};Username={user};Password={password};Database={database};SSL Mode=Require;Trust Server Certificate=True";
+            finalConnectionString = $"Host={host};Port={port};Username={user};Password={password};Database={database};SSL Mode=Require;Trust Server Certificate=True";
         }
         catch (Exception ex)
         {
-            Log.Error(ex, "Failed to parse DATABASE_URL: {DatabaseUrl}", databaseUrl);
+            Log.Error(ex, "Failed to parse DATABASE_URL, falling back to DefaultConnection");
         }
     }
+}
 
-    if (!string.IsNullOrEmpty(pgConnectionString))
-    {
-        builder.Services.AddDbContext<ApplicationDbContext>(options =>
-            options.UseNpgsql(pgConnectionString));
-    }
-    else
-    {
-        builder.Services.AddDbContext<ApplicationDbContext>(options =>
-            options.UseSqlServer(connectionString));
-    }
-}
-else
-{
-    // Use SQL Server for development or if explicitly configured
-    builder.Services.AddDbContext<ApplicationDbContext>(options =>
-        options.UseSqlServer(connectionString));
-}
+builder.Services.AddDbContext<ApplicationDbContext>(options =>
+    options.UseNpgsql(finalConnectionString));
+    
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
 builder.Services.AddIdentityCore<ApplicationUser>(options =>
