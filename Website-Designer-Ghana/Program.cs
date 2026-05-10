@@ -121,7 +121,7 @@ if (!string.IsNullOrEmpty(databaseUrl))
             var user = userInfo[0];
             var password = userInfo.Length > 1 ? userInfo[1] : "";
             var host = uri.Host;
-            var port = uri.Port > 0 ? uri.Port : 5432;
+            var port = uri.Port > 0 ? uri.Port : 8080;
             var database = uri.AbsolutePath.TrimStart('/');
             finalConnectionString = $"Host={host};Port={port};Username={user};Password={password};Database={database};SSL Mode=Require;Trust Server Certificate=True";
         }
