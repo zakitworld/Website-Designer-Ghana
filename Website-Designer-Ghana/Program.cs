@@ -112,7 +112,8 @@ var databaseUrl = Environment.GetEnvironmentVariable("DATABASE_URL");
 
 if (!string.IsNullOrEmpty(pgHost) || !string.IsNullOrEmpty(databaseUrl))
 {
-    string pgConnectionString;
+    string pgConnectionString = "";
+    
     if (!string.IsNullOrEmpty(pgHost))
     {
         var pgUser = Environment.GetEnvironmentVariable("PGUSER");
@@ -121,14 +122,29 @@ if (!string.IsNullOrEmpty(pgHost) || !string.IsNullOrEmpty(databaseUrl))
         var pgPort = Environment.GetEnvironmentVariable("PGPORT") ?? "5432";
         pgConnectionString = $"Host={pgHost};Port={pgPort};Username={pgUser};Password={pgPass};Database={pgDb};SSL Mode=Require;Trust Server Certificate=True";
     }
-    else
+    else if (!string.IsNullOrEmpty(databaseUrl) && databaseUrl.StartsWith("postgres://"))
     {
-        // Fallback to DATABASE_URL if provided directly
-        pgConnectionString = databaseUrl!;
+        // Parse postgres://user:pass@host:port/db
+        var uri = new Uri(databaseUrl);
+        var userInfo = uri.UserInfo.Split(':');
+        var user = userInfo[0];
+        var password = userInfo.Length > 1 ? userInfo[1] : "";
+        var host = uri.Host;
+        var port = uri.Port > 0 ? uri.Port : 5432;
+        var database = uri.AbsolutePath.TrimStart('/');
+        pgConnectionString = $"Host={host};Port={port};Username={user};Password={password};Database={database};SSL Mode=Require;Trust Server Certificate=True";
     }
 
-    builder.Services.AddDbContext<ApplicationDbContext>(options =>
-        options.UseNpgsql(pgConnectionString));
+    if (!string.IsNullOrEmpty(pgConnectionString))
+    {
+        builder.Services.AddDbContext<ApplicationDbContext>(options =>
+            options.UseNpgsql(pgConnectionString));
+    }
+    else
+    {
+        builder.Services.AddDbContext<ApplicationDbContext>(options =>
+            options.UseSqlServer(connectionString));
+    }
 }
 else
 {
