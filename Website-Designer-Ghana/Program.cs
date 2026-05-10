@@ -122,17 +122,24 @@ if (!string.IsNullOrEmpty(pgHost) || !string.IsNullOrEmpty(databaseUrl))
         var pgPort = Environment.GetEnvironmentVariable("PGPORT") ?? "5432";
         pgConnectionString = $"Host={pgHost};Port={pgPort};Username={pgUser};Password={pgPass};Database={pgDb};SSL Mode=Require;Trust Server Certificate=True";
     }
-    else if (!string.IsNullOrEmpty(databaseUrl) && databaseUrl.StartsWith("postgres://"))
+    else if (!string.IsNullOrEmpty(databaseUrl))
     {
-        // Parse postgres://user:pass@host:port/db
-        var uri = new Uri(databaseUrl);
-        var userInfo = uri.UserInfo.Split(':');
-        var user = userInfo[0];
-        var password = userInfo.Length > 1 ? userInfo[1] : "";
-        var host = uri.Host;
-        var port = uri.Port > 0 ? uri.Port : 5432;
-        var database = uri.AbsolutePath.TrimStart('/');
-        pgConnectionString = $"Host={host};Port={port};Username={user};Password={password};Database={database};SSL Mode=Require;Trust Server Certificate=True";
+        // Parse postgres:// or postgresql:// user:pass@host:port/db
+        try 
+        {
+            var uri = new Uri(databaseUrl);
+            var userInfo = uri.UserInfo.Split(':');
+            var user = userInfo[0];
+            var password = userInfo.Length > 1 ? userInfo[1] : "";
+            var host = uri.Host;
+            var port = uri.Port > 0 ? uri.Port : 5432;
+            var database = uri.AbsolutePath.TrimStart('/');
+            pgConnectionString = $"Host={host};Port={port};Username={user};Password={password};Database={database};SSL Mode=Require;Trust Server Certificate=True";
+        }
+        catch (Exception ex)
+        {
+            Log.Error(ex, "Failed to parse DATABASE_URL: {DatabaseUrl}", databaseUrl);
+        }
     }
 
     if (!string.IsNullOrEmpty(pgConnectionString))
@@ -244,9 +251,10 @@ app.Use(async (context, next) =>
     await next();
 });
 
-if (app.Environment.IsDevelopment())
+if (app.Environment.IsDevelopment() || app.Configuration["EnableDetailedErrors"] == "true")
 {
     app.UseMigrationsEndPoint();
+    app.UseDeveloperExceptionPage();
 }
 else
 {
