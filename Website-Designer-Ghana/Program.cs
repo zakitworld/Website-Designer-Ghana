@@ -103,9 +103,39 @@ builder.Services.AddAuthentication(options =>
     })
     .AddIdentityCookies();
 
+// Configure Database
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
-builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseSqlServer(connectionString));
+
+// Check for Railway PostgreSQL environment variables
+var pgHost = Environment.GetEnvironmentVariable("PGHOST");
+var databaseUrl = Environment.GetEnvironmentVariable("DATABASE_URL");
+
+if (!string.IsNullOrEmpty(pgHost) || !string.IsNullOrEmpty(databaseUrl))
+{
+    string pgConnectionString;
+    if (!string.IsNullOrEmpty(pgHost))
+    {
+        var pgUser = Environment.GetEnvironmentVariable("PGUSER");
+        var pgPass = Environment.GetEnvironmentVariable("PGPASSWORD");
+        var pgDb = Environment.GetEnvironmentVariable("PGDATABASE");
+        var pgPort = Environment.GetEnvironmentVariable("PGPORT") ?? "5432";
+        pgConnectionString = $"Host={pgHost};Port={pgPort};Username={pgUser};Password={pgPass};Database={pgDb};SSL Mode=Require;Trust Server Certificate=True";
+    }
+    else
+    {
+        // Fallback to DATABASE_URL if provided directly
+        pgConnectionString = databaseUrl!;
+    }
+
+    builder.Services.AddDbContext<ApplicationDbContext>(options =>
+        options.UseNpgsql(pgConnectionString));
+}
+else
+{
+    // Use SQL Server for development or if explicitly configured
+    builder.Services.AddDbContext<ApplicationDbContext>(options =>
+        options.UseSqlServer(connectionString));
+}
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
 builder.Services.AddIdentityCore<ApplicationUser>(options =>
