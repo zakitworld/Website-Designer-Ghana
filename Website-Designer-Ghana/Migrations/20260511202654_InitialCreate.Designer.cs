@@ -12,7 +12,7 @@ using Website_Designer_Ghana.Data;
 namespace Website_Designer_Ghana.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20260510190004_InitialCreate")]
+    [Migration("20260511202654_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
