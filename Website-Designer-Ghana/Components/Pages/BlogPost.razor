@@ -335,6 +335,12 @@
         if (firstRender)
         {
             await JS.InvokeVoidAsync("refreshScrollAnimations");
+
+            // Increment view count only on first real client render (not SSR prerender)
+            if (blogPost != null)
+            {
+                await BlogService.IncrementViewCountAsync(blogPost.Id);
+            }
         }
     }
 
@@ -359,9 +365,6 @@
                 comments = await BlogService.GetPostCommentsAsync(blogPost.Id);
 
                 ReadTime = EstimateReadTime(blogPost.Content);
-
-                // Increment view count
-                await BlogService.IncrementViewCountAsync(blogPost.Id);
             }
             else
             {
@@ -423,6 +426,7 @@
         finally
         {
             isSubmitting = false;
+            StateHasChanged();
         }
     }
 

@@ -2,6 +2,7 @@
 @using Website_Designer_Ghana.Data.Models
 @using Website_Designer_Ghana.Services.Interfaces
 @using System.ComponentModel.DataAnnotations
+@rendermode InteractiveServer
 
 <PageTitle>Contact Us - Website Designer in Ghana</PageTitle>
 
@@ -278,7 +279,6 @@
     [Inject] private IHttpContextAccessor HttpContextAccessor { get; set; } = default!;
     [Inject] private ILogger<Contact> Logger { get; set; } = default!;
 
-    [SupplyParameterFromForm]
     private ContactFormModel contactForm { get; set; } = new();
     private bool isSubmitting = false;
     private bool showSuccessMessage = false;
@@ -369,7 +369,6 @@
         [StringLength(200, ErrorMessage = "Email cannot exceed 200 characters")]
         public string Email { get; set; } = string.Empty;
 
-        [Phone(ErrorMessage = "Please enter a valid phone number")]
         [StringLength(20, ErrorMessage = "Phone cannot exceed 20 characters")]
         public string? Phone { get; set; }
 

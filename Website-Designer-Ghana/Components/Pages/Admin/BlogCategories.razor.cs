@@ -27,14 +27,6 @@ public partial class BlogCategories
         await LoadDataAsync();
     }
 
-    protected override async Task OnAfterRenderAsync(bool firstRender)
-    {
-        if (firstRender)
-        {
-            await LoadDataAsync();
-            StateHasChanged();
-        }
-    }
 
     private async Task LoadDataAsync()
     {

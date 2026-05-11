@@ -11,7 +11,6 @@ public partial class BlogPostEdit
     [Inject] private IBlogService BlogService { get; set; } = default!;
     [Inject] private NavigationManager NavigationManager { get; set; } = default!;
 
-    [SupplyParameterFromForm]
     private BlogPostFormModel model { get; set; } = new();
     private IEnumerable<BlogCategory>? categories;
     private bool isSaving = false;

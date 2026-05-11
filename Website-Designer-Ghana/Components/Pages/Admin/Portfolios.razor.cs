@@ -28,14 +28,6 @@ public partial class Portfolios
         await LoadDataAsync();
     }
 
-    protected override async Task OnAfterRenderAsync(bool firstRender)
-    {
-        if (firstRender)
-        {
-            await LoadDataAsync();
-            StateHasChanged();
-        }
-    }
 
     private async Task LoadDataAsync()
     {
