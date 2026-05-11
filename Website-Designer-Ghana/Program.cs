@@ -186,10 +186,47 @@ var app = builder.Build();
 using (var scope = app.Services.CreateScope())
 {
     var services = scope.ServiceProvider;
+    var logger = services.GetRequiredService<ILogger<Program>>();
     try
     {
         var context = services.GetRequiredService<ApplicationDbContext>();
-        await context.Database.MigrateAsync();
+
+        // Ensure the EF migrations history table exists before attempting migrations.
+        // This is safe to run even if the table already exists (CREATE TABLE IF NOT EXISTS).
+        await context.Database.ExecuteSqlRawAsync(@"
+            CREATE TABLE IF NOT EXISTS ""__EFMigrationsHistory"" (
+                ""MigrationId"" character varying(150) NOT NULL,
+                ""ProductVersion"" character varying(32) NOT NULL,
+                CONSTRAINT ""PK___EFMigrationsHistory"" PRIMARY KEY (""MigrationId"")
+            )
+        ");
+
+        try
+        {
+            await context.Database.MigrateAsync();
+        }
+        catch (Npgsql.PostgresException pgEx) when (pgEx.SqlState == "42P07")
+        {
+            // SqlState 42P07 = "relation already exists".
+            // This happens when tables were created by a previous deployment but the
+            // migration history doesn't have the current migration ID recorded.
+            // Solution: mark all pending migrations as already applied.
+            logger.LogWarning("Database tables already exist (42P07). Marking all pending migrations as applied.");
+
+            var allMigrations = context.Database.GetMigrations();
+            var appliedMigrations = (await context.Database.GetAppliedMigrationsAsync()).ToHashSet();
+
+            foreach (var migration in allMigrations)
+            {
+                if (!appliedMigrations.Contains(migration))
+                {
+                    logger.LogInformation("Marking migration as applied: {Migration}", migration);
+                    await context.Database.ExecuteSqlRawAsync(
+                        $"""INSERT INTO ""__EFMigrationsHistory"" (""MigrationId"", ""ProductVersion"") VALUES ('{migration}', '10.0.7') ON CONFLICT DO NOTHING""");
+                }
+            }
+        }
+
         var userManager = services.GetRequiredService<UserManager<ApplicationUser>>();
         var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
         var configuration = services.GetRequiredService<IConfiguration>();
@@ -197,8 +234,7 @@ using (var scope = app.Services.CreateScope())
     }
     catch (Exception ex)
     {
-        var logger = services.GetRequiredService<ILogger<Program>>();
-        logger.LogError(ex, "An error occurred while seeding the database.");
+        logger.LogError(ex, "An error occurred while migrating or seeding the database.");
     }
 }
 
