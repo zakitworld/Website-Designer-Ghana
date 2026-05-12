@@ -233,7 +233,7 @@ using (var scope = app.Services.CreateScope())
                 {
                     logger.LogInformation("Marking migration as applied: {Migration}", migration);
                     await context.Database.ExecuteSqlRawAsync(
-                        $"""INSERT INTO ""__EFMigrationsHistory"" (""MigrationId"", ""ProductVersion"") VALUES ('{migration}', '10.0.7') ON CONFLICT DO NOTHING""");
+                        $"INSERT INTO \"__EFMigrationsHistory\" (\"MigrationId\", \"ProductVersion\") VALUES ('{migration}', '10.0.7') ON CONFLICT DO NOTHING");
                 }
             }
         }
@@ -267,7 +267,7 @@ app.Use(async (context, next) =>
     context.Response.Headers.Append("Referrer-Policy", "strict-origin-when-cross-origin");
     context.Response.Headers.Append("Content-Security-Policy",
         "default-src 'self'; " +
-        "script-src 'self' 'wasm-unsafe-eval' cdn.jsdelivr.net; " +
+        "script-src 'self' 'unsafe-inline' 'unsafe-eval' 'wasm-unsafe-eval' cdn.jsdelivr.net; " +
         "style-src 'self' 'unsafe-inline' fonts.googleapis.com cdn.jsdelivr.net; " +
         "font-src 'self' fonts.gstatic.com cdn.jsdelivr.net; " +
         "img-src 'self' data: https:; " +

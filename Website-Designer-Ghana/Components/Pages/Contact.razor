@@ -274,8 +274,8 @@
 
 @code {
     [Inject] private IContactService ContactService { get; set; } = default!;
-    [Inject] private IEmailService EmailService { get; set; } = default!;
     [Inject] private IJSRuntime JS { get; set; } = default!;
+    [Inject] private IServiceScopeFactory ScopeFactory { get; set; } = default!;
     [Inject] private IHttpContextAccessor HttpContextAccessor { get; set; } = default!;
     [Inject] private ILogger<Contact> Logger { get; set; } = default!;
 
@@ -322,26 +322,31 @@
             // Save to database
             await ContactService.SubmitContactFormAsync(submission);
 
-            // Send emails (admin notification and customer confirmation)
-            try
+            // Send emails (admin notification and customer confirmation) in background to prevent UI hang
+            var capturedForm = new ContactFormModel
             {
-                await EmailService.SendContactFormEmailAsync(
-                contactForm.Email,
-                contactForm.FullName,
-                contactForm.Subject,
-                contactForm.Message
-                );
+                Email = contactForm.Email,
+                FullName = contactForm.FullName,
+                Subject = contactForm.Subject,
+                Message = contactForm.Message
+            };
 
-                await EmailService.SendContactConfirmationAsync(
-                contactForm.Email,
-                contactForm.FullName
-                );
-            }
-            catch (Exception emailEx)
+            _ = Task.Run(async () =>
             {
-                Logger.LogError(emailEx, "Failed to send email notifications for contact form");
-                errorMessage = $"Message saved, but email notification failed: {emailEx.Message}";
-            }
+                using var scope = ScopeFactory.CreateScope();
+                var emailService = scope.ServiceProvider.GetRequiredService<IEmailService>();
+                var logger = scope.ServiceProvider.GetRequiredService<ILogger<Contact>>();
+
+                try
+                {
+                    await emailService.SendContactFormEmailAsync(capturedForm.Email, capturedForm.FullName, capturedForm.Subject, capturedForm.Message);
+                    await emailService.SendContactConfirmationAsync(capturedForm.Email, capturedForm.FullName);
+                }
+                catch (Exception emailEx)
+                {
+                    logger.LogError(emailEx, "Failed to send email notifications for contact form");
+                }
+            });
 
             // Show success message
             showSuccessMessage = true;
