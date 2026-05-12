@@ -271,7 +271,7 @@ app.Use(async (context, next) =>
         "style-src 'self' 'unsafe-inline' fonts.googleapis.com cdn.jsdelivr.net; " +
         "font-src 'self' fonts.gstatic.com cdn.jsdelivr.net; " +
         "img-src 'self' data: https:; " +
-        "connect-src 'self' wss:; " +
+        "connect-src 'self' wss: cdn.jsdelivr.net; " +
         "frame-ancestors 'none';");
     await next();
 });
@@ -298,6 +298,7 @@ app.UseRateLimiter();
 
 app.UseAntiforgery();
 
+app.UseStaticFiles(); // Fallback for embedded resources if MapStaticAssets fails
 app.MapStaticAssets();
 app.MapRazorComponents<App>()
     .AddInteractiveServerRenderMode();
