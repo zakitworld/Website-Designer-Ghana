@@ -279,7 +279,9 @@
     [Inject] private IHttpContextAccessor HttpContextAccessor { get; set; } = default!;
     [Inject] private ILogger<Contact> Logger { get; set; } = default!;
 
+    [SupplyParameterFromForm(FormName = "contactForm")]
     private ContactFormModel contactForm { get; set; } = new();
+    
     private bool isSubmitting = false;
     private bool showSuccessMessage = false;
     private string errorMessage = string.Empty;

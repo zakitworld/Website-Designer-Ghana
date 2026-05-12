@@ -10,6 +10,8 @@ using Website_Designer_Ghana.Services.Implementations;
 using Website_Designer_Ghana.Services.Models;
 using Serilog;
 
+using Microsoft.AspNetCore.HttpOverrides;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Configure Serilog
@@ -33,6 +35,15 @@ builder.Services.AddRazorComponents()
 
 // Add HttpContextAccessor
 builder.Services.AddHttpContextAccessor();
+
+// Configure Forwarded Headers for reverse proxies (e.g. Railway, MonsterASP)
+builder.Services.Configure<ForwardedHeadersOptions>(options =>
+{
+    options.ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto;
+    // Clear known networks and proxies so it accepts headers from any proxy (common in PaaS)
+    options.KnownNetworks.Clear();
+    options.KnownProxies.Clear();
+});
 
 // Add Rate Limiting
 builder.Services.AddRateLimiter(rateLimiterOptions =>
@@ -239,6 +250,8 @@ using (var scope = app.Services.CreateScope())
 }
 
 // Configure the HTTP request pipeline.
+app.UseForwardedHeaders();
+
 // Only use response compression in production to avoid dev tool issues
 if (!app.Environment.IsDevelopment())
 {
