@@ -267,11 +267,11 @@ app.Use(async (context, next) =>
     context.Response.Headers.Append("Referrer-Policy", "strict-origin-when-cross-origin");
     context.Response.Headers.Append("Content-Security-Policy",
         "default-src 'self'; " +
-        "script-src 'self' 'unsafe-inline' 'unsafe-eval' 'wasm-unsafe-eval' cdn.jsdelivr.net; " +
+        "script-src 'self' 'unsafe-inline' 'unsafe-eval' 'wasm-unsafe-eval' blob: cdn.jsdelivr.net; " +
         "style-src 'self' 'unsafe-inline' fonts.googleapis.com cdn.jsdelivr.net; " +
         "font-src 'self' fonts.gstatic.com cdn.jsdelivr.net; " +
         "img-src 'self' data: https:; " +
-        "connect-src 'self' wss: cdn.jsdelivr.net; " +
+        "connect-src 'self' ws: wss: blob: cdn.jsdelivr.net; " +
         "frame-ancestors 'none';");
     await next();
 });
