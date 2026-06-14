@@ -23,9 +23,11 @@ Website Designer Ghana is a comprehensive web platform showcasing web design and
 
 ### Database
 - **ORM:** Entity Framework Core 10.0
-- **Provider:** SQL Server
-- **Development:** LocalDB
+- **Provider:** SQL Server (ONLY)
+- **Development:** LocalDB / SQL Server Express
 - **Production:** SQL Server
+
+Note: PostgreSQL support was removed from this project. The codebase, migrations, and docs were updated to target SQL Server only.
 
 ### Security & Authentication
 - **Identity:** ASP.NET Core Identity

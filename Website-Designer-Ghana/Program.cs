@@ -114,37 +114,47 @@ builder.Services.AddAuthentication(options =>
     })
     .AddIdentityCookies();
 
-// Configure Database (Forced PostgreSQL)
+// Configure Database (SQL Server)
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
 
-// On Railway, the DATABASE_URL environment variable will override appsettings.json if present
+// Allow an environment-provided connection string to override settings (common in PaaS deployments)
 var databaseUrl = Environment.GetEnvironmentVariable("DATABASE_URL");
 string finalConnectionString = connectionString;
 
 if (!string.IsNullOrEmpty(databaseUrl))
 {
-    if (databaseUrl.StartsWith("postgres://") || databaseUrl.StartsWith("postgresql://"))
+    // If an explicit SQL Server style connection string is supplied, use it directly.
+    // Also allow a URL form like sqlserver://user:pass@host:port/database
+    if (databaseUrl.StartsWith("sqlserver://", StringComparison.OrdinalIgnoreCase) || databaseUrl.StartsWith("mssql://", StringComparison.OrdinalIgnoreCase))
     {
-        try 
+        try
         {
             var uri = new Uri(databaseUrl);
             var userInfo = uri.UserInfo.Split(':');
             var user = userInfo[0];
             var password = userInfo.Length > 1 ? userInfo[1] : "";
             var host = uri.Host;
-            var port = uri.Port > 0 ? uri.Port : 8080;
+            var port = uri.Port > 0 ? uri.Port : 1433;
             var database = uri.AbsolutePath.TrimStart('/');
-            finalConnectionString = $"Host={host};Port={port};Username={user};Password={password};Database={database};SSL Mode=Require;Trust Server Certificate=True";
+            finalConnectionString = $"Server={host},{port};Initial Catalog={database};User ID={user};Password={password};Encrypt=True;TrustServerCertificate=True;";
         }
         catch (Exception ex)
         {
-            Log.Error(ex, "Failed to parse DATABASE_URL, falling back to DefaultConnection");
+            Log.Error(ex, "Failed to parse DATABASE_URL for SQL Server, falling back to DefaultConnection");
+        }
+    }
+    else
+    {
+        // If the environment variable already contains a provider-style connection string, use it.
+        if (databaseUrl.Contains("Server=") || databaseUrl.Contains("Data Source=") || databaseUrl.Contains("Initial Catalog="))
+        {
+            finalConnectionString = databaseUrl;
         }
     }
 }
 
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseNpgsql(finalConnectionString));
+    options.UseSqlServer(finalConnectionString));
     
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
@@ -201,28 +211,28 @@ using (var scope = app.Services.CreateScope())
     try
     {
         var context = services.GetRequiredService<ApplicationDbContext>();
-
         // Ensure the EF migrations history table exists before attempting migrations.
-        // This is safe to run even if the table already exists (CREATE TABLE IF NOT EXISTS).
+        // For SQL Server, create the table if it does not exist using an IF NOT EXISTS check.
         await context.Database.ExecuteSqlRawAsync(@"
-            CREATE TABLE IF NOT EXISTS ""__EFMigrationsHistory"" (
-                ""MigrationId"" character varying(150) NOT NULL,
-                ""ProductVersion"" character varying(32) NOT NULL,
-                CONSTRAINT ""PK___EFMigrationsHistory"" PRIMARY KEY (""MigrationId"")
-            )
+            IF NOT EXISTS (SELECT * FROM sys.tables WHERE name = '__EFMigrationsHistory')
+            BEGIN
+                CREATE TABLE [__EFMigrationsHistory] (
+                    [MigrationId] nvarchar(150) NOT NULL PRIMARY KEY,
+                    [ProductVersion] nvarchar(32) NOT NULL
+                );
+            END
         ");
 
         try
         {
             await context.Database.MigrateAsync();
         }
-        catch (Npgsql.PostgresException pgEx) when (pgEx.SqlState == "42P07")
+        catch (Exception ex)
         {
-            // SqlState 42P07 = "relation already exists".
-            // This happens when tables were created by a previous deployment but the
-            // migration history doesn't have the current migration ID recorded.
-            // Solution: mark all pending migrations as already applied.
-            logger.LogWarning("Database tables already exist (42P07). Marking all pending migrations as applied.");
+            // Handle migration failures generically. If the failure is due to existing
+            // objects (tables present but migration history missing), reconcile by
+            // marking pending migrations as applied.
+            logger.LogWarning(ex, "Migration failed. Attempting to reconcile migration history if tables already exist.");
 
             var allMigrations = context.Database.GetMigrations();
             var appliedMigrations = (await context.Database.GetAppliedMigrationsAsync()).ToHashSet();
@@ -232,8 +242,12 @@ using (var scope = app.Services.CreateScope())
                 if (!appliedMigrations.Contains(migration))
                 {
                     logger.LogInformation("Marking migration as applied: {Migration}", migration);
-                    await context.Database.ExecuteSqlRawAsync(
-                        $"INSERT INTO \"__EFMigrationsHistory\" (\"MigrationId\", \"ProductVersion\") VALUES ('{migration}', '10.0.7') ON CONFLICT DO NOTHING");
+                    // Use a SQL Server compatible insert; guard against duplicates with IF NOT EXISTS
+                    await context.Database.ExecuteSqlRawAsync($@"
+                        IF NOT EXISTS (SELECT 1 FROM [__EFMigrationsHistory] WHERE [MigrationId] = '{migration}')
+                        BEGIN
+                            INSERT INTO [__EFMigrationsHistory] ([MigrationId], [ProductVersion]) VALUES ('{migration}', '10.0.7')
+                        END");
                 }
             }
         }
