@@ -173,8 +173,8 @@
                     <!-- Leave a Reply -->
                     <div class="mt-5 pt-4 border-top border-white border-opacity-10" id="reply-form">
                         <h4 class="fw-bold mb-4 text-white">
-                            @(commentModel.ParentCommentId.HasValue ? $"Reply to {replyToAuthor}" : "Leave a Reply")
-                            @if (commentModel.ParentCommentId.HasValue)
+                            @(CommentData.ParentCommentId.HasValue ? $"Reply to {replyToAuthor}" : "Leave a Reply")
+                            @if (CommentData.ParentCommentId.HasValue)
                             {
                                 <button class="btn btn-sm btn-link text-decoration-none text-muted" @onclick="CancelReply">(Cancel Reply)</button>
                             }
@@ -187,23 +187,23 @@
                             </div>
                         }
 
-                        <EditForm Model="@commentModel" OnValidSubmit="HandleCommentSubmit" FormName="blogCommentForm" class="glass-card p-4 p-md-5 rounded">
+                        <EditForm Model="@CommentData" OnValidSubmit="HandleCommentSubmit" FormName="blogCommentForm" class="glass-card p-4 p-md-5 rounded">
                             <DataAnnotationsValidator />
                             <div class="row g-4">
                                 <div class="col-md-6">
                                     <label for="commentName" class="form-label text-secondary">Name *</label>
-                                    <InputText class="form-control form-control-lg" id="commentName" @bind-Value="commentModel.AuthorName" />
-                                    <ValidationMessage For="@(() => commentModel.AuthorName)" class="text-danger small mt-1" />
+                                    <InputText class="form-control form-control-lg" id="commentName" @bind-Value="CommentData.AuthorName" />
+                                    <ValidationMessage For="@(() => CommentData.AuthorName)" class="text-danger small mt-1" />
                                 </div>
                                 <div class="col-md-6">
                                     <label for="commentEmail" class="form-label text-secondary">Email *</label>
-                                    <InputText type="email" class="form-control form-control-lg" id="commentEmail" @bind-Value="commentModel.AuthorEmail" />
-                                    <ValidationMessage For="@(() => commentModel.AuthorEmail)" class="text-danger small mt-1" />
+                                    <InputText type="email" class="form-control form-control-lg" id="commentEmail" @bind-Value="CommentData.AuthorEmail" />
+                                    <ValidationMessage For="@(() => CommentData.AuthorEmail)" class="text-danger small mt-1" />
                                 </div>
                                 <div class="col-12">
                                     <label for="commentMessage" class="form-label text-secondary">Comment *</label>
-                                    <InputTextArea class="form-control form-control-lg" id="commentMessage" rows="5" @bind-Value="commentModel.Content" />
-                                    <ValidationMessage For="@(() => commentModel.Content)" class="text-danger small mt-1" />
+                                    <InputTextArea class="form-control form-control-lg" id="commentMessage" rows="5" @bind-Value="CommentData.Content" />
+                                    <ValidationMessage For="@(() => CommentData.Content)" class="text-danger small mt-1" />
                                 </div>
                                 <div class="col-12 text-end">
                                     <button type="submit" class="btn btn-secondary btn-lg px-5 fw-bold" disabled="@isSubmitting">
@@ -318,7 +318,9 @@
 
     // Comment Form
     [SupplyParameterFromForm(FormName = "blogCommentForm")]
-    private CommentFormModel commentModel { get; set; } = new();
+    private CommentFormModel? commentModel { get; set; }
+
+    private CommentFormModel CommentData => commentModel ??= new();
     
     private bool isSubmitting = false;
     private bool submitSuccess = false;
@@ -406,10 +408,10 @@
             var comment = new BlogComment
             {
                 BlogPostId = blogPost.Id,
-                AuthorName = commentModel.AuthorName,
-                AuthorEmail = commentModel.AuthorEmail,
-                Content = commentModel.Content,
-                ParentCommentId = commentModel.ParentCommentId,
+                AuthorName = CommentData.AuthorName,
+                AuthorEmail = CommentData.AuthorEmail,
+                Content = CommentData.Content,
+                ParentCommentId = CommentData.ParentCommentId,
                 CreatedAt = DateTime.UtcNow,
                 IsApproved = false // Require approval by default
             };
@@ -434,14 +436,14 @@
 
     private void ReplyToComment(int commentId, string authorName)
     {
-        commentModel.ParentCommentId = commentId;
+        CommentData.ParentCommentId = commentId;
         replyToAuthor = authorName;
         // Scroll to form (simplified for demo)
     }
 
     private void CancelReply()
     {
-        commentModel.ParentCommentId = null;
+        CommentData.ParentCommentId = null;
         replyToAuthor = "";
     }
 

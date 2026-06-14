@@ -41,7 +41,7 @@ builder.Services.Configure<ForwardedHeadersOptions>(options =>
 {
     options.ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto;
     // Clear known networks and proxies so it accepts headers from any proxy (common in PaaS)
-    options.KnownNetworks.Clear();
+    options.KnownIPNetworks.Clear();
     options.KnownProxies.Clear();
 });
 
@@ -243,11 +243,13 @@ using (var scope = app.Services.CreateScope())
                 {
                     logger.LogInformation("Marking migration as applied: {Migration}", migration);
                     // Use a SQL Server compatible insert; guard against duplicates with IF NOT EXISTS
+#pragma warning disable EF1002 // Migration name is a safe internal value, not user input
                     await context.Database.ExecuteSqlRawAsync($@"
                         IF NOT EXISTS (SELECT 1 FROM [__EFMigrationsHistory] WHERE [MigrationId] = '{migration}')
                         BEGIN
                             INSERT INTO [__EFMigrationsHistory] ([MigrationId], [ProductVersion]) VALUES ('{migration}', '10.0.7')
                         END");
+#pragma warning restore EF1002
                 }
             }
         }
