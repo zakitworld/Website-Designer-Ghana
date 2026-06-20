@@ -437,3 +437,53 @@ textarea:-webkit-autofill:focus {
         /* 4 Columns Adjusted */
     }
 }
+
+/* Responsive Table & Scrollbar Improvements */
+.table-responsive {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(255, 255, 255, 0.2) transparent;
+}
+
+.table-responsive::-webkit-scrollbar {
+    height: 6px;
+    width: 6px;
+}
+
+.table-responsive::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.table-responsive::-webkit-scrollbar-thumb {
+    background-color: rgba(255, 255, 255, 0.2);
+    border-radius: 3px;
+}
+
+.table-responsive::-webkit-scrollbar-thumb:hover {
+    background-color: rgba(255, 255, 255, 0.4);
+}
+
+.table th, .table td {
+    vertical-align: middle;
+    white-space: nowrap;
+}
+
+/* Allow description and title cells to wrap dynamically instead of stretching the table excessively */
+.table td.wrap-cell, 
+.table td.title-cell,
+.table td:not(.text-end):not(:first-child) {
+    white-space: normal;
+    min-width: 150px;
+}
+
+/* Mobile Admin Typography Adjustments */
+@media (max-width: 767.98px) {
+    .display-5 {
+        font-size: 2rem !important;
+    }
+    .display-6 {
+        font-size: 1.75rem !important;
+    }
+    .glass-card {
+        padding: 1.25rem !important;
+    }
+}
