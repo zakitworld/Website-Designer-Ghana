@@ -477,13 +477,42 @@ textarea:-webkit-autofill:focus {
 
 /* Mobile Admin Typography Adjustments */
 @media (max-width: 767.98px) {
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6,
+    p,
+    a,
+    span {
+        overflow-wrap: anywhere;
+    }
+
+    .display-1,
+    .display-2,
+    .display-3,
+    .display-4 {
+        font-size: clamp(2.5rem, 14vw, 4rem) !important;
+    }
+
     .display-5 {
         font-size: 2rem !important;
     }
+
     .display-6 {
         font-size: 1.75rem !important;
     }
+
+    .text-lg-end {
+        text-align: center !important;
+    }
+
+    .btn-lg {
+        white-space: normal;
+    }
+
     .glass-card {
         padding: 1.25rem !important;
     }
-}
+}

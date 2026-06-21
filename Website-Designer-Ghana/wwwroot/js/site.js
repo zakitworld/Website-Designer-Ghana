@@ -7,6 +7,7 @@ window.addEventListener('DOMContentLoaded', () => {
     initSmoothScroll();
     initScrollAnimations();
     initNavbarScroll();
+    initMobileNavbar();
     initFloatingButtons();
     removeFocusOutlines();
     initCurrencyToggle();
@@ -114,6 +115,32 @@ function initNavbarScroll() {
         // Initial check
         updateNavbar();
     }
+}
+
+// ==========================================
+// MOBILE NAVBAR COLLAPSE
+// ==========================================
+function initMobileNavbar() {
+    const navbarCollapse = document.getElementById('navbarNav');
+
+    if (!navbarCollapse) return;
+
+    document.body.addEventListener('click', function (e) {
+        const navLink = e.target.closest('#navbarNav a');
+
+        if (!navLink || !navbarCollapse.classList.contains('show')) return;
+
+        const navbarToggler = document.querySelector('.navbar-toggler');
+        const collapseInstance = bootstrap.Collapse.getOrCreateInstance(navbarCollapse, {
+            toggle: false
+        });
+
+        collapseInstance.hide();
+
+        if (navbarToggler) {
+            navbarToggler.setAttribute('aria-expanded', 'false');
+        }
+    });
 }
 
 // ==========================================

@@ -136,12 +136,22 @@
 
 /* Responsive */
 @media (max-width: 768px) {
+    .article-card {
+        text-align: center;
+    }
+
     .article-image-wrapper {
         height: 220px;
     }
 
     .article-content {
         padding: 24px;
+        align-items: center;
+    }
+
+    .article-meta,
+    .article-date {
+        justify-content: center;
     }
 
     .article-title {
@@ -150,5 +160,9 @@
 
     .article-excerpt {
         font-size: 0.95rem;
+    }
+
+    .article-read-more {
+        align-self: center;
     }
 }

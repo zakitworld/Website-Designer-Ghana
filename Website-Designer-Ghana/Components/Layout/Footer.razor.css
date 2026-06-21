@@ -161,6 +161,7 @@
 @media (max-width: 767px) {
     .footer {
         padding: 60px 0 30px;
+        text-align: center;
     }
 
     .footer-content {
@@ -173,11 +174,36 @@
         gap: 40px;
     }
 
+    .footer-brand-section {
+        margin: 0 auto;
+    }
+
+    .footer-col {
+        align-items: center;
+    }
+
+    .footer-contact a,
+    .footer-contact span {
+        overflow-wrap: anywhere;
+    }
+
     .brand-text {
         font-size: 1.25rem;
     }
 
     .social-links {
-        justify-content: flex-start;
+        justify-content: center;
+    }
+
+    .footer-bottom .d-flex {
+        flex-direction: column;
+        justify-content: center !important;
+        gap: 12px;
+    }
+
+    .footer-legal {
+        display: flex;
+        justify-content: center;
+        flex-wrap: wrap;
     }
 }

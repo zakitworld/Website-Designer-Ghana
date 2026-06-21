@@ -40,6 +40,44 @@
     border-radius: 2px;
 }
 
+.navbar-toggler {
+    width: 56px;
+    height: 56px;
+    position: relative;
+}
+
+.navbar-toggler:focus {
+    box-shadow: 0 0 0 0.15rem rgba(13, 110, 253, 0.15);
+}
+
+.navbar-toggler-icon {
+    transition: opacity 0.2s ease;
+}
+
+.navbar-toggler[aria-expanded="true"] .navbar-toggler-icon {
+    opacity: 0;
+}
+
+.navbar-toggler[aria-expanded="true"]::before,
+.navbar-toggler[aria-expanded="true"]::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 28px;
+    height: 3px;
+    border-radius: 2px;
+    background: #334155;
+}
+
+.navbar-toggler[aria-expanded="true"]::before {
+    transform: translate(-50%, -50%) rotate(45deg);
+}
+
+.navbar-toggler[aria-expanded="true"]::after {
+    transform: translate(-50%, -50%) rotate(-45deg);
+}
+
 /* Contact button active state */
 .btn.btn-danger {
     background-color: #dc3545;

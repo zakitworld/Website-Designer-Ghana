@@ -93,6 +93,46 @@
 
 /* Responsive */
 @media (max-width: 768px) {
+    .col-lg-8 > .d-flex.flex-wrap,
+    .mt-4 .d-flex.gap-2,
+    .card .d-flex.flex-wrap {
+        justify-content: center;
+        text-align: center;
+    }
+
+    h1,
+    h4,
+    h5,
+    h6 {
+        text-align: center;
+    }
+
+    .blog-post-content {
+        text-align: center;
+    }
+
+    .blog-post-content ul,
+    .blog-post-content ol {
+        display: inline-block;
+        text-align: left;
+    }
+
+    .comment-item > .d-flex,
+    .comment-item .d-flex.gap-3 {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+    }
+
+    .comment-item .justify-content-between {
+        justify-content: center !important;
+        gap: 12px;
+    }
+
+    .col-12.text-end {
+        text-align: center !important;
+    }
+
     .blog-post-content {
         font-size: 1rem;
     }

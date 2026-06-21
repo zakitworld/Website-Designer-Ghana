@@ -62,4 +62,25 @@
             transform: scale(1);
         }
     }
-</style>
+
+    @@media (max-width: 767.98px) {
+        .error-content {
+            padding: 1.5rem !important;
+        }
+
+        .error-content h1 {
+            font-size: clamp(4rem, 30vw, 6rem) !important;
+            letter-spacing: 0 !important;
+        }
+
+        .error-content .d-flex {
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .error-content .btn {
+            width: 100%;
+            max-width: 280px;
+        }
+    }
+</style>

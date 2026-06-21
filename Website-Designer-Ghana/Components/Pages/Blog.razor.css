@@ -76,3 +76,22 @@
     color: white !important;
     border-color: #dc3545 !important;
 }
+
+@media (max-width: 991px) {
+    .blog-hero-section {
+        text-align: center;
+    }
+
+    .card {
+        text-align: center;
+    }
+
+    .list-unstyled a {
+        justify-content: center !important;
+        gap: 12px;
+    }
+
+    .card .d-flex.flex-wrap {
+        justify-content: center;
+    }
+}
