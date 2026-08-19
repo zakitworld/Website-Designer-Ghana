@@ -7,6 +7,7 @@ namespace Website_Designer_Ghana.Components.Pages.Admin;
 public partial class ContactSubmissions
 {
     [Inject] private IContactService ContactService { get; set; } = default!;
+    [Inject] private ILogger<ContactSubmissions> Logger { get; set; } = default!;
 
     private IEnumerable<ContactSubmission>? submissions;
     private ContactSubmission? selectedSubmission;
@@ -25,7 +26,7 @@ public partial class ContactSubmissions
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"Error loading contact submissions: {ex.Message}");
+            Logger.LogError(ex, "Failed to load contact submissions");
             submissions = new List<ContactSubmission>();
         }
     }
@@ -43,7 +44,7 @@ public partial class ContactSubmissions
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Error marking submission as read: {ex.Message}");
+                Logger.LogError(ex, "Failed to mark contact submission {SubmissionId} as read", submission.Id);
             }
         }
     }

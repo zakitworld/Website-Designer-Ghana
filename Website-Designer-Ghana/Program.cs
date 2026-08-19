@@ -18,7 +18,7 @@ var builder = WebApplication.CreateBuilder(args);
 Log.Logger = new LoggerConfiguration()
     .ReadFrom.Configuration(builder.Configuration)
     .Enrich.FromLogContext()
-    .Enrich.WithProperty("Application", "Website-Designer-Ghana")
+    .Enrich.WithProperty("Application", "ZAK-I.T.-WORLD")
     .WriteTo.Console()
     .WriteTo.File(
         path: "logs/log-.txt",
@@ -40,9 +40,7 @@ builder.Services.AddHttpContextAccessor();
 builder.Services.Configure<ForwardedHeadersOptions>(options =>
 {
     options.ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto;
-    // Clear known networks and proxies so it accepts headers from any proxy (common in PaaS)
-    options.KnownIPNetworks.Clear();
-    options.KnownProxies.Clear();
+    options.ForwardLimit = 1;
 });
 
 // Add Rate Limiting
@@ -51,7 +49,9 @@ builder.Services.AddRateLimiter(rateLimiterOptions =>
     // Global rate limiter with fixed window (reduced from 200 to 100 requests per minute)
     rateLimiterOptions.GlobalLimiter = System.Threading.RateLimiting.PartitionedRateLimiter.Create<Microsoft.AspNetCore.Http.HttpContext, string>(httpContext =>
         System.Threading.RateLimiting.RateLimitPartition.GetFixedWindowLimiter(
-            partitionKey: httpContext.User.Identity?.Name ?? httpContext.Request.Headers.Host.ToString(),
+            partitionKey: httpContext.User.Identity?.Name
+                ?? httpContext.Connection.RemoteIpAddress?.ToString()
+                ?? "unknown",
             factory: partition => new System.Threading.RateLimiting.FixedWindowRateLimiterOptions
             {
                 AutoReplenishment = true,
@@ -72,11 +72,6 @@ builder.Services.AddResponseCompression(options =>
 // Add output caching for performance
 builder.Services.AddOutputCache(options =>
 {
-    // Default cache policy: 10 minutes
-    options.AddBasePolicy(builder => builder
-        .Expire(TimeSpan.FromMinutes(10))
-        .Tag("default"));
-
     // Blog posts cache: 1 hour
     options.AddPolicy("blog-posts", builder => builder
         .Expire(TimeSpan.FromHours(1))
@@ -114,6 +109,28 @@ builder.Services.AddAuthentication(options =>
     })
     .AddIdentityCookies();
 
+builder.Services.ConfigureApplicationCookie(options =>
+{
+    options.Cookie.Name = "__Host-ZakItWorld.Auth";
+    options.Cookie.HttpOnly = true;
+    options.Cookie.SecurePolicy = builder.Environment.IsDevelopment()
+        ? CookieSecurePolicy.SameAsRequest
+        : CookieSecurePolicy.Always;
+    options.Cookie.SameSite = SameSiteMode.Lax;
+    options.ExpireTimeSpan = TimeSpan.FromHours(8);
+    options.SlidingExpiration = true;
+});
+
+builder.Services.AddAntiforgery(options =>
+{
+    options.Cookie.Name = "__Host-ZakItWorld.Antiforgery";
+    options.Cookie.HttpOnly = true;
+    options.Cookie.SecurePolicy = builder.Environment.IsDevelopment()
+        ? CookieSecurePolicy.SameAsRequest
+        : CookieSecurePolicy.Always;
+    options.Cookie.SameSite = SameSiteMode.Strict;
+});
+
 // Configure Database (SQL Server)
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
 
@@ -136,7 +153,7 @@ if (!string.IsNullOrEmpty(databaseUrl))
             var host = uri.Host;
             var port = uri.Port > 0 ? uri.Port : 1433;
             var database = uri.AbsolutePath.TrimStart('/');
-            finalConnectionString = $"Server={host},{port};Initial Catalog={database};User ID={user};Password={password};Encrypt=True;TrustServerCertificate=True;";
+            finalConnectionString = $"Server={host},{port};Initial Catalog={database};User ID={user};Password={password};Encrypt=True;TrustServerCertificate=False;";
         }
         catch (Exception ex)
         {
@@ -223,36 +240,7 @@ using (var scope = app.Services.CreateScope())
             END
         ");
 
-        try
-        {
-            await context.Database.MigrateAsync();
-        }
-        catch (Exception ex)
-        {
-            // Handle migration failures generically. If the failure is due to existing
-            // objects (tables present but migration history missing), reconcile by
-            // marking pending migrations as applied.
-            logger.LogWarning(ex, "Migration failed. Attempting to reconcile migration history if tables already exist.");
-
-            var allMigrations = context.Database.GetMigrations();
-            var appliedMigrations = (await context.Database.GetAppliedMigrationsAsync()).ToHashSet();
-
-            foreach (var migration in allMigrations)
-            {
-                if (!appliedMigrations.Contains(migration))
-                {
-                    logger.LogInformation("Marking migration as applied: {Migration}", migration);
-                    // Use a SQL Server compatible insert; guard against duplicates with IF NOT EXISTS
-#pragma warning disable EF1002 // Migration name is a safe internal value, not user input
-                    await context.Database.ExecuteSqlRawAsync($@"
-                        IF NOT EXISTS (SELECT 1 FROM [__EFMigrationsHistory] WHERE [MigrationId] = '{migration}')
-                        BEGIN
-                            INSERT INTO [__EFMigrationsHistory] ([MigrationId], [ProductVersion]) VALUES ('{migration}', '10.0.7')
-                        END");
-#pragma warning restore EF1002
-                }
-            }
-        }
+        await context.Database.MigrateAsync();
 
         var userManager = services.GetRequiredService<UserManager<ApplicationUser>>();
         var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
@@ -278,21 +266,22 @@ if (!app.Environment.IsDevelopment())
 app.Use(async (context, next) =>
 {
     context.Response.Headers.Append("X-Content-Type-Options", "nosniff");
-    context.Response.Headers.Append("X-Frame-Options", "SAMEORIGIN");
-    context.Response.Headers.Append("X-XSS-Protection", "1; mode=block");
+    context.Response.Headers.Append("X-Frame-Options", "DENY");
     context.Response.Headers.Append("Referrer-Policy", "strict-origin-when-cross-origin");
     context.Response.Headers.Append("Content-Security-Policy",
         "default-src 'self'; " +
-        "script-src 'self' 'unsafe-inline' 'unsafe-eval' 'wasm-unsafe-eval' blob: cdn.jsdelivr.net; " +
+        "script-src 'self' 'unsafe-inline' cdn.jsdelivr.net; " +
         "style-src 'self' 'unsafe-inline' fonts.googleapis.com cdn.jsdelivr.net; " +
         "font-src 'self' fonts.gstatic.com cdn.jsdelivr.net; " +
         "img-src 'self' data: https:; " +
-        "connect-src 'self' ws: wss: blob: cdn.jsdelivr.net; " +
-        "frame-ancestors 'none';");
+        "connect-src 'self' wss:; " +
+        "object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'; upgrade-insecure-requests;");
+    context.Response.Headers.Append("Permissions-Policy", "camera=(), microphone=(), geolocation=(), payment=(), usb=()");
+    context.Response.Headers.Append("Cross-Origin-Opener-Policy", "same-origin");
     await next();
 });
 
-if (app.Environment.IsDevelopment() || app.Configuration["EnableDetailedErrors"] == "true")
+if (app.Environment.IsDevelopment())
 {
     app.UseMigrationsEndPoint();
     app.UseDeveloperExceptionPage();
@@ -323,7 +312,7 @@ app.MapRazorComponents<App>()
 app.MapAdditionalIdentityEndpoints();
 
 // Map health checks endpoint
-app.MapHealthChecks("/health");
+app.MapHealthChecks("/health").RequireAuthorization(policy => policy.RequireRole("Admin"));
 
 // Map sitemap.xml endpoint
 app.MapGet("/sitemap.xml", async (ISitemapService sitemapService) =>

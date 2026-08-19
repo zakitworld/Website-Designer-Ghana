@@ -15,7 +15,7 @@ public static class DatabaseSeeder
         }
 
         // Seed Default Admin User
-        var adminEmail = configuration["AdminUser:Email"] ?? "admin@websitedesignerghana.com";
+        var adminEmail = configuration["AdminUser:Email"] ?? "admin@zakitworld.com";
         var adminPassword = configuration["AdminUser:Password"];
 
         // Only seed admin if password is configured (prevents accidental seeding in production with weak password)
@@ -128,16 +128,16 @@ public static class DatabaseSeeder
                         <p>Many businesses in Ghana are already leveraging Blazor for their e-commerce platforms, business management systems, and customer portals. The framework's ability to create progressive web apps (PWAs) makes it ideal for the Ghanaian market where mobile internet usage is high.</p>
 
                         <h3>Getting Started with Blazor</h3>
-                        <p>If you're a business owner in Ghana looking to build a modern web application, Blazor should be at the top of your list. Contact Website Designer Ghana to learn how we can help you leverage this powerful technology.</p>
+                        <p>If you're a business owner in Ghana looking to build a modern web application, Blazor should be at the top of your list. Contact ZAK I.T. WORLD to learn how we can help you leverage this powerful technology.</p>
                     ",
                     FeaturedImage = "/images/blog/blazor-future.png",
                     IsPublished = true,
                     PublishedAt = DateTime.UtcNow.AddDays(-5),
                     CreatedAt = DateTime.UtcNow.AddDays(-5),
-                    Author = "Website Designer Ghana Team",
+                    Author = "ZAK I.T. WORLD Team",
                     ViewCount = 245,
                     CategoryId = webDevCategory.Id,
-                    MetaTitle = "Why Blazor is the Future of Web Development in Ghana | Website Designer Ghana",
+                    MetaTitle = "Why Blazor is the Future of Web Development in Ghana | ZAK I.T. WORLD",
                     MetaDescription = "Learn why Blazor is transforming web development in Ghana and how it can benefit your business with faster development and better performance.",
                     MetaKeywords = "Blazor Ghana, web development Ghana, ASP.NET Core, modern web framework"
                 },
@@ -173,13 +173,13 @@ public static class DatabaseSeeder
                             <li>Monitor and respond to online reviews</li>
                         </ul>
 
-                        <p>Implementing these strategies will significantly improve your online visibility in Ghana. Need help with your SEO? Contact Website Designer Ghana today!</p>
+                        <p>Implementing these strategies will significantly improve your online visibility in Ghana. Need help with your SEO? Contact ZAK I.T. WORLD today!</p>
                     ",
                     FeaturedImage = "/images/blog/seo-strategies.png",
                     IsPublished = true,
                     PublishedAt = DateTime.UtcNow.AddDays(-3),
                     CreatedAt = DateTime.UtcNow.AddDays(-3),
-                    Author = "Website Designer Ghana Team",
+                    Author = "ZAK I.T. WORLD Team",
                     ViewCount = 189,
                     CategoryId = seoCategory.Id,
                     MetaTitle = "10 Essential SEO Strategies for Ghanaian Businesses in 2026",
@@ -215,13 +215,13 @@ public static class DatabaseSeeder
                         <h3>Implementation Tips</h3>
                         <p>When implementing these trends, always prioritize user experience over aesthetics. A beautiful design that doesn't function well serves no purpose.</p>
 
-                        <p>Ready to modernize your website? Website Designer Ghana specializes in creating stunning, functional websites that incorporate the latest design trends while maintaining peak performance.</p>
+                        <p>Ready to modernize your website? ZAK I.T. WORLD specializes in creating stunning, functional websites that incorporate the latest design trends while maintaining peak performance.</p>
                     ",
                     FeaturedImage = "/images/blog/design-trends-2026.png",
                     IsPublished = true,
                     PublishedAt = DateTime.UtcNow.AddDays(-1),
                     CreatedAt = DateTime.UtcNow.AddDays(-1),
-                    Author = "Website Designer Ghana Team",
+                    Author = "ZAK I.T. WORLD Team",
                     ViewCount = 156,
                     CategoryId = designCategory.Id,
                     MetaTitle = "Web Design Trends in Ghana 2026 | Modern Design Tips",

@@ -10,6 +10,7 @@ public partial class Portfolios
 {
     [Inject] private IPortfolioService PortfolioService { get; set; } = default!;
     [Inject] private IJSRuntime JSRuntime { get; set; } = default!;
+    [Inject] private ILogger<Portfolios> Logger { get; set; } = default!;
 
     private IEnumerable<Website_Designer_Ghana.Data.Models.Portfolio>? portfolios;
     private IEnumerable<Website_Designer_Ghana.Data.Models.PortfolioCategory>? categories;
@@ -38,7 +39,7 @@ public partial class Portfolios
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"Error loading portfolios: {ex.Message}");
+            Logger.LogError(ex, "Failed to load portfolios");
             portfolios = new List<Website_Designer_Ghana.Data.Models.Portfolio>();
         }
     }
@@ -141,7 +142,7 @@ public partial class Portfolios
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Error deleting portfolio: {ex.Message}");
+                Logger.LogError(ex, "Failed to delete portfolio {PortfolioId}", portfolioId);
             }
         }
     }

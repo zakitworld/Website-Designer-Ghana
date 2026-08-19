@@ -10,6 +10,7 @@ public partial class BlogPosts
     [Inject] private IBlogService BlogService { get; set; } = default!;
     [Inject] private NavigationManager NavigationManager { get; set; } = default!;
     [Inject] private IJSRuntime JSRuntime { get; set; } = default!;
+    [Inject] private ILogger<BlogPosts> Logger { get; set; } = default!;
 
     private IEnumerable<Website_Designer_Ghana.Data.Models.BlogPost>? blogPosts;
     private bool showSuccessMessage = false;
@@ -29,7 +30,7 @@ public partial class BlogPosts
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"Error loading blog posts: {ex.Message}");
+            Logger.LogError(ex, "Failed to load blog posts");
             blogPosts = new List<Website_Designer_Ghana.Data.Models.BlogPost>();
         }
     }
@@ -47,7 +48,7 @@ public partial class BlogPosts
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Error deleting blog post: {ex.Message}");
+                Logger.LogError(ex, "Failed to delete blog post {PostId}", postId);
             }
         }
     }

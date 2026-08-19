@@ -10,6 +10,7 @@ public partial class Courses
 {
     [Inject] private ICourseService CourseService { get; set; } = default!;
     [Inject] private IJSRuntime JSRuntime { get; set; } = default!;
+    [Inject] private ILogger<Courses> Logger { get; set; } = default!;
 
     private IEnumerable<Website_Designer_Ghana.Data.Models.Course>? courses;
     private Website_Designer_Ghana.Data.Models.Course? editingCourse;
@@ -36,7 +37,7 @@ public partial class Courses
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"Error loading courses: {ex.Message}");
+            Logger.LogError(ex, "Failed to load courses");
             courses = new List<Website_Designer_Ghana.Data.Models.Course>();
         }
     }
@@ -148,7 +149,7 @@ public partial class Courses
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Error deleting course: {ex.Message}");
+                Logger.LogError(ex, "Failed to delete course {CourseId}", courseId);
             }
         }
     }

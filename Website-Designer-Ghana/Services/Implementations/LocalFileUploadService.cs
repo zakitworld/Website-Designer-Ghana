@@ -7,7 +7,8 @@ public class LocalFileUploadService : IFileUploadService
     private readonly IWebHostEnvironment _environment;
     private readonly ILogger<LocalFileUploadService> _logger;
     private readonly string _uploadBasePath;
-    private static readonly string[] AllowedImageExtensions = { ".jpg", ".jpeg", ".png", ".gif", ".webp", ".svg" };
+    private const long MaxImageBytes = 10 * 1024 * 1024;
+    private static readonly string[] AllowedImageExtensions = { ".jpg", ".jpeg", ".png", ".gif", ".webp" };
 
     // Magic numbers for file type validation (first few bytes of valid files)
     private static readonly Dictionary<string, byte[][]> FileMagicNumbers = new()
@@ -37,11 +38,11 @@ public class LocalFileUploadService : IFileUploadService
         try
         {
             // Sanitize filename
-            var sanitizedFileName = SanitizeFileName(fileName);
+            var sanitizedFileName = SanitizeFileName(Path.GetFileName(fileName));
             var uniqueFileName = GenerateUniqueFileName(sanitizedFileName);
 
             // Create folder path
-            var folderPath = Path.Combine(_uploadBasePath, folder);
+            var folderPath = GetSafeUploadPath(folder);
             if (!Directory.Exists(folderPath))
             {
                 Directory.CreateDirectory(folderPath);
@@ -51,13 +52,13 @@ public class LocalFileUploadService : IFileUploadService
             var filePath = Path.Combine(folderPath, uniqueFileName);
 
             // Save file
-            using (var fileStreamOut = new FileStream(filePath, FileMode.Create))
+            using (var fileStreamOut = new FileStream(filePath, FileMode.CreateNew, FileAccess.Write, FileShare.None))
             {
                 await fileStream.CopyToAsync(fileStreamOut);
             }
 
             // Return relative path
-            return $"/uploads/{folder}/{uniqueFileName}";
+            return $"/uploads/{folder.Replace('\\', '/').Trim('/')}/{uniqueFileName}";
         }
         catch (Exception ex)
         {
@@ -71,12 +72,17 @@ public class LocalFileUploadService : IFileUploadService
         // Validate image extension
         if (!IsValidImageExtension(fileName))
         {
-            throw new ArgumentException("Invalid image file type. Allowed types: jpg, jpeg, png, gif, webp, svg");
+            throw new ArgumentException("Invalid image file type. Allowed types: jpg, jpeg, png, gif, webp");
         }
 
         // Validate file content (magic number validation) for security
         var extension = Path.GetExtension(fileName).ToLowerInvariant();
-        if (extension != ".svg" && !await IsValidFileContentAsync(imageStream, extension))
+        if (!imageStream.CanSeek || imageStream.Length <= 0 || imageStream.Length > MaxImageBytes)
+        {
+            throw new ArgumentException("Image must be between 1 byte and 10 MB.");
+        }
+
+        if (!await IsValidFileContentAsync(imageStream, extension))
         {
             throw new ArgumentException($"File content does not match the expected format for {extension} files. This could be a security risk.");
         }
@@ -91,7 +97,7 @@ public class LocalFileUploadService : IFileUploadService
     {
         try
         {
-            var fullPath = Path.Combine(_environment.WebRootPath, filePath.TrimStart('/'));
+            var fullPath = GetSafeExistingUploadPath(filePath);
             if (File.Exists(fullPath))
             {
                 File.Delete(fullPath);
@@ -110,7 +116,7 @@ public class LocalFileUploadService : IFileUploadService
     {
         try
         {
-            var fullPath = Path.Combine(_environment.WebRootPath, filePath.TrimStart('/'));
+            var fullPath = GetSafeExistingUploadPath(filePath);
             return Task.FromResult(File.Exists(fullPath));
         }
         catch
@@ -123,7 +129,7 @@ public class LocalFileUploadService : IFileUploadService
     {
         try
         {
-            var fullPath = Path.Combine(_environment.WebRootPath, filePath.TrimStart('/'));
+            var fullPath = GetSafeExistingUploadPath(filePath);
             if (File.Exists(fullPath))
             {
                 return await File.ReadAllBytesAsync(fullPath);
@@ -141,7 +147,7 @@ public class LocalFileUploadService : IFileUploadService
     {
         try
         {
-            var fullPath = Path.Combine(_environment.WebRootPath, filePath.TrimStart('/'));
+            var fullPath = GetSafeExistingUploadPath(filePath);
             if (File.Exists(fullPath))
             {
                 var fileInfo = new FileInfo(fullPath);
@@ -184,6 +190,41 @@ public class LocalFileUploadService : IFileUploadService
         return sanitized.ToLowerInvariant();
     }
 
+    private string GetSafeUploadPath(string folder)
+    {
+        var relativeFolder = folder.Replace('\\', '/').Trim('/');
+        if (string.IsNullOrWhiteSpace(relativeFolder) || relativeFolder.Split('/').Any(x => x is "." or ".."))
+        {
+            throw new ArgumentException("Invalid upload folder.", nameof(folder));
+        }
+
+        var fullPath = Path.GetFullPath(Path.Combine(_uploadBasePath, relativeFolder));
+        EnsureInsideUploadRoot(fullPath);
+        return fullPath;
+    }
+
+    private string GetSafeExistingUploadPath(string filePath)
+    {
+        var relativePath = filePath.Replace('\\', '/').TrimStart('/');
+        if (relativePath.StartsWith("uploads/", StringComparison.OrdinalIgnoreCase))
+        {
+            relativePath = relativePath["uploads/".Length..];
+        }
+
+        var fullPath = Path.GetFullPath(Path.Combine(_uploadBasePath, relativePath));
+        EnsureInsideUploadRoot(fullPath);
+        return fullPath;
+    }
+
+    private void EnsureInsideUploadRoot(string fullPath)
+    {
+        var root = Path.GetFullPath(_uploadBasePath) + Path.DirectorySeparatorChar;
+        if (!fullPath.StartsWith(root, StringComparison.OrdinalIgnoreCase))
+        {
+            throw new UnauthorizedAccessException("The requested path is outside the upload directory.");
+        }
+    }
+
     private string GenerateUniqueFileName(string fileName)
     {
         var fileNameWithoutExtension = Path.GetFileNameWithoutExtension(fileName);
@@ -202,10 +243,8 @@ public class LocalFileUploadService : IFileUploadService
     {
         if (!FileMagicNumbers.ContainsKey(extension))
         {
-            // If we don't have magic numbers for this extension, allow it
-            // (but log for security monitoring)
             _logger.LogWarning("No magic number validation available for extension: {Extension}", extension);
-            return true;
+            return false;
         }
 
         var magicNumbers = FileMagicNumbers[extension];

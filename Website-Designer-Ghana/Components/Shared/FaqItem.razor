@@ -1,12 +1,13 @@
-<div class="accordion-item bg-transparent border-0 border-bottom border-white border-opacity-10">
+<div class="accordion-item faq-item">
     <h2 class="accordion-header">
-        <button class="accordion-button collapsed bg-transparent text-white shadow-none py-4" type="button"
+        <button class="accordion-button collapsed" type="button"
             data-bs-toggle="collapse" data-bs-target="#faq-@Id" aria-expanded="false" aria-controls="faq-@Id">
-            <span class="fs-5 fw-medium me-3">@Question</span>
+            <span class="faq-icon"><i class="bi @Icon" aria-hidden="true"></i></span>
+            <span class="faq-question"><small>@Category</small><strong>@Question</strong></span>
         </button>
     </h2>
     <div id="faq-@Id" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
-        <div class="accordion-body text-secondary pb-4">
+        <div class="accordion-body">
             @Answer
         </div>
     </div>
@@ -14,24 +15,63 @@
 
 @code {
     [Parameter] public string Question { get; set; } = "";
+    [Parameter] public string Category { get; set; } = "General";
+    [Parameter] public string Icon { get; set; } = "bi-question-circle";
     [Parameter] public RenderFragment Answer { get; set; } = default!;
 
     private string Id { get; set; } = Guid.NewGuid().ToString("N");
 }
 
 <style>
+    .faq-item {
+        margin-bottom: .75rem;
+        overflow: hidden;
+        border: 1px solid rgba(255, 255, 255, .09) !important;
+        border-radius: 1rem !important;
+        background: rgba(7, 23, 38, .72) !important;
+    }
+
+    .accordion-button {
+        gap: 1rem;
+        padding: 1.15rem 1.25rem;
+        color: #f8fafc !important;
+        background: transparent !important;
+        box-shadow: none !important;
+    }
+
+    .faq-icon {
+        display: grid;
+        place-items: center;
+        flex: 0 0 2.5rem;
+        width: 2.5rem;
+        height: 2.5rem;
+        border-radius: .75rem;
+        color: var(--color-primary);
+        background: rgba(56, 189, 248, .11);
+    }
+
+    .faq-question { display: flex; flex-direction: column; gap: .15rem; text-align: left; }
+    .faq-question small { color: var(--color-primary); font-size: .64rem; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; }
+    .faq-question strong { font-size: 1rem; font-weight: 650; }
+    .accordion-body { padding: 0 1.25rem 1.25rem 4.75rem; color: #b7c5d2; line-height: 1.75; }
+    .accordion-body p:last-child { margin-bottom: 0; }
     .accordion-button::after {
         filter: invert(1);
         transform: scale(0.7);
     }
 
     .accordion-button:not(.collapsed) {
-        color: var(--bs-primary) !important;
+        color: #fff !important;
         box-shadow: none;
     }
 
     .accordion-button:not(.collapsed)::after {
         background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%230d6efd'%3e%3cpath fill-rule='evenodd' d='M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z'/%3e%3c/svg%3e");
         transform: rotate(180deg) scale(0.7);
+    }
+
+    @@media (max-width: 575px) {
+        .accordion-button { align-items: flex-start; padding: 1rem; }
+        .accordion-body { padding: 0 1rem 1rem; }
     }
 </style>

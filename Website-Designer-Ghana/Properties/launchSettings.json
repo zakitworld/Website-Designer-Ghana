@@ -5,7 +5,7 @@
         "commandName": "Project",
         "dotnetRunMessages": true,
         "launchBrowser": true,
-        "applicationUrl": "http://website_designer_ghana.dev.localhost:5038",
+        "applicationUrl": "http://zakitworld.dev.localhost:5038",
         "environmentVariables": {
           "ASPNETCORE_ENVIRONMENT": "Development"
         }
@@ -14,7 +14,7 @@
         "commandName": "Project",
         "dotnetRunMessages": true,
         "launchBrowser": true,
-        "applicationUrl": "https://website_designer_ghana.dev.localhost:7170;http://website_designer_ghana.dev.localhost:5038",
+        "applicationUrl": "https://zakitworld.dev.localhost:7170;http://zakitworld.dev.localhost:5038",
         "environmentVariables": {
           "ASPNETCORE_ENVIRONMENT": "Development"
         }

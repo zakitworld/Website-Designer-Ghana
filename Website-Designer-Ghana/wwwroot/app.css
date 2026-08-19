@@ -1,5 +1,5 @@
 /* ==========================================
-   WEBSITE DESIGNER IN GHANA - CUSTOM THEME
+   ZAK I.T. WORLD - BRAND THEME
    ========================================== */
 
 /* Import Fonts */
@@ -7,20 +7,20 @@
 
 :root {
     /* Theme Colors */
-    --color-bg-primary: #0a0e27;
-    --color-bg-secondary: #111633;
+    --color-bg-primary: #071726;
+    --color-bg-secondary: #0d2236;
 
     /* Brand Colors (matching logo) */
-    --color-primary: #0B3D91;
-    /* Navy Blue */
-    --color-secondary: #FF8C00;
-    /* Vibrant Orange */
-    --color-accent: #FCD116;
-    /* Ghana Yellow */
+    --color-primary: #38bdf8;
+    /* Light blue */
+    --color-secondary: #ef233c;
+    /* Brand red */
+    --color-accent: #ffffff;
+    /* Brand white */
 
     /* Gradients */
-    --gradient-primary: linear-gradient(135deg, var(--color-primary) 0%, #1a56c0 100%);
-    --gradient-secondary: linear-gradient(135deg, var(--color-secondary) 0%, var(--color-accent) 100%);
+    --gradient-primary: linear-gradient(135deg, #38bdf8 0%, #0284c7 100%);
+    --gradient-secondary: linear-gradient(135deg, #ef233c 0%, #b91c1c 100%);
 
     /* Typography */
     --font-body: 'Inter', sans-serif;
@@ -36,13 +36,13 @@
     --bs-primary: var(--color-primary);
     --bs-secondary: var(--color-text-secondary);
     --bs-link-color: var(--color-secondary);
-    /* Link color changed to orange for visibility */
-    --bs-link-hover-color: var(--color-accent);
+    /* Branded link colour */
+    --bs-link-hover-color: #ffffff;
     --bs-border-color: rgba(255, 255, 255, 0.1);
 
     /* Footer Accents */
     --color-footer-accent: var(--color-secondary);
-    /* Vibrant Orange from logo */
+    /* Brand red */
     --color-whatsapp: #25d366;
 }
 
@@ -54,8 +54,8 @@ body {
     font-family: var(--font-body);
     background-color: var(--color-bg-primary);
     background-image:
-        radial-gradient(circle at 20% 50%, rgba(59, 130, 246, 0.1) 0%, transparent 50%),
-        radial-gradient(circle at 80% 80%, rgba(139, 92, 246, 0.1) 0%, transparent 50%);
+        radial-gradient(circle at 20% 50%, rgba(56, 189, 248, 0.12) 0%, transparent 50%),
+        radial-gradient(circle at 80% 80%, rgba(239, 35, 60, 0.10) 0%, transparent 50%);
     background-attachment: fixed;
     color: var(--bs-body-color);
     overflow-x: hidden;
@@ -142,9 +142,15 @@ h6,
 .form-select:focus {
     background-color: rgba(15, 23, 42, 0.8);
     border-color: var(--color-secondary);
-    /* Use orange accent for focus */
+    /* Use brand red for focus */
     color: #ffffff !important;
-    box-shadow: 0 0 0 .25rem rgba(255, 140, 0, 0.25);
+    box-shadow: 0 0 0 .25rem rgba(239, 35, 60, 0.25);
+}
+
+.brand-logo {
+    width: auto;
+    max-width: 180px;
+    object-fit: contain;
 }
 
 .form-control::placeholder {
@@ -515,4 +521,28 @@ textarea:-webkit-autofill:focus {
     .glass-card {
         padding: 1.25rem !important;
     }
+}
+/* Admin workspace design system */
+.admin-main > div > .row:first-child { margin: 0 0 1.5rem !important; padding-bottom: 1.25rem; border-bottom: 1px solid rgba(255,255,255,.07); }
+.admin-main > div > .row:first-child h2 { color: #fff; font-size: 1.85rem; }
+.admin-main > div > .row:first-child p { color: #7890a4 !important; }
+.admin-main .glass-card { background: #091a29; border: 1px solid rgba(255,255,255,.08) !important; border-radius: 1rem; box-shadow: 0 18px 45px rgba(0,0,0,.18) !important; }
+.admin-main .table { --bs-table-bg: transparent; --bs-table-hover-bg: rgba(56,189,248,.035); margin: 0; }
+.admin-main .table thead th { color: #6f879a !important; background: rgba(255,255,255,.025); border-bottom: 1px solid rgba(255,255,255,.08); font-size: .68rem; letter-spacing: .08em; text-transform: uppercase; white-space: nowrap; }
+.admin-main .table tbody td { border-color: rgba(255,255,255,.06); color: #9fb2c2; }
+.admin-main .table tbody tr:last-child td { border-bottom: 0; }
+.admin-main .btn-primary { background: var(--gradient-secondary); }
+.admin-main .modal.show { background: rgba(1,7,13,.82) !important; backdrop-filter: blur(8px); }
+.admin-main .modal-content .glass-card { border: 1px solid rgba(255,255,255,.1) !important; }
+.admin-main .modal-header, .admin-main .modal-footer { border-color: rgba(255,255,255,.08) !important; }
+.admin-main .alert { border-radius: .85rem; border-width: 1px; }
+.admin-main .form-label { color: #a8bac9 !important; }
+.admin-main .form-control, .admin-main .form-select { border-radius: .7rem; min-height: 2.75rem; }
+.admin-main .btn-group .btn { min-width: 2.25rem; }
+@media (max-width: 767px) {
+    .admin-main > div > .row:first-child { align-items: flex-start !important; gap: 1rem; }
+    .admin-main > div > .row:first-child > .col-auto { width: 100%; }
+    .admin-main > div > .row:first-child > .col-auto .btn { width: 100%; }
+    .admin-main .table { min-width: 720px; }
+    .admin-main .modal-dialog { margin: .75rem; }
 }

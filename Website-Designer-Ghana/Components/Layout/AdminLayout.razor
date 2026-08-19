@@ -1,226 +1,48 @@
 @inherits LayoutComponentBase
 @using Microsoft.AspNetCore.Components.Authorization
 @inject NavigationManager NavigationManager
+@implements IDisposable
 
 <div class="admin-wrapper">
-    <!-- Admin Sidebar Overlay -->
-    <div id="admin-sidebar-overlay" class="admin-sidebar-overlay" onclick="document.getElementById('admin-sidebar').classList.remove('show'); document.getElementById('admin-sidebar-overlay').classList.remove('show');"></div>
-
-    <!-- Admin Sidebar -->
-    <aside id="admin-sidebar" class="admin-sidebar text-white">
-        <div class="sidebar-header p-4 border-bottom border-white border-opacity-10 d-flex align-items-center justify-content-between">
-            <h4 class="mb-0">
-                <i class="bi bi-rocket-takeoff-fill text-secondary me-2"></i>
-                Admin
-            </h4>
-            <!-- Close button for sidebar on mobile -->
-            <button type="button" class="btn-close btn-close-white d-lg-none opacity-75" aria-label="Close"
-                    onclick="document.getElementById('admin-sidebar').classList.remove('show'); document.getElementById('admin-sidebar-overlay').classList.remove('show');"></button>
-        </div>
-        <nav class="sidebar-nav p-3">
-            <ul class="nav flex-column">
-                <li class="nav-item mb-2">
-                    <a href="/admin" class="nav-link text-white">
-                        <i class="bi bi-speedometer2 me-2"></i>
-                        Dashboard
-                    </a>
-                </li>
-                <li class="nav-item mb-2">
-                    <a href="/admin/blog-posts" class="nav-link text-white">
-                        <i class="bi bi-file-text me-2"></i>
-                        Blog Posts
-                    </a>
-                </li>
-                <li class="nav-item mb-2">
-                    <a href="/admin/blog-categories" class="nav-link text-white">
-                        <i class="bi bi-folder me-2"></i>
-                        Blog Categories
-                    </a>
-                </li>
-                <li class="nav-item mb-2">
-                    <a href="/admin/blog-comments" class="nav-link text-white">
-                        <i class="bi bi-chat-dots me-2"></i>
-                        Blog Comments
-                    </a>
-                </li>
-                <li class="nav-item mb-2">
-                    <a href="/admin/portfolios" class="nav-link text-white">
-                        <i class="bi bi-briefcase me-2"></i>
-                        Portfolio
-                    </a>
-                </li>
-                <li class="nav-item mb-2">
-                    <a href="/admin/courses" class="nav-link text-white">
-                        <i class="bi bi-book me-2"></i>
-                        Courses
-                    </a>
-                </li>
-                <li class="nav-item mb-2">
-                    <a href="/admin/contact-submissions" class="nav-link text-white">
-                        <i class="bi bi-envelope me-2"></i>
-                        Contact Submissions
-                    </a>
-                </li>
-                <li class="nav-item mt-4 pt-3 border-top border-white border-opacity-10">
-                    <a href="/" class="nav-link text-white">
-                        <i class="bi bi-house-door me-2"></i>
-                        View Site
-                    </a>
-                </li>
-            </ul>
+    @if (sidebarOpen) { <button type="button" class="admin-sidebar-overlay" aria-label="Close navigation" @onclick="CloseSidebar"></button> }
+    <aside class="admin-sidebar @(sidebarOpen ? "show" : null)" aria-label="Administration navigation">
+        <div class="sidebar-brand"><a href="/admin"><img src="/images/zakitworld_logo.png" alt="" /><span><strong>ZAK I.T. WORLD</strong><small>Administration</small></span></a><button type="button" class="sidebar-close d-lg-none" aria-label="Close navigation" @onclick="CloseSidebar"><i class="bi bi-x-lg"></i></button></div>
+        <nav class="sidebar-nav">
+            <span class="nav-section">Overview</span>
+            <a href="/admin" class="@GetNavClass("/admin", true)" @onclick="CloseSidebar"><i class="bi bi-grid-1x2"></i><span>Dashboard</span></a>
+            <span class="nav-section">Content</span>
+            <a href="/admin/blog-posts" class="@GetNavClass("/admin/blog-posts")" @onclick="CloseSidebar"><i class="bi bi-file-earmark-text"></i><span>Blog posts</span></a>
+            <a href="/admin/blog-categories" class="@GetNavClass("/admin/blog-categories")" @onclick="CloseSidebar"><i class="bi bi-tags"></i><span>Categories</span></a>
+            <a href="/admin/blog-comments" class="@GetNavClass("/admin/blog-comments")" @onclick="CloseSidebar"><i class="bi bi-chat-left-text"></i><span>Comments</span></a>
+            <a href="/admin/portfolios" class="@GetNavClass("/admin/portfolios")" @onclick="CloseSidebar"><i class="bi bi-briefcase"></i><span>Portfolio</span></a>
+            <a href="/admin/courses" class="@GetNavClass("/admin/courses")" @onclick="CloseSidebar"><i class="bi bi-mortarboard"></i><span>Courses</span></a>
+            <span class="nav-section">Operations</span>
+            <a href="/admin/contact-submissions" class="@GetNavClass("/admin/contact-submissions")" @onclick="CloseSidebar"><i class="bi bi-inbox"></i><span>Enquiries</span></a>
         </nav>
+        <div class="sidebar-footer"><a href="/" target="_blank" rel="noopener noreferrer"><i class="bi bi-box-arrow-up-right"></i><span>View public website</span></a></div>
     </aside>
 
-    <!-- Admin Content -->
     <div class="admin-content">
-        <!-- Admin Header -->
-        <header class="admin-header py-1">
-            <div class="container-fluid">
-                <div class="row align-items-center py-3">
-                    <div class="col d-flex align-items-center">
-                        <!-- Sidebar Toggle Button for Mobile/Tablet -->
-                        <button type="button" class="btn btn-outline-light me-3 d-lg-none ripple-effect px-2 py-1" 
-                                onclick="document.getElementById('admin-sidebar').classList.add('show'); document.getElementById('admin-sidebar-overlay').classList.add('show');">
-                            <i class="bi bi-list fs-4"></i>
-                        </button>
-                        <h5 class="mb-0 text-truncate header-title">Website Designer Ghana - CMS</h5>
-                    </div>
-                    <div class="col-auto">
-                        <AuthorizeView>
-                            <Authorized>
-                                <span class="text-muted me-3 d-none d-sm-inline">
-                                    <i class="bi bi-person-circle me-1"></i>
-                                    @context.User.Identity?.Name
-                                </span>
-                                <form action="/Account/Logout" method="post" class="d-inline">
-                                    <AntiforgeryToken />
-                                    <input type="hidden" name="returnUrl" value="@NavigationManager.ToBaseRelativePath(NavigationManager.Uri)" />
-                                    <button type="submit"
-                                        class="btn btn-outline-light btn-sm opacity-75 border-opacity-25 ripple-effect">
-                                        <i class="bi bi-box-arrow-right me-1"></i>
-                                        <span class="d-none d-sm-inline">Logout</span>
-                                    </button>
-                                </form>
-                            </Authorized>
-                        </AuthorizeView>
-                    </div>
-                </div>
-            </div>
-        </header>
-
-        <!-- Main Content -->
-        <main class="admin-main p-4">
-            @Body
-        </main>
+        <header class="admin-header"><button type="button" class="sidebar-toggle d-lg-none" aria-label="Open navigation" @onclick="OpenSidebar"><i class="bi bi-list"></i></button><div class="header-context"><span>ADMIN CONSOLE</span><strong>@CurrentSection</strong></div><div class="header-actions"><AuthorizeView><Authorized><a href="/Account/Manage" class="admin-user" title="Account settings"><i class="bi bi-person-circle"></i><span>@context.User.Identity?.Name</span></a><form action="/Account/Logout" method="post"><AntiforgeryToken /><input type="hidden" name="returnUrl" value="/" /><button type="submit" class="logout-button" title="Sign out"><i class="bi bi-box-arrow-right"></i><span>Sign out</span></button></form></Authorized></AuthorizeView></div></header>
+        <main class="admin-main">@Body</main>
     </div>
 </div>
 
-<style>
-    .admin-wrapper {
-        display: flex;
-        min-height: 100vh;
-        background-color: var(--color-bg-primary);
+@code {
+    private bool sidebarOpen;
+    private string currentPath = string.Empty;
+    private string CurrentSection => currentPath switch { var p when p.Contains("blog-post") => "Blog posts", var p when p.Contains("blog-categor") => "Categories", var p when p.Contains("blog-comment") => "Comments", var p when p.Contains("portfolio") => "Portfolio", var p when p.Contains("course") => "Courses", var p when p.Contains("contact") => "Enquiries", _ => "Dashboard" };
+    protected override void OnInitialized(){UpdatePath();NavigationManager.LocationChanged+=OnLocationChanged;}
+    private void UpdatePath()=>currentPath=NavigationManager.ToBaseRelativePath(NavigationManager.Uri).ToLowerInvariant();
+    private void OnLocationChanged(object? sender,LocationChangedEventArgs args){UpdatePath();sidebarOpen=false;InvokeAsync(StateHasChanged);}
+    private void OpenSidebar()=>sidebarOpen=true;
+    private void CloseSidebar()=>sidebarOpen=false;
+    public void Dispose()=>NavigationManager.LocationChanged-=OnLocationChanged;
+
+    private string GetNavClass(string href, bool exact = false)
+    {
+        var target = href.TrimStart('/');
+        var active = exact ? currentPath is "admin" or "admin/" : currentPath.StartsWith(target, StringComparison.OrdinalIgnoreCase);
+        return $"sidebar-link {(active ? "active" : string.Empty)}";
     }
-
-    .admin-sidebar {
-        width: 260px;
-        position: fixed;
-        top: 0;
-        left: 0;
-        height: 100vh;
-        overflow-y: auto;
-        z-index: 1050;
-        background-color: var(--color-bg-secondary) !important;
-        border-right: 1px solid rgba(255, 255, 255, 0.05);
-        transition: transform 0.3s ease-in-out;
-    }
-
-    .admin-sidebar-overlay {
-        display: none;
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100vw;
-        height: 100vh;
-        background: rgba(0, 0, 0, 0.5);
-        backdrop-filter: blur(4px);
-        z-index: 1040;
-    }
-
-    .admin-content {
-        flex: 1;
-        margin-left: 260px;
-        background: transparent;
-        min-width: 0; /* Prevent flex children from overflowing */
-    }
-
-    .admin-header {
-        position: sticky;
-        top: 0;
-        z-index: 999;
-        background: rgba(255, 255, 255, 0.03) !important;
-        backdrop-filter: blur(10px);
-        border-bottom: 1px solid rgba(255, 255, 255, 0.05) !important;
-    }
-
-    .admin-sidebar .nav-link {
-        border-radius: 0.5rem;
-        transition: all 0.3s ease;
-        color: #94a3b8 !important;
-        margin: 0.2rem 0;
-    }
-
-    .admin-sidebar .nav-link i {
-        font-size: 1.1rem;
-    }
-
-    .admin-sidebar .nav-link:hover,
-    .admin-sidebar .nav-link.active {
-        background: rgba(255, 140, 0, 0.1);
-        color: var(--color-secondary) !important;
-    }
-
-    .admin-main {
-        max-width: 1400px;
-        margin: 0 auto;
-    }
-
-    .sidebar-header h4 {
-        font-weight: 700;
-        letter-spacing: -0.5px;
-    }
-
-    .admin-header h5 {
-        font-weight: 600;
-        color: #f8fafc;
-    }
-
-    /* Responsive Styling */
-    @@media (max-width: 991.98px) {
-        .admin-sidebar {
-            transform: translateX(-100%);
-        }
-
-        .admin-sidebar.show {
-            transform: translateX(0);
-        }
-
-        .admin-sidebar-overlay.show {
-            display: block;
-        }
-
-        .admin-content {
-            margin-left: 0;
-        }
-
-        .admin-main {
-            padding: 1.25rem !important;
-        }
-    }
-
-    @@media (max-width: 575.98px) {
-        .header-title {
-            font-size: 0.95rem;
-        }
-    }
-</style>
+}

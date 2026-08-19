@@ -44,10 +44,10 @@ namespace Microsoft.AspNetCore.Routing
             accountGroup.MapPost("/Logout", async (
                 ClaimsPrincipal user,
                 [FromServices] SignInManager<ApplicationUser> signInManager,
-                [FromForm] string returnUrl) =>
+                [FromForm] string? returnUrl) =>
             {
                 await signInManager.SignOutAsync();
-                return TypedResults.LocalRedirect($"~/{returnUrl}");
+                return TypedResults.LocalRedirect(GetSafeLocalReturnUrl(returnUrl));
             });
 
             accountGroup.MapPost("/PasskeyCreationOptions", async (
@@ -148,6 +148,36 @@ namespace Microsoft.AspNetCore.Routing
             });
 
             return accountGroup;
+        }
+
+        private static string GetSafeLocalReturnUrl(string? returnUrl)
+        {
+            if (string.IsNullOrWhiteSpace(returnUrl))
+            {
+                return "/";
+            }
+
+            // Accept application-local absolute and virtual paths only. In particular,
+            // reject protocol-relative paths (//host) and backslash variants.
+            if (returnUrl[0] == '/' &&
+                (returnUrl.Length == 1 || (returnUrl[1] != '/' && returnUrl[1] != '\\')))
+            {
+                return returnUrl;
+            }
+
+            if (returnUrl.Length > 1 && returnUrl[0] == '~' && returnUrl[1] == '/')
+            {
+                return returnUrl;
+            }
+
+            // NavigationManager supplies base-relative values such as "admin".
+            if (Uri.TryCreate(returnUrl, UriKind.Relative, out _) &&
+                !returnUrl.StartsWith('\\'))
+            {
+                return $"/{returnUrl.TrimStart('/')}";
+            }
+
+            return "/";
         }
     }
 }

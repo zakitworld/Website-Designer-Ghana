@@ -1,286 +1,39 @@
 @page "/pricing"
+@inject IJSRuntime JS
 
-<PageTitle>Web Pricing - Website Designer in Ghana</PageTitle>
+<PageTitle>Services & Engagement Models | ZAK I.T. WORLD</PageTitle>
 
-<!-- PRICING HERO SECTION -->
-<section class="pricing-hero-section min-vh-100 d-flex align-items-center position-relative overflow-hidden">
-    <div class="container">
-        <div class="row align-items-center gy-5">
-            <div class="col-lg-6 fade-in">
-                <h1 class="display-2 fw-bold mb-4 lh-sm text-white">
-                    WEB<br />
-                    DEVELOPMENT<br />
-                    <span class="text-secondary">PRICING</span>
-                </h1>
-                <p class="lead text-white text-opacity-75 mb-5" style="max-width: 600px;">
-                    Affordable Website Development Packages in Ghana.
-                </p>
-                <div class="d-flex gap-3 mb-5 flex-wrap">
-                    <a href="/contact" class="btn btn-secondary btn-lg px-5 py-3 fw-semibold">
-                        CONTACT US
-                    </a>
-                    <a href="#pricing-packages" class="btn btn-success btn-lg px-5 py-3 fw-semibold">
-                        SEO PRICING
-                    </a>
-                </div>
-            </div>
+<section class="pricing-hero-section d-flex align-items-center"><div class="container py-5"><div class="row align-items-center gy-5"><div class="col-lg-7"><span class="pricing-eyebrow">CLEAR SCOPE. ACCOUNTABLE DELIVERY.</span><h1 class="display-2 fw-bold text-white">FLEXIBLE TECHNOLOGY<br /><span class="text-secondary">ENGAGEMENTS</span></h1><p class="lead text-secondary pricing-lead">Every organisation has different systems, risks and priorities. We price against a confirmed scope so you pay for the outcome you need—not an arbitrary bundle.</p><div class="d-flex gap-3 flex-wrap"><a href="#engagements" class="btn btn-secondary btn-lg px-5">View options</a><a href="/contact" class="btn btn-outline-light btn-lg px-5">Request an estimate</a></div></div><div class="col-lg-5"><div class="estimate-panel"><i class="bi bi-clipboard2-check"></i><h2>How estimates work</h2><ol><li>Discovery conversation</li><li>Requirements and risk review</li><li>Written scope, timeline and price</li></ol><p>No obligation. No hidden scope.</p></div></div></div></div></section>
 
-            <div class="col-lg-6 fade-in">
-                <div class="position-relative perspective-1000">
-                    <div
-                        class="position-absolute bg-primary rounded-circle blur-3 filter-blur opacity-20 w-75 h-75 top-0 end-0 translate-middle-y animate-float-slow">
-                    </div>
-                    <div
-                        class="position-absolute bg-secondary rounded-circle blur-3 filter-blur opacity-20 w-50 h-50 bottom-0 start-0 translate-middle-y animate-float-reverse">
-                    </div>
+<section class="py-5 bg-black section" id="engagements"><div class="container py-5"><div class="text-center mb-5"><span class="pricing-eyebrow">ENGAGEMENT MODELS</span><h2 class="display-5 fw-bold text-white">Choose How We Work Together</h2><p class="lead text-secondary mx-auto" style="max-width:780px">Start with the model that best matches your requirement. We will recommend the most efficient approach after discovery.</p></div><div class="row g-4 justify-content-center">
+    @foreach (var model in Models)
+    {
+        <div class="col-lg-4 col-md-6"><article class="engagement-card h-100 @(model.Featured ? "featured" : "")">@if(model.Featured){<span class="recommended">MOST FLEXIBLE</span>}<div class="engagement-icon"><i class="bi @model.Icon"></i></div><p class="model-label">@model.Label</p><h3>@model.Title</h3><p class="text-secondary">@model.Description</p><ul>@foreach(var item in model.Items){<li><i class="bi bi-check2"></i>@item</li>}</ul><a href="/contact" class="btn @(model.Featured ? "btn-secondary" : "btn-outline-light") w-100 mt-auto">Discuss this model</a></article></div>
+    }
+</div></div></section>
 
-                    <div class="card bg-dark border-white border-opacity-10 shadow-lg transform-rotate-3d"
-                        style="background-color: #0f172a !important;">
-                        <div class="card-header bg-transparent border-bottom border-white border-opacity-10">
-                            <div class="d-flex gap-2">
-                                <span class="bg-secondary rounded-circle p-1" style="width:10px;height:10px;"></span>
-                                <span class="bg-warning rounded-circle p-1" style="width:10px;height:10px;"></span>
-                                <span class="bg-success rounded-circle p-1" style="width:10px;height:10px;"></span>
-                            </div>
-                        </div>
-                        <div class="card-body font-monospace text-light p-4" style="font-size: 1rem;">
-                            <div><span class="text-primary">&lt;pricing</span> <span
-                                    class="text-info">model</span>=<span class="text-success">"affordable"</span> <span
-                                    class="text-primary">&gt;</span></div>
-                            <div class="ps-4"><span class="text-primary">&lt;package</span> <span
-                                    class="text-info">type</span>=<span class="text-success">"custom"</span> <span
-                                    class="text-primary">&gt;</span></div>
-                            <div class="ps-5 text-white py-3 fs-5">Quality Within Budget</div>
-                            <div class="ps-4"><span class="text-primary">&lt;/package&gt;</span></div>
-                            <div><span class="text-primary">&lt;/pricing&gt;</span></div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
+<section class="py-5 service-estimates section"><div class="container py-5"><div class="row g-5"><div class="col-lg-4"><span class="pricing-eyebrow">WHAT SHAPES THE PRICE</span><h2 class="display-5 fw-bold text-white">Transparent, Scope-Based Estimates</h2><p class="text-secondary">Complexity, integrations, data sensitivity, response time, testing depth and support coverage determine the final investment.</p></div><div class="col-lg-8"><div class="row g-3">
+    @foreach(var service in Services){<div class="col-md-6"><div class="service-estimate"><i class="bi @service.Icon"></i><div><h3>@service.Name</h3><p>@service.Basis</p></div></div></div>}
+</div></div></div></div></section>
 
-<!-- PRICING PACKAGES SECTION -->
-<section class="py-5 bg-black section" id="pricing-packages">
-    <div class="container py-5">
-        <div class="text-center mb-5">
-            <p class="text-secondary fw-bold text-uppercase letter-spacing-2 mb-2">WEBSITE DESIGN PRICING PLAN</p>
-            <h2 class="display-5 fw-bold mb-4 text-white">Web Development Pricing Packages</h2>
-            <p class="lead text-white text-opacity-50 mx-auto mb-4" style="max-width: 900px;">
-                How much does Website Designer in Ghana charge for web development? Find out our web development pricing
-                packages.
-            </p>
-
-            <!-- Currency Toggle -->
-            <div class="d-flex justify-content-center gap-2 mb-5">
-                <button class="btn currency-btn px-4 py-2 rounded-pill fw-bold active" data-currency="GHS">
-                    GH₵ (CEDI)
-                </button>
-                <button class="btn currency-btn px-4 py-2 rounded-pill fw-bold" data-currency="USD">
-                    USD ($)
-                </button>
-            </div>
-        </div>
-
-        <div class="row g-4 justify-content-center">
-            <!-- Corporate Package -->
-            <div class="col-lg-4 col-md-6">
-                <div class="pricing-card corporate-card">
-                    <div class="pricing-inner">
-                        <div class="pricing-header">
-                            <h3 class="fw-bold mb-4">CORPORATE</h3>
-                            <div class="pricing-amount mb-2" data-price-ghs="2,500" data-price-usd="232">
-                                <span class="currency-symbol">GH₵</span>
-                                <span class="amount">2,500</span>
-                            </div>
-                        </div>
-
-                        <div class="pricing-body">
-                            <ul class="pricing-features">
-                                <li>
-                                    <i class="bi bi-patch-check-fill"></i>
-                                    <span>Domain & Hosting (1 Year)</span>
-                                </li>
-                                <li>
-                                    <i class="bi bi-patch-check-fill"></i>
-                                    <span>Business Emails</span>
-                                </li>
-                                <li>
-                                    <i class="bi bi-patch-check-fill"></i>
-                                    <span>Up to 5 Pages</span>
-                                </li>
-                                <li>
-                                    <i class="bi bi-patch-check-fill"></i>
-                                    <span>Logo Design</span>
-                                </li>
-                                <li>
-                                    <i class="bi bi-patch-check-fill"></i>
-                                    <span>On Page SEO</span>
-                                </li>
-                            </ul>
-
-                            <div class="text-center mt-5">
-                                <a href="/contact" class="btn btn-white-custom w-100 py-3 fw-bold">Order Now</a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- E-Commerce Package -->
-            <div class="col-lg-4 col-md-6">
-                <div class="pricing-card ecommerce-card">
-                    <span class="popular-badge">POPULAR</span>
-                    <div class="pricing-inner">
-                        <div class="pricing-header">
-                            <h3 class="fw-bold mb-4">E-COMMERCE</h3>
-                            <div class="pricing-amount mb-2" data-price-ghs="3,500" data-price-usd="325">
-                                <span class="currency-symbol">GH₵</span>
-                                <span class="amount">3,500</span>
-                            </div>
-                        </div>
-
-                        <div class="pricing-body">
-                            <ul class="pricing-features">
-                                <li>
-                                    <i class="bi bi-patch-check-fill"></i>
-                                    <span>Domain & Hosting (1 Year)</span>
-                                </li>
-                                <li>
-                                    <i class="bi bi-patch-check-fill"></i>
-                                    <span>Business Emails</span>
-                                </li>
-                                <li>
-                                    <i class="bi bi-patch-check-fill"></i>
-                                    <span>Logo Design</span>
-                                </li>
-                                <li>
-                                    <i class="bi bi-patch-check-fill"></i>
-                                    <span>On Page SEO</span>
-                                </li>
-                                <li>
-                                    <i class="bi bi-patch-check-fill"></i>
-                                    <span>Unlimited Pages</span>
-                                </li>
-                                <li>
-                                    <i class="bi bi-patch-check-fill"></i>
-                                    <span>Payment Gateway</span>
-                                </li>
-                                <li>
-                                    <i class="bi bi-patch-check-fill"></i>
-                                    <span>1 Month Support</span>
-                                </li>
-                                <li>
-                                    <i class="bi bi-patch-check-fill"></i>
-                                    <span>Analytics Integration</span>
-                                </li>
-                            </ul>
-
-                            <div class="text-center mt-5">
-                                <a href="/contact" class="btn btn-white-custom w-100 py-3 fw-bold">Order Now</a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Custom Package -->
-            <div class="col-lg-4 col-md-6">
-                <div class="pricing-card custom-card">
-                    <div class="pricing-inner">
-                        <div class="pricing-header">
-                            <h3 class="fw-bold mb-4">CUSTOM</h3>
-                            <div class="pricing-amount mb-2" data-price-ghs="XXX,XXX" data-price-usd="XXX,XXX">
-                                <span class="currency-symbol">GH₵</span>
-                                <span class="amount">XXX,XXX</span>
-                            </div>
-                        </div>
-
-                        <div class="pricing-body">
-                            <ul class="pricing-features">
-                                <li>
-                                    <i class="bi bi-patch-check-fill"></i>
-                                    <span>Domain & Hosting (1 Year)</span>
-                                </li>
-                                <li>
-                                    <i class="bi bi-patch-check-fill"></i>
-                                    <span>Dashboard (User & Admin)</span>
-                                </li>
-                                <li>
-                                    <i class="bi bi-patch-check-fill"></i>
-                                    <span>Payment Gateway</span>
-                                </li>
-                                <li>
-                                    <i class="bi bi-patch-check-fill"></i>
-                                    <span>Continuous Support</span>
-                                </li>
-                                <li>
-                                    <i class="bi bi-patch-check-fill"></i>
-                                    <span>Analytics Integration</span>
-                                </li>
-                                <li>
-                                    <i class="bi bi-patch-check-fill"></i>
-                                    <span>Social Integration</span>
-                                </li>
-                                <li>
-                                    <i class="bi bi-patch-check-fill"></i>
-                                    <span>On Page & Off Page SEO</span>
-                                </li>
-                                <li>
-                                    <i class="bi bi-patch-check-fill"></i>
-                                    <span>Content Management</span>
-                                </li>
-                            </ul>
-
-                            <div class="text-center mt-5">
-                                <a href="/contact" class="btn btn-white-custom w-100 py-3 fw-bold">Contact Us</a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Terms Notice -->
-        <div class="text-center mt-5">
-            <p class="text-white text-opacity-40 small">
-                <i class="bi bi-info-circle-fill text-secondary me-2"></i>
-                By ordering our services, you agree to our <a href="terms" class="text-secondary fw-semibold">Terms of
-                    Service</a> and <a href="privacy" class="text-secondary fw-semibold">Privacy Policy</a>.
-            </p>
-        </div>
-    </div>
-</section>
-
-<!-- CONTACT CTA SECTION -->
-<section class="cta-section-red">
-    <div class="container">
-        <div class="row align-items-center gy-4">
-            <div class="col-lg-8">
-                <h2 class="cta-heading-white mb-4">Ready to Launch Your Digital Presence?</h2>
-                <p class="cta-text-white mb-0">
-                    Join hundreds of successful businesses in Ghana. Let's build something extraordinary together.
-                </p>
-            </div>
-            <div class="col-lg-4 text-lg-end">
-                <a href="/contact" class="btn btn-white-custom btn-lg">
-                    Get Started Now
-                    <i class="bi bi-arrow-right ms-2"></i>
-                </a>
-            </div>
-        </div>
-    </div>
-</section>
+<section class="py-5"><div class="container py-5"><div class="scope-note"><div><span class="pricing-eyebrow">OUR COMMITMENT</span><h2 class="text-white">Know What You Are Approving</h2><p class="text-secondary mb-0">Before work begins, you receive defined deliverables, assumptions, responsibilities, milestones and payment terms. Changes are agreed before they affect cost.</p></div><a href="/contact" class="btn btn-secondary btn-lg px-5">Start discovery</a></div></div></section>
 
 @code {
-    protected override async Task OnAfterRenderAsync(bool firstRender)
-    {
-        if (firstRender)
-        {
-            await JS.InvokeVoidAsync("refreshScrollAnimations");
-        }
-    }
-
-    [Inject] IJSRuntime JS { get; set; } = default!;
+    private sealed record Model(string Title,string Label,string Icon,string Description,string[] Items,bool Featured=false);
+    private sealed record Service(string Name,string Icon,string Basis);
+    private static readonly Model[] Models =
+    [
+        new("Fixed-Scope Project","DEFINED OUTCOME","bi-box-seam","Best for a well-understood deliverable with agreed acceptance criteria.",["Written requirements and milestones","Agreed delivery schedule","Change-control process"]),
+        new("Dedicated Delivery","ONGOING CAPACITY","bi-kanban","Flexible monthly access to engineering, database, support or advisory capacity.",["Prioritised delivery backlog","Regular progress reporting","Scale capacity as needs change"],true),
+        new("Assessment & Advisory","TIME-BOUND REVIEW","bi-clipboard-data","Focused technical, architecture or security assessment followed by a clear action plan.",["Defined assessment scope","Evidence-based findings","Prioritised recommendations"])
+    ];
+    private static readonly Service[] Services =
+    [
+        new("Software Development","bi-code-square","Features, platforms, integrations, assurance and delivery timeline."),
+        new("Database Services","bi-database-check","Data volume, platform, migration risk, availability and performance needs."),
+        new("IT Support","bi-headset","Users, devices, locations, coverage hours and response targets."),
+        new("Technology Consultancy","bi-lightbulb","Business objectives, stakeholders, current-state complexity and outputs."),
+        new("Penetration Testing","bi-shield-lock","Authorised targets, test depth, environment, retesting and reporting needs.")
+    ];
+    protected override async Task OnAfterRenderAsync(bool firstRender){if(firstRender) await JS.InvokeVoidAsync("refreshScrollAnimations");}
 }

@@ -3,10 +3,10 @@
 @implements IDisposable
 
 <!-- Bootstrap Navbar -->
-<nav class="navbar navbar-expand-lg fixed-top navbar-light bg-white shadow-sm">
+<nav class="navbar navbar-expand-lg fixed-top navbar-dark zak-navbar" aria-label="Primary navigation">
     <div class="container">
         <a class="navbar-brand d-flex align-items-center gap-2" href="#home">
-            <img src="images/webdesigner.png" alt="WDG" height="40" width="auto">
+            <img src="/images/zakitworld_logo.png" alt="ZAK I.T. WORLD" class="brand-logo" height="48">
         </a>
 
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
@@ -15,7 +15,7 @@
         </button>
 
         <div class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-nav ms-auto align-items-center">
+            <ul class="navbar-nav ms-auto align-items-lg-center">
                 <li class="nav-item">
                     <a class="nav-link fw-medium @GetActiveClass("/")" href="/">Home</a>
                 </li>
@@ -41,17 +41,17 @@
                     <a class="btn @GetContactButtonClass() px-4 fw-medium text-white" href="/contact">Contact Us</a>
                 </li>
 
-                <div class="d-lg-none my-3 border-top border-secondary pt-3">
+                <li class="d-lg-none mobile-account-links mt-3 pt-3">
                     <AuthorizeView>
                         <Authorized>
                             <AuthorizeView Roles="Admin" Context="adminContext">
                                 <Authorized>
-                                    <a href="/admin" class="d-block mb-2 text-decoration-none text-secondary">
+                                    <a href="/admin" class="nav-utility-link d-block mb-2">
                                         <i class="bi bi-gear-fill me-1"></i>Admin Dashboard
                                     </a>
                                 </Authorized>
                             </AuthorizeView>
-                            <a href="Account/Manage" class="d-block mb-2 text-decoration-none text-secondary">My
+                            <a href="Account/Manage" class="nav-utility-link d-block mb-2">My
                                 Account</a>
                             <form action="Account/Logout" method="post">
                                 <AntiforgeryToken />
@@ -62,32 +62,32 @@
                             </form>
                         </Authorized>
                         <NotAuthorized>
-                            <a href="/Account/Login" data-enhance-nav="false" class="d-block text-decoration-none text-secondary">Client Login</a>
+                            <a href="/Account/Login" data-enhance-nav="false" class="nav-utility-link d-block">Client Login</a>
                         </NotAuthorized>
                     </AuthorizeView>
-                </div>
+                </li>
             </ul>
 
-            <div class="d-none d-lg-flex ms-3 ps-3 border-start border-secondary align-items-center">
+            <div class="desktop-account-links d-none d-lg-flex ms-3 ps-3 align-items-center">
                 <AuthorizeView>
                     <Authorized>
                         <AuthorizeView Roles="Admin" Context="adminContext">
                             <Authorized>
-                                <a href="/admin" class="text-decoration-none text-secondary small me-3">
+                                <a href="/admin" class="nav-utility-link small me-3">
                                     <i class="bi bi-gear-fill me-1"></i>Admin Dashboard
                                 </a>
                             </Authorized>
                         </AuthorizeView>
-                        <a href="Account/Manage" class="text-decoration-none text-secondary small me-3">My Account</a>
+                        <a href="Account/Manage" class="nav-utility-link small me-3">My Account</a>
                         <form action="Account/Logout" method="post" style="display:inline;">
                             <AntiforgeryToken />
                             <input type="hidden" name="returnUrl" value="@currentUrl" />
                             <button type="submit"
-                                class="btn btn-link p-0 text-secondary small text-decoration-none">Logout</button>
+                                class="nav-utility-link btn btn-link p-0 small">Logout</button>
                         </form>
                     </Authorized>
                     <NotAuthorized>
-                        <a href="/Account/Login" data-enhance-nav="false" class="text-decoration-none text-secondary small">Client Login</a>
+                        <a href="/Account/Login" data-enhance-nav="false" class="nav-utility-link small">Client Login</a>
                     </NotAuthorized>
                 </AuthorizeView>
             </div>
@@ -131,7 +131,7 @@
         // Check if paths match
         bool isActive = currentPath.Equals(path, StringComparison.OrdinalIgnoreCase);
 
-        return isActive ? "active text-secondary" : "";
+        return isActive ? "active" : "";
     }
 
     private string GetContactButtonClass()
@@ -146,6 +146,6 @@
 
         bool isActive = currentPath.Equals("/contact", StringComparison.OrdinalIgnoreCase);
 
-        return isActive ? "btn-secondary" : "btn-primary";
+        return isActive ? "btn-danger" : "btn-primary";
     }
 }

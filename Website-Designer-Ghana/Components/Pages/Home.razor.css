@@ -241,6 +241,16 @@
     box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
 }
 
+.mission-vision-card h3 {
+    color: #0f172a !important;
+}
+
+.mission-vision-card > p {
+    color: #334155 !important;
+    font-size: 1rem;
+    line-height: 1.75;
+}
+
 .mv-icon-wrapper {
     width: 80px;
     height: 80px;

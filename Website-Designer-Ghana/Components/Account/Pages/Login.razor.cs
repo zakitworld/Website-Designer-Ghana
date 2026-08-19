@@ -66,12 +66,12 @@ public partial class Login
             var user = await UserManager.FindByEmailAsync(Input.Email);
             if (user != null)
             {
-                result = await SignInManager.PasswordSignInAsync(user.UserName!, Input.Password, Input.RememberMe, lockoutOnFailure: false);
+                result = await SignInManager.PasswordSignInAsync(user.UserName!, Input.Password, Input.RememberMe, lockoutOnFailure: true);
             }
             else
             {
                 // Fallback to using email as username if user not found by email (though usually they are the same now)
-                result = await SignInManager.PasswordSignInAsync(Input.Email, Input.Password, Input.RememberMe, lockoutOnFailure: false);
+                result = await SignInManager.PasswordSignInAsync(Input.Email, Input.Password, Input.RememberMe, lockoutOnFailure: true);
             }
         }
 

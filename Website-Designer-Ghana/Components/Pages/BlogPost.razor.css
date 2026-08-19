@@ -142,3 +142,6 @@
         padding: 0.5rem 1rem !important;
     }
 }
+.preserve-lines {
+    white-space: pre-line;
+}

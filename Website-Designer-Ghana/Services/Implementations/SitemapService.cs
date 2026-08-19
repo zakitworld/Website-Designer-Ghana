@@ -10,7 +10,7 @@ public class SitemapService : ISitemapService
     private readonly IPortfolioService _portfolioService;
     private readonly ICourseService _courseService;
     private readonly ILogger<SitemapService> _logger;
-    private const string BaseUrl = "https://websitedesignerghana.com";
+    private const string BaseUrl = "https://zakitworld.com";
 
     public SitemapService(
         IBlogService blogService,

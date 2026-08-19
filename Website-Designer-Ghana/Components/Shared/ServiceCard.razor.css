@@ -44,17 +44,18 @@
     justify-content: center;
     margin-bottom: 30px;
     transition: all 0.4s ease;
+    color: var(--service-accent);
+    background: color-mix(in srgb, var(--service-accent) 16%, transparent);
+    border: 1px solid color-mix(in srgb, var(--service-accent) 38%, transparent);
 }
 
 .service-card:hover .service-icon-wrapper {
     transform: scale(1.1) rotate(5deg);
 }
 
-.service-icon-wrapper svg {
-    width: 36px;
-    height: 36px;
-    stroke: white;
-    fill: none;
+.service-icon-wrapper i {
+    font-size: 2.15rem;
+    line-height: 1;
 }
 
 /* Title */
@@ -88,9 +89,8 @@
         margin-bottom: 24px;
     }
 
-    .service-icon-wrapper svg {
-        width: 32px;
-        height: 32px;
+    .service-icon-wrapper i {
+        font-size: 1.9rem;
     }
 
     .service-title {

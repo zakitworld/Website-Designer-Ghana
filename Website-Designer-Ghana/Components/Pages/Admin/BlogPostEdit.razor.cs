@@ -10,6 +10,7 @@ public partial class BlogPostEdit
     [Parameter] public int? Id { get; set; }
     [Inject] private IBlogService BlogService { get; set; } = default!;
     [Inject] private NavigationManager NavigationManager { get; set; } = default!;
+    [Inject] private ILogger<BlogPostEdit> Logger { get; set; } = default!;
 
     private BlogPostFormModel model { get; set; } = new();
     private IEnumerable<BlogCategory>? categories;
@@ -47,7 +48,7 @@ public partial class BlogPostEdit
         }
         else
         {
-            model.Author = "Website Designer Ghana Team";
+            model.Author = "ZAK I.T. WORLD Team";
         }
     }
 
@@ -109,7 +110,7 @@ public partial class BlogPostEdit
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"Error saving blog post: {ex.Message}");
+            Logger.LogError(ex, "Failed to save blog post {PostId}", Id);
         }
         finally
         {

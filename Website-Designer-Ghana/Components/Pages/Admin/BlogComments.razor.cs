@@ -9,6 +9,7 @@ public partial class BlogComments
 {
     [Inject] private IBlogService BlogService { get; set; } = default!;
     [Inject] private IJSRuntime JSRuntime { get; set; } = default!;
+    [Inject] private ILogger<BlogComments> Logger { get; set; } = default!;
 
     private IEnumerable<Website_Designer_Ghana.Data.Models.BlogComment>? comments;
     private bool showSuccessMessage = false;
@@ -27,7 +28,7 @@ public partial class BlogComments
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"Error loading comments: {ex.Message}");
+            Logger.LogError(ex, "Failed to load blog comments");
             comments = new List<Website_Designer_Ghana.Data.Models.BlogComment>();
         }
     }
@@ -43,7 +44,7 @@ public partial class BlogComments
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"Error approving comment: {ex.Message}");
+            Logger.LogError(ex, "Failed to approve comment {CommentId}", commentId);
         }
     }
 
@@ -60,7 +61,7 @@ public partial class BlogComments
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Error deleting comment: {ex.Message}");
+                Logger.LogError(ex, "Failed to delete comment {CommentId}", commentId);
             }
         }
     }

@@ -5,7 +5,7 @@
 @using System.ComponentModel.DataAnnotations
 @rendermode InteractiveServer
 
-<PageTitle>@PostTitle - Website Designer in Ghana Blog</PageTitle>
+<PageTitle>@PostTitle - ZAK I.T. WORLD Blog</PageTitle>
 
 <!-- BLOG POST SECTION -->
 <section class="py-5 bg-black" style="padding-top: 120px !important;">
@@ -49,7 +49,7 @@
 
                     <!-- Post Content -->
                     <div class="blog-post-content text-secondary fs-5 lh-lg">
-                        @((MarkupString)PostContent)
+                        <p class="preserve-lines">@PostContent</p>
                     </div>
 
                     <!-- Tags -->
@@ -70,19 +70,19 @@
                     <div class="mt-4 pt-4 border-top border-white border-opacity-10">
                         <h6 class="fw-bold mb-3 text-white">Share this article:</h6>
                         <div class="d-flex gap-2 flex-wrap">
-                            <a href="https://www.facebook.com/sharer/sharer.php?u=@ShareUrl" target="_blank"
+                            <a href="https://www.facebook.com/sharer/sharer.php?u=@ShareUrl" target="_blank" rel="noopener noreferrer"
                                class="btn btn-primary d-flex align-items-center gap-2 px-4">
                                 <i class="bi bi-facebook"></i> Facebook
                             </a>
-                            <a href="https://X.com/intent/tweet?url=@ShareUrl&text=@PostTitle" target="_blank"
+                            <a href="https://X.com/intent/tweet?url=@ShareUrl&text=@PostTitle" target="_blank" rel="noopener noreferrer"
                                class="btn btn-dark d-flex align-items-center gap-2 px-4 border border-white border-opacity-10">
                                 <i class="bi bi-twitter-x"></i> X
                             </a>
-                            <a href="https://www.linkedin.com/shareArticle?mini=true&url=@ShareUrl&title=@PostTitle" target="_blank"
+                            <a href="https://www.linkedin.com/shareArticle?mini=true&url=@ShareUrl&title=@PostTitle" target="_blank" rel="noopener noreferrer"
                                class="btn btn-primary d-flex align-items-center gap-2 px-4" style="background-color: #0077b5;">
                                 <i class="bi bi-linkedin"></i> LinkedIn
                             </a>
-                            <a href="https://wa.me/?text=@PostTitle%20@ShareUrl" target="_blank"
+                            <a href="https://wa.me/?text=@PostTitle%20@ShareUrl" target="_blank" rel="noopener noreferrer"
                                class="btn btn-success d-flex align-items-center gap-2 px-4">
                                 <i class="bi bi-whatsapp"></i> WhatsApp
                             </a>
@@ -99,7 +99,7 @@
                                 </div>
                             </div>
                             <div>
-                                <h5 class="fw-bold mb-2 text-white text-center text-md-start">About Website Designer in Ghana</h5>
+                                <h5 class="fw-bold mb-2 text-white text-center text-md-start">About ZAK I.T. WORLD</h5>
                                 <p class="text-secondary mb-0 text-center text-md-start">
                                     We are Ghana's leading web design and development company, specializing in creating stunning,
                                     high-performance websites for businesses across Accra and beyond. With years of experience and a
@@ -304,7 +304,7 @@
     private BlogPostModel? blogPost;
     private string PostTitle = "Loading...";
     private string FeaturedImage = "https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=1200&q=80";
-    private string Author = "Website Designer in Ghana";
+    private string Author = "ZAK I.T. WORLD";
     private string PublishDate = "";
     private string Category = "";
     private int ReadTime = 5;

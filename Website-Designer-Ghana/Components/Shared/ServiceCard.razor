@@ -1,7 +1,6 @@
 <div class="service-card">
-    <!-- Icon -->
-    <div class="service-icon-wrapper" style="background: @IconColor;">
-        @((MarkupString)IconSvg)
+    <div class="service-icon-wrapper" style="--service-accent: @IconColor;">
+        <i class="bi @IconClass" aria-hidden="true"></i>
     </div>
 
     <!-- Title -->
@@ -12,7 +11,7 @@
 </div>
 
 @code {
-    [Parameter] public string IconSvg { get; set; } = "";
+    [Parameter] public string IconClass { get; set; } = "bi-box";
     [Parameter] public string IconColor { get; set; } = "#3b82f6";
     [Parameter] public string Title { get; set; } = "";
     [Parameter] public string Description { get; set; } = "";

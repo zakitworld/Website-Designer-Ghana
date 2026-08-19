@@ -1,31 +1,36 @@
-/* Styling overrides or enhancements on top of Bootstrap */
-.navbar-brand {
-    font-family: var(--font-heading, sans-serif);
-    color: var(--bs-body-color);
+.zak-navbar {
+    min-height: 76px;
+    padding-block: .65rem;
+    background: rgba(7, 23, 38, .96);
+    border-bottom: 1px solid rgba(56, 189, 248, .22);
+    box-shadow: 0 10px 30px rgba(2, 8, 23, .28);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
 }
 
-.gradient-text {
-    background: linear-gradient(to right, #2563eb, #9333ea);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
+.navbar-brand {
+    color: #fff;
+    padding-block: 0;
 }
 
 .nav-link {
-    transition: all 0.3s ease;
-    color: #334155 !important;
-    /* Slate-700 */
-    font-weight: 500;
     position: relative;
+    padding: .65rem .72rem !important;
+    border-radius: .55rem;
+    color: #dbeafe !important;
+    font-weight: 600;
+    transition: color .2s ease, background-color .2s ease;
 }
 
-.nav-link:hover {
-    color: #dc3545 !important;
+.nav-link:hover,
+.nav-link:focus-visible {
+    color: #fff !important;
+    background: rgba(56, 189, 248, .12);
 }
 
 .nav-link.active {
-    color: #dc3545 !important;
-    font-weight: 600;
+    color: #fff !important;
+    background: rgba(255, 255, 255, .06);
 }
 
 .nav-link.active::after {
@@ -33,25 +38,26 @@
     position: absolute;
     bottom: -2px;
     left: 50%;
-    transform: translateX(-50%);
     width: 30px;
     height: 3px;
-    background-color: #dc3545;
     border-radius: 2px;
+    background: #ef233c;
+    transform: translateX(-50%);
 }
 
 .navbar-toggler {
-    width: 56px;
-    height: 56px;
     position: relative;
+    width: 48px;
+    height: 44px;
+    border-color: rgba(255, 255, 255, .4);
 }
 
-.navbar-toggler:focus {
-    box-shadow: 0 0 0 0.15rem rgba(13, 110, 253, 0.15);
+.navbar-toggler:focus-visible {
+    box-shadow: 0 0 0 .2rem rgba(56, 189, 248, .35);
 }
 
 .navbar-toggler-icon {
-    transition: opacity 0.2s ease;
+    transition: opacity .2s ease;
 }
 
 .navbar-toggler[aria-expanded="true"] .navbar-toggler-icon {
@@ -64,10 +70,10 @@
     position: absolute;
     top: 50%;
     left: 50%;
-    width: 28px;
-    height: 3px;
+    width: 26px;
+    height: 2px;
     border-radius: 2px;
-    background: #334155;
+    background: #fff;
 }
 
 .navbar-toggler[aria-expanded="true"]::before {
@@ -78,18 +84,43 @@
     transform: translate(-50%, -50%) rotate(-45deg);
 }
 
-/* Contact button active state */
-.btn.btn-danger {
-    background-color: #dc3545;
-    border-color: #dc3545;
+.desktop-account-links {
+    border-left: 1px solid rgba(255, 255, 255, .22);
+}
+
+.mobile-account-links {
+    border-top: 1px solid rgba(255, 255, 255, .18);
+    list-style: none;
+}
+
+.nav-utility-link {
+    color: #cbd5e1 !important;
+    text-decoration: none;
+    transition: color .2s ease;
+}
+
+.nav-utility-link:hover,
+.nav-utility-link:focus-visible {
+    color: #38bdf8 !important;
 }
 
 .btn.btn-primary {
-    background-color: #0d6efd;
-    border-color: #0d6efd;
+    color: #061522;
 }
 
-/* Ensure padding for fixed navbar */
-body {
-    padding-top: 0;
+@media (max-width: 991.98px) {
+    .navbar-collapse {
+        margin-top: .65rem;
+        padding: .8rem 0 1rem;
+        border-top: 1px solid rgba(255, 255, 255, .12);
+    }
+
+    .nav-link {
+        padding-inline: .9rem !important;
+    }
+
+    .navbar-nav .btn {
+        width: 100%;
+        margin-top: .5rem;
+    }
 }

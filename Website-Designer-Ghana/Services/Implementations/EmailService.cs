@@ -116,7 +116,7 @@ public class EmailService : IEmailService
                         </div>
                     </div>
                     <div class='footer'>
-                        <p>This email was sent from Website Designer Ghana contact form.</p>
+                        <p>This email was sent from ZAK I.T. WORLD contact form.</p>
                     </div>
                 </div>
             </body>
@@ -156,15 +156,15 @@ public class EmailService : IEmailService
                     </div>
                     <div class='content'>
                         <p>Hello {customerName},</p>
-                        <p>Thank you for reaching out to Website Designer Ghana. We have received your message and will get back to you as soon as possible.</p>
+                        <p>Thank you for reaching out to ZAK I.T. WORLD. We have received your message and will get back to you as soon as possible.</p>
                         <p>Our team typically responds within 24-48 hours during business days.</p>
                         <p>If you have any urgent queries, please don't hesitate to call us directly.</p>
                         <br>
                         <p>Best regards,</p>
-                        <p><strong>Website Designer Ghana Team</strong></p>
+                        <p><strong>ZAK I.T. WORLD Team</strong></p>
                     </div>
                     <div class='footer'>
-                        <p>&copy; 2026 Website Designer Ghana. All rights reserved.</p>
+                        <p>&copy; 2026 ZAK I.T. WORLD. All rights reserved.</p>
                     </div>
                 </div>
             </body>
@@ -174,7 +174,7 @@ public class EmailService : IEmailService
         {
             To = customerEmail,
             ToName = customerName,
-            Subject = "Thank you for contacting Website Designer Ghana",
+            Subject = "Thank you for contacting ZAK I.T. WORLD",
             Body = emailBody,
             IsHtml = true
         });

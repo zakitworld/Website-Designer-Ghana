@@ -10,6 +10,7 @@ public partial class BlogCategories
 {
     [Inject] private IBlogService BlogService { get; set; } = default!;
     [Inject] private IJSRuntime JSRuntime { get; set; } = default!;
+    [Inject] private ILogger<BlogCategories> Logger { get; set; } = default!;
 
     private IEnumerable<Website_Designer_Ghana.Data.Models.BlogCategory>? categories;
     private Website_Designer_Ghana.Data.Models.BlogCategory? editingCategory;
@@ -36,7 +37,7 @@ public partial class BlogCategories
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"Error loading categories: {ex.Message}");
+            Logger.LogError(ex, "Failed to load blog categories");
             categories = new List<Website_Designer_Ghana.Data.Models.BlogCategory>();
         }
     }
@@ -123,7 +124,7 @@ public partial class BlogCategories
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Error deleting category: {ex.Message}");
+                Logger.LogError(ex, "Failed to delete blog category {CategoryId}", categoryId);
             }
         }
     }

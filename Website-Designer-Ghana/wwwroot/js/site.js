@@ -1,5 +1,5 @@
 // ==========================================
-// WEBSITE DESIGNER IN GHANA - SITE JAVASCRIPT
+// ZAK I.T. WORLD - SITE JAVASCRIPT
 // ==========================================
 
 // Initialize on page load
